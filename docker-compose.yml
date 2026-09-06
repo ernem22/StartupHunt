@@ -1,0 +1,49 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-startup_hunt}
+      POSTGRES_USER: ${POSTGRES_USER:-startup_hunt}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-startup_hunt_dev_password}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  searxng:
+    image: searxng/searxng:latest
+    environment:
+      SEARXNG_BASE_URL: ${SEARXNG_BASE_URL:-http://localhost:8080/}
+      SEARXNG_SECRET: ${SEARXNG_SECRET:-change-this-before-public-deployment}
+    ports:
+      - "${SEARXNG_PORT:-8080}:8080"
+    volumes:
+      - ./searxng:/etc/searxng:rw
+
+  pipeline:
+    build:
+      context: .
+    environment:
+      DB_URL: postgresql://${POSTGRES_USER:-startup_hunt}:${POSTGRES_PASSWORD:-startup_hunt_dev_password}@postgres:5432/${POSTGRES_DB:-startup_hunt}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      PH_TOKEN: ${PH_TOKEN:-}
+      PH_CLIENT_ID: ${PH_CLIENT_ID:-}
+      PH_CLIENT_SECRET: ${PH_CLIENT_SECRET:-}
+      SEARXNG_URL: http://searxng:8080
+    volumes:
+      - ./:/app
+      - model_cache:/root/.cache/huggingface
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["sh", "-c", "tail -f /dev/null"]
+
+volumes:
+  postgres_data:
+  model_cache:
