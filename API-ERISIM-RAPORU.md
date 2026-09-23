@@ -1,12 +1,13 @@
 # StartupHunt kaynakları: API ve ücretsiz erişim raporu
 
 > Araştırma tarihi: **3 Eylül 2026**. Yalnızca birincil (platformun kendi) dokümantasyon ve fiyatlandırma kaynakları kullanıldı. “Ücretsiz” bir API anahtarının parasız olmasıdır; veri kullanım izni, ticari kullanım ve kota bundan ayrı değerlendirilir.
+> **Durum notu (2026-09-23):** Bu rapor **tarihsel araştırma anlık görüntüsüdür** — kararlar plan.md v3.2'deki güncel kararlara bağlanmıştır. Reddit için güncel karar: **resmî OAuth API** (live) + Arctic Shift (backfill); `reddit-universal-scraper` yalnızca İPTAL EDİLMİŞ bir geçmiştir (bkz. plan.md Proje İlkeler — scraper/proxy yok).
 
-## Karar özeti
+## Karar özeti (tarihsel — satırlardaki "proje kararı" kutuları v3.2'de geçersiz kılınmıştır)
 
 | Kaynak | Ücretsiz, proje için doğrudan alınabilir veri API'si? | Güncel limit | Karar |
 | --- | --- | --- | --- |
-| Reddit | Kısmen. Data API ücretsiz; ticari kullanım/standart dışı hacim için ayrı anlaşma gerekir. Proje kararı: [reddit-universal-scraper](https://github.com/ksanjeev284/reddit-universal-scraper) ile public JSON scrape (API keysiz). | OAuth: **100 istek/dk/client**; OAuth'suz: **10 istek/dk** (Data API için; scraper kendi hızını kendin belirler) | Scraper'ı self-hosted kullan; Reddit ToS/Public Content Policy'ye uy. |
+| Reddit | Kısmen. Data API ücretsiz; ticari kullanım/standart dışı hacim için ayrı anlaşma gerekir. ~~Proje kararı: reddit-universal-scraper~~ **PAS GEÇİLMİŞ (v3.2): resmî OAuth API + Arctic Shift.** | OAuth: **100 istek/dk/client**; OAuth'suz: **10 istek/dk** | ~~Scraper'ı self-hosted kullan~~ → Resmî OAuth API "Responsible Builder Policy" access onayı ile kullan (2-4 hafta kuyruk). |
 | GitHub | Evet, public veri. | Anonim: **60 istek/saat/IP**; token: **5.000 istek/saat**. Search/secondary limitler ayrıca geçerli. | Birincil kaynak. |
 | Hacker News | Evet, public salt-okuma JSON API. | Resmî repo: **şu an rate limit yok**. | Birincil kaynak. Nazik cache/polling uygula. |
 | Product Hunt | Teknik olarak evet, fakat varsayılan ticari kullanım yasak; izin istenmeli. | GraphQL: **6.250 complexity point / 15 dk / app**; diğer v2: **450 istek / 15 dk** | Ticari izin alınmadan kullanma. |
