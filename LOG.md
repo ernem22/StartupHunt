@@ -111,6 +111,19 @@ Sonuç: çelişki kalmadı; sistem bir bütün olarak tutarlı. Sıradaki gerçe
 
 ---
 
+## 2026-09-23 — Oturum 7: GH Archive backfill adapter
+
+### 17) `src/adapters/gharchive.ts` (feat/gharchive-backfill branch, PR)
+- Kaynak: `data.gharchive.org/{YYYY-MM-DD}-{H}.json.gz` saatlik dump (~139MB/dosya); 2011+için plan ama backfill tabanı = BACKFILL_SINCE (18 ay)
+- Kapsam deterministik, keyword'süz: `IssuesEvent(action=opened)` (şikâyet/gap) + `CreateEvent(ref_type=repository)` (launch); push/watch/fork gibi metinsizler obs değil
+- **Streaming parse** (fetch web stream → gunzip → readline): limit dolunca indirme kesilir, dosyanın tamamı inmemiş olur
+- İmleç: saat bazlı; dosya ortasında limit dolarsa imleç İLERLEMEZ → kalan satırlar sonraki koşumda (idempotent upsert güvenli); 404/hata catch-up uyumlu (yeniden dener)
+- cli: `gharchive` collect all dahil; **dry-run CANLI TEST ✓ (bu cihazda, DB'siz)**: 946 satır stream, 50 obs çıkarıldı, imleç 16.saatte kaldı (17. dosyanın kalanı sonraki koşumda)
+- typecheck temiz; **3060'a bekleme:** DB yazım testi (upsertRaw + upsertNormalized unique davranışı), gerçek event/obs oranı ölçümü
+- Not: pilot kapsam dışı (pilot = 10 sub + HN); pilot sağlandıktan sonra devreye alınır
+
+---
+
 ## 2026-09-11 — Oturum 1: plan v3.1 + altyapı + adapter başlangıcı
 
 ### 1) Plan ve araştırma (tamamlandı)
