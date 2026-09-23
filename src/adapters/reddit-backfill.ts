@@ -1,8 +1,31 @@
-// RedditBackfillAdapter — Arctic Shift API (plan v3.1 FAZ 1)
+// RedditBackfillAdapter — Arctic Shift API (plan v3.2 FAZ 1)
 // son 18 ay (BACKFILL_SINCE) post'ları subreddit bazlı çeker; idempotent upsert + catch-up imleci.
+// CodeRabbit düzeltmesi: subreddit başına imleç DB state'te verilir (SOT: adapter_state); sayfa
+// boyutu karşılaştırması istenen size üzerinden yapılır (remaining < 100'de erken bitüş taşınırdı)
 import type { Adapter, CollectOptions, NormalizedObservation } from "../types.js";
 import { config, SUBREDDITS, BACKFILL_SINCE } from "../config.js";
-import { upsertRaw, upsertNormalized, contentHash } from "../db.js";
+import { upsertRaw, upsertNormalized, contentHash, loadAdapterState, saveAdapterState } from "../db.js";
+
+interface SubCursor {
+  subs: Record<string, string>; // subreddit → after ISO
+}
+
+function makeStateStore<T>(dryRun: boolean, initial: () => T) {
+  let mem: T | null = null;
+  return {
+    async load(): Promise<T> {
+      if (dryRun) return (mem ??= initial());
+      return (await loadAdapterState<T>("reddit-backfill")) ?? initial();
+    },
+    async save(v: T): Promise<void> {
+      if (dryRun) {
+        mem = v;
+        return;
+      }
+      await saveAdapterState("reddit-backfill", v, {});
+    },
+  };
+}
 
 /** Arctic Shift post (pushshift şemasının alt kümesi) */
 interface ArcticPost {
@@ -116,21 +139,28 @@ export class RedditBackfillAdapter implements Adapter {
   async collect(since: Date | null, opts: CollectOptions): Promise<void> {
     const start = since ?? BACKFILL_SINCE;
     const subs = [...SUBREDDITS];
+    const store = makeStateStore<SubCursor>(opts.dryRun, () => ({ subs: {} }));
+    const cursor = await store.load();
+    if (!cursor.subs) cursor.subs = {};
     let processed = 0;
 
     for (const sub of subs) {
-      let after: string | null = start.toISOString();
+      const saved = cursor.subs[sub];
+      let after: string | null = saved ?? start.toISOString();
+      let requestedPageSize: number;
       let fetchedThisSub = 0;
-      console.log(`▶ r/${sub} — başlangıç: ${after}`);
+      console.log(`▶ r/${sub} — başlangıç: ${after}${saved ? " (state'ten devam)" : ""}`);
 
       while (true) {
         const remaining = opts.limit ? opts.limit - processed : undefined;
         if (remaining !== undefined && remaining <= 0) {
           console.log(`  oturum limiti doldu (${opts.limit}); kalan subredditler sonraki çalıştırmada.`);
+          await store.save(cursor);
           return;
         }
 
-        const page = await fetchPage(sub, after, remaining ?? 100);
+        const requestedPages = Math.min(remaining ?? 100, 100);
+        const page = await fetchPage(sub, after, requestedPages);
         if (!page || page.data.length === 0) {
           console.log(`  r/${sub} tamam (≈${fetchedThisSub} post).`);
           break;
@@ -163,14 +193,17 @@ export class RedditBackfillAdapter implements Adapter {
         const lastUtc = last?.created_utc;
         if (!lastUtc) break;
         after = new Date((lastUtc + 1) * 1000).toISOString();
+        cursor.subs[sub] = after; // every page — catch-up imleci DB state'te (CodeRabbit)
+        await store.save(cursor);
 
-        if (page.data.length < 100) {
+        if (page.data.length < requestedPages) {
           console.log(`  r/${sub} tamam (≈${fetchedThisSub} post).`);
           break;
         }
         await sleep(config.arcticShift.pageDelayMs);
       }
     }
+    await store.save(cursor);
     console.log(`✔ backfill oturumu bitti. processed=${processed}${opts.dryRun ? " (dry-run)" : ""}`);
   }
 }

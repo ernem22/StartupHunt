@@ -22,7 +22,9 @@ docker compose ps            # hepsi healthy/running olmalı
 ## Doğrulama
 
 ```bash
-# 1) pgvector şeması kuruldu mu (5 tablo + 2 view görmelisin)
+# 1) pgvector şeması kuruldu mu (8 tablo + 2 view görmelisin)
+#    raw_observations, observations, patterns, pattern_observations, pattern_history,
+#    metric_snapshots, counterpart_searches, adapter_state
 docker exec startuphunt-postgres psql -U startuphunt -d startuphunt -c "\dt"
 
 # 2) TEI + GPU çalışıyor mu (1024 boyutlu vektör dönmeli)
@@ -54,18 +56,18 @@ pnpm collect reddit-backfill -- --limit 50000   # ilk backfill (idempotent — t
 pnpm pipeline clean
 pnpm pipeline embed
 
-# 3) Clustering (Python tarafı — ilk çalıştırmada bir kez)
-cd cluster
-pip install -r requirements.txt
+# 3) Clustering (Python tarafı — repo kökünden koş; cd cluster YAPMA)
+pip install -r cluster/requirements.txt
 python -m cluster.recluster   # seyrek: UMAP+HDBSCAN → patterns'e yazar
 # sonrası her yeni veride:
 python -m cluster.assign      # sık: centroid assignment (ucuz)
 # recluster: takvim yok — TETİK bazlı (atanmamış embedded obs oranı eşiği aşılırsa koş;
-# senaryonda orchestrator/günlük koşum bunu kendisi yönetir)
+# `pnpm orchestrate` günlük koşum bunu kendisi yönetir)
 ```
 
-Not: `recluster.py` ve `assign.py` içindeki DB_URL'yi kendi şifrenle güncelle
-(`.env`'teki POSTGRES_PASSWORD ile aynı olmalı).
+Not: Python worker'lar DB bağlantısını `DATABASE_URL` env'inden okur (`.env` yüklenmez —
+`orchestrate` (.env ile) kullan ya da elle koşumda önce `export DATABASE_URL=...` (Windows'ta
+`$env:DATABASE_URL="postgresql://..."`). Kaynak dosyada DB URL DÜZENLEME — CodeRabbit: tracked dosyaya kimlik yazılmaz.
 
 ## Dur / sıfırla
 
