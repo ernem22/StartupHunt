@@ -13,17 +13,22 @@
 # Gereksinim: bertopic, psycopg, scikit-learn
 
 import json
+import os
 import sys
 
 import numpy as np
 import psycopg
+from dotenv import load_dotenv
 from bertopic import BERTopic
-from bertopic.representation import KeyBERTInspired
 from hdbscan import HDBSCAN
 from sklearn.feature_extraction.text import CountVectorizer
 from umap import UMAP
 
-DB_URL = "postgresql://startuphunt:startuphunt@localhost:5432/startuphunt"
+load_dotenv()
+DB_URL = os.environ.get(
+    "DATABASE_URL",
+    "postgresql://startuphunt:startuphunt@localhost:5432/startuphunt",
+)
 
 # —— parametreler (plan FAZ 8: hacme göre kalibre) ——
 UMAP_N_NEIGHBORS = 15
@@ -36,12 +41,14 @@ TRANSFER_MIN = 0.50  # review_status taşınma aynı eşikle
 
 
 def fetch_embeddings(cur):
-    """embedded + embedding dolu observation'lar: (id, metin, vektör)."""
+    """embedded + embedding dolu observation'lar: (id, metin, vektör).
+    deep_dive_for işaretli GEÇİCİ obs'ler cluster'a girmez (plan: geçici corpus)."""
     cur.execute(
         """
         select id, coalesce(title, '') || E'\n\n' || text, embedding::text
         from observations
         where status = 'embedded' and embedding is not null
+          and not (metadata ? 'deep_dive_for')
         order by id
         """
     )
@@ -97,14 +104,22 @@ def main():
         cluster_selection_method="eom",
         prediction_data=True,
     )
-    vectorizer = CountVectorizer(stop_words="english", ngram_range=(1, 2), min_df=5)
-    representation = KeyBERTInspired()
+    # c-TF-IDF bütün corpus'u tek belge kabul eder → min_df 'topic başına' anlamdadır;
+    # <5 topic'te min_df=5 ValueError üretir → topic sayısına bağlanır (CodeRabbit)
+    n_topics_est = max(n_clusters, 1)
+    vectorizer = CountVectorizer(
+        stop_words="english",
+        ngram_range=(1, 2),
+        min_df=max(1, min(5, n_topics_est)),
+    )
 
     topic_model = BERTopic(
         umap_model=umap_model,
         hdbscan_model=hdbscan_model,
         vectorizer_model=vectorizer,
-        representation_model=representation,
+        # representation_model YOK — keywords saf c-TF-IDF'ten gelir (plan FAZ 9:
+        # "keywords: cluster'ın en ayırt edici terimleri (c-TF-IDF)"; KeyBERTInspired ayrıca
+        # kendi embedding dosyasını indirir ve determinizmi azaltır — CodeRabbit/doğrulanmış)
         calculate_probabilities=False,
         low_memory=True,
     )
@@ -129,10 +144,18 @@ def main():
     with psycopg.connect(DB_URL) as conn:
         with conn.cursor() as cur:
             topic_docs: dict[int, list[int]] = {}
+            noise_ids: list[int] = []
             for obs_id, topic in zip(ids, topics):
                 if topic == -1:
+                    noise_ids.append(obs_id)  # noise → 'embedded_noise' işareti (orchestrator tetiği bunları dışlar)
                     continue
                 topic_docs.setdefault(topic, []).append(obs_id)
+
+            if noise_ids:
+                cur.executemany(
+                    "update observations set status = 'embedded_noise' where id = %s",
+                    [(i,) for i in noise_ids],
+                )
 
             topic_members: dict[int, list[int]] = {}
             for i, topic in enumerate(topics):
