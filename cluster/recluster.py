@@ -41,13 +41,16 @@ TRANSFER_MIN = 0.50  # review_status taşınma aynı eşikle
 
 
 def fetch_embeddings(cur):
-    """embedded + embedding dolu observation'lar: (id, metin, vektör).
-    deep_dive_for işaretli GEÇİCİ obs'ler cluster'a girmez (plan: geçici corpus)."""
+    """embedded + embedded_noise + embedding dolu observation'lar: (id, metin, vektör).
+    - embedded_noise: önceki recluster'ın noise'ları — SONRAKİ recluster onları yeniden
+      değerlendirmeli (kaçırma yok ilkesi); yeniden noise kalırsa işaret yenilenir.
+    - deep_dive_for işaretli GEÇİCİ obs'ler cluster'a girmez (plan: geçici corpus)."""
     cur.execute(
         """
         select id, coalesce(title, '') || E'\n\n' || text, embedding::text
         from observations
-        where status = 'embedded' and embedding is not null
+        where (status = 'embedded' or status = 'embedded_noise')
+          and embedding is not null
           and not (metadata ? 'deep_dive_for')
         order by id
         """
@@ -104,14 +107,11 @@ def main():
         cluster_selection_method="eom",
         prediction_data=True,
     )
-    # c-TF-IDF bütün corpus'u tek belge kabul eder → min_df 'topic başına' anlamdadır;
-    # <5 topic'te min_df=5 ValueError üretir → topic sayısına bağlanır (CodeRabbit)
-    n_topics_est = max(n_clusters, 1)
-    vectorizer = CountVectorizer(
-        stop_words="english",
-        ngram_range=(1, 2),
-        min_df=max(1, min(5, n_topics_est)),
-    )
+    # c-TF-IDF bütün corpus'u tek belge kabul eder → min_df 'topic başına' anlamdır;
+    # topic sayısı fit ÖNCESİ bilinemez (CodeRabbit doğru: n_clusters burada yok) →
+    # min_df=1 sabit; noise kelime filtresi pilot fazında CountVectorizer'a stopword
+    # listesi ile büyütülür (plan FAZ 8 kalibrasyonu).
+    vectorizer = CountVectorizer(stop_words="english", ngram_range=(1, 2), min_df=1)
 
     topic_model = BERTopic(
         umap_model=umap_model,
