@@ -1,0 +1,6 @@
+# StartupHunt — Python cluster katmanı (FAZ 8/9/10/13)
+# 3060 cihazında çalışır (GPU opsiyonel — embedding'ler zaten DB'de).
+# Kurulum: pip install -r requirements.txt
+bertopic>=0.16.4
+psycopg[binary]>=3.2
+numpy>=1.26

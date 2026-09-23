@@ -1,0 +1,29 @@
+# SearXNG — StartupHunt örneği
+# JSON API açık, bot koruması limiter'ı kapalı (lokal kullanım, FAZ 14 catch-up ayarı)
+
+use_default_settings: true
+
+server:
+  base_url: false
+  secret_key: "ultra-secret-key-change-me"  # üretimde değiştir
+  limiter: false   # lokal; tek istemci kendimiziz
+  image_proxy: true
+
+search:
+  formats:
+    - html
+    - json          # FAZ 14 için şart
+  language: tr
+
+# Upstream motorlarda bot koruması toleranslı olanlar öncelikli (plan v3.1, Açık Soru 5)
+engines:
+  - name: duckduckgo
+    disabled: false
+  - name: brave
+    disabled: false
+  - name: qwant
+    disabled: false
+  - name: google
+    disabled: false   # açık ama uzun koşuda block izlenir; nazik hız şart
+  - name: bing
+    disabled: false

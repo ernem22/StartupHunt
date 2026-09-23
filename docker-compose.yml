@@ -1,0 +1,59 @@
+# ============================================================
+# StartupHunt — lokal altyapı (RTX 3060 cihazında çalıştırma)
+# Kullanım: docker compose up -d
+# ============================================================
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: startuphunt-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-startuphunt}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-startuphunt}
+      POSTGRES_DB: ${POSTGRES_DB:-startuphunt}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-startuphunt} -d ${POSTGRES_DB:-startuphunt}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    # 3060'lı cihaz RAM'ine göre ayarla; 16GB+ RAM önerilir
+    shm_size: "1gb"
+
+  tei:
+    # Text Embeddings Inference — Qwen3-Embedding-0.6B (GPU)
+    image: ghcr.io/huggingface/text-embeddings-inference:1.8.0
+    container_name: startuphunt-tei
+    command: --model-id Qwen/Qwen3-Embedding-0.6B --dtype float16 --max-client-batch-size 256 --max-concurrent-requests 64
+    ports:
+      - "8080:80"
+    volumes:
+      - tei-cache:/data
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  searxng:
+    image: searxng/searxng:latest
+    container_name: startuphunt-searxng
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    ports:
+      - "8888:8080"
+    environment:
+      - SEARXNG_BASE_URL=http://localhost:8888/
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  tei-cache:
