@@ -4,6 +4,15 @@
 
 ---
 
+## 2026-09-23 — Oturum 12: assign.py — psycopg placeholder fix (fix/assign-psycopg-placeholders branch, PR)
+
+### 22) `cluster/assign.py` — `$1`-tarzı placeholder'lar psycopg3'te çalışmıyor → `%s`
+- redflags helyette: pattern_observations insert ($1,$2,$3) ve observation_count/last_seen update ($1 ×3)
+- python -m py_compile temiz; DB davranışı 3060'a bekleme
+- Aynı hata sınıfının numaralandırıcısı: recluster.py PR #6'da giderildi; assign.py bu PR'da — artık $placeholder kalmadı (grep doğrulandı)
+
+---
+
 ## 2026-09-21 — Oturum 5: grill oturumu — plan v3.2 kararları
 
 Grill oturumuyla v3.1'in hipotezleri tek tek sınandı; **plan.md → v3.2** güncellendi

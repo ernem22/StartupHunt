@@ -1,4 +1,4 @@
-# FAZ 13 — SIK güncelleme: centroid assignment worker (plan v3.1)
+# FAZ 13 — SIK güncelleme: centroid assignment worker (plan v3.2)
 # Yeni embedded observation'ları UMAP/HDBSCAN ÇALIŞTIRMADAN mevcut pattern
 # centroid'lerine cosine similarity ile atar; eşik altındaysa atama yok (sıradaki
 # recluster'ı bekler). run_kind='centroid'.
@@ -72,7 +72,7 @@ def main():
                     cur.execute(
                         """
                         insert into pattern_observations (pattern_id, observation_id, similarity, run_kind)
-                        values ($1, $2, $3, 'centroid')
+                        values (%s, %s, %s, 'centroid')
                         on conflict do nothing
                         """,
                         (pid, obs_id, float(sims[i][j])),
@@ -85,17 +85,17 @@ def main():
                 cur.execute(
                     """
                     update patterns
-                       set observation_count = (
-                             select count(*) from pattern_observations where pattern_id = $1
-                           ),
-                           last_seen = (
-                             select max(o.observed_at) from pattern_observations po
-                             join observations o on o.id = po.observation_id
-                             where po.pattern_id = $1
-                           )
-                     where id = $1
+                     set observation_count = (
+                          select count(*) from pattern_observations where pattern_id = %s
+                       ),
+                       last_seen = (
+                         select max(o.observed_at) from pattern_observations po
+                         join observations o on o.id = po.observation_id
+                         where po.pattern_id = %s
+                       )
+                     where id = %s
                     """,
-                    (pid,),
+                    (pid, pid, pid),
                 )
         conn.commit()
 
