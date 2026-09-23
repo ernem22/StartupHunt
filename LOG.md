@@ -4,6 +4,18 @@
 
 ---
 
+## 2026-09-23 — Oturum 9: counterpart — TR karşılık araması komutu
+
+### 19) `src/counterpart.ts` — `pnpm counterpart -- --pattern <id> [-- --dry-run]`
+- **Koşul kilitli:** pattern `review_status='interesting'` + `status='active'` değilse sessiz çıkar (FAZ 14 onay-yalnız kuralı)
+- Kurallı TR sorgu üretimi (deterministik): top-5 keywords + pattern adı; LLM TR çevirisi v0.1'de YOK (FAZ 14 "kurallı + gerektiğinde" — kurallı yeter)
+- SearXNG `format=json&language=tr` → ilk 20 sonuç → observations (`source='searxng'`, `metadata.parent_pattern_id`); <40 karakter atlanır
+- **Idempotentlik:** her sorgu `counterpart_searches`'e kaydedilir; done olan koşmaz, error sonraki koşumda yeniden dener; sourceId = URL FNV-1a (aynı URL farklı sorguda tek obs)
+- SMOKE (bu cihaz): `--dry-run` → arg parse → pool çağrısına kadar akış; DB yok (ECONNREFUSED) düzgün duruş ✓ — DB/SearXNG zinciri 3060'ta
+- Not: pilot sırasında koşmaz (onaylı pattern yok); FAZ 14 ön koşulu TR/EN mini testi geçilmeden pasif kalır
+
+---
+
 ## 2026-09-21 — Oturum 5: grill oturumu — plan v3.2 kararları
 
 Grill oturumuyla v3.1'in hipotezleri tek tek sınandı; **plan.md → v3.2** güncellendi
