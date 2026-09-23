@@ -4,6 +4,18 @@
 
 ---
 
+## 2026-09-23 — Oturum 11: recluster.py — pattern ID sürekliliği (fix/recluster-pattern-history branch, PR)
+
+### 21) `cluster/recluster.py` v0.2 — v3.2 karar işleme (py_compile ✓; DB testi 3060'ta)
+- **Düzeltme (kritik eski davranış):** `update patterns set status='archived'` → `'merged'` — insan junk ile recluster üstlenilmesi artık karışmaz (FAZ 12/13 durum ayrımı)
+- **pattern_history yazımı:** her eski aktif pattern için en yüksek ortak-obs oranlı yeni pattern'a eşleşme kaydı (SQL kesişim yerine bellekte set kesişimi — aynı matematik, ücretsiz debug); eşik OVERLAP_MIN=0.50
+- **review_status taşınma:** yalnızca matched (≥%50) + hedef halen `unreviewed` ise; `status='active'` birlikte set edilir. Deterministik: sabit old-id sırası, tek yönlü
+- timeline doldurma sorgusu korundu (obs'tan min/max) — FAZ 11 notuyla uyumlu
+- Fark edildi ve giderildi: eski koddaki `values ($1,...)` placeholder kullanımı psycopg3'te çalışmazdı (%s gerekir) — ilk gerçek run öncesi vitese kondu
+- 3060'a bekleme: gerçek DB'de çalışma, overlap sayıları, transfer davranışı
+
+---
+
 ## 2026-09-21 — Oturum 5: grill oturumu — plan v3.2 kararları
 
 Grill oturumuyla v3.1'in hipotezleri tek tek sınandı; **plan.md → v3.2** güncellendi
