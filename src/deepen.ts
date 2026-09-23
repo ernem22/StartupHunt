@@ -71,7 +71,10 @@ async function main(): Promise<void> {
   const patternId = gid >= 0 ? Number(args[gid + 1]) : NaN;
   const months = gm >= 0 ? Number(args[gm + 1]) : NaN;
 
-  if (args[0] === "prune") return void prune();
+  if (args[0] === "prune") {
+    await prune(); // await — main().catch'e hatanın iletilmesi şart (CodeRabbit: void rejection kaybeder)
+    return;
+  }
 
   if (!Number.isInteger(patternId) || !Number.isFinite(months) || months <= 0) {
     console.log("kullanım: pnpm deepen -- --pattern <id> --months <N> [-- --dry-run]");
@@ -118,11 +121,13 @@ async function main(): Promise<void> {
     let obs = 0;
     const MAX_OBS = 2000; // oturum güvenlik tavanı (geçici data — aşırı derin dalmıyoruz)
     for (const sub of subsToScan) {
+      if (obs >= MAX_OBS) break; // tavan sub'lar ARASINDA da geçerli (CodeRabbit)
       let cursorIso = afterIso;
       while (cursorIso < untilIso) {
         const batch = await fetchSearch(sub, query, cursorIso, untilIso, 100);
         if (batch.length === 0) break;
         for (const p of batch) {
+          if (obs >= MAX_OBS) break;
           const text = `${p.title ?? ""}\n\n${p.selftext ?? ""}`.trim();
           if (text.length < 40) continue; // clean kurallarıyla uyum
           const norm: NormalizedObservation = {
