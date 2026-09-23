@@ -15,14 +15,13 @@
 
 ---
 
-## 2026-09-23 — Oturum 13: CodeRabbit bulguları (tüm PR'lere işlendi; ayrıca ortak-taban fiabs)
+## 2026-09-23 — Oturum 13: CodeRabbit bulguları (mevcut PR'ler güncellendi; yeni PR AÇILMADI)
 
-### Ortak taban (bu PR'ye eklendi — collect zincirinin çalıştırıcısı olduğu için bir sanayek)
-- config 18 takvim ayı · cli `--` · HN search_by_date + terim-başı imleç · GH sorgu/topic-imleçleri · reddit-backfill sub-İmleç + sayfa boyut · incremental dry-run guard · compose loopback + TEI 86-1.8.2 · searxng default_lang · env URL'ler · KURULUM/API-RAPOR/AGENTS/plan dok düzeltmeleri
+### Ortak taban (bu PR'ye eklendi — collect zincirinin çalıştırıcısı)
+- config 18 takvim ayı · cli `--` · HN search_by_date + terim-başı imleç · GH sorgu/topic-imleçleri · reddit-backfill sub-imleç + sayfa boyutu · incremental dry-run guard · compose loopback + TEI 86-1.8.2 · searxng default_lang · env URL'ler · KURULUM/API-RAPOR/AGENTS/plan dok düzeltmeleri
 
-### Süreçnotu
-- Yeni PR açmak yerine mevcut PR'ler güncellendi (orchestrator bu PR'ye cherry-pick; diğer fiksleri sırasıyla kendi PR'lerine işlendi: #3 orchestrator, #4 counterpart, #5 deepen, #6 recluster, #7 assign)
-- Geçici 8. PR kapatıldı ve silindi
+### Süreç notu
+- **Yeni PR açmak yerine mevcut PR'ler güncellendi** (kulağa ihanet gibi gelen 8. PR kapatıldı ve silindi); ortak-taban fiksler bu PR'ye cherry-pick; PR-özel fiksler kendi branchlerine işlendi (#4 #5 #6 #7)
 
 ### SKIP + gerekçe
 1. embed.ts 4xx terminal status (`embed_failed`) — status kontratına değer ekler; pilot-sonrası
