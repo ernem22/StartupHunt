@@ -188,11 +188,13 @@ export class RedditBackfillAdapter implements Adapter {
 
         opts.onProgress?.({ processed, totalFetched: fetchedThisSub });
 
-        // imleç: son post'un created_utc (+1s, aynı saniyedekileri kaçırmamak için)
+        // imleç: son post'un created_utc — +1 SN YAPMA (CodeRabbit): Arctic Shift `after`
+        // exclusive'tir; lastUtc bizzat imleç olarak aynı saniyedeki postları içerir.
+        // aynı-post tekrarları unique source+source_id idempotent upsert ile elenir.
         const last = page.data.at(-1);
         const lastUtc = last?.created_utc;
         if (!lastUtc) break;
-        after = new Date((lastUtc + 1) * 1000).toISOString();
+        after = new Date(lastUtc * 1000).toISOString();
         cursor.subs[sub] = after; // every page — catch-up imleci DB state'te (CodeRabbit)
         await store.save(cursor);
 

@@ -49,7 +49,9 @@ curl -s "http://localhost:8888/search?q=fiyat+artışı&language=tr&format=json"
 ```bash
 # 1) Toplama (Node.js tarafı — repo kökünde)
 pnpm install
-cp .env.example .env          # anahtarları doldur (GITHUB_TOKEN, ...)
+# .env zaten 'Başlat' adımında oluşturuldu — burada TEKRAR cp YAPMA
+# (yoksa anahtar/şifre düzenlemeleri ezilir — CodeRabbit); yalnızca .env'de
+# GITHUB_TOKEN/YOUTUBE_API_KEY vb. doldurmaya devam et
 pnpm collect reddit-backfill -- --limit 50000   # ilk backfill (idempotent — tekrar çalıştırılabilir)
 
 # 2) Temizlik + embedding (TEI GPU'da)
