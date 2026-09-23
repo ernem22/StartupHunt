@@ -15,6 +15,22 @@
 
 ---
 
+## 2026-09-23 — Oturum 13: CodeRabbit bulguları (tüm PR'lere işlendi; ayrıca ortak-taban fiabs)
+
+### Ortak taban (bu PR'ye eklendi — collect zincirinin çalıştırıcısı olduğu için bir sanayek)
+- config 18 takvim ayı · cli `--` · HN search_by_date + terim-başı imleç · GH sorgu/topic-imleçleri · reddit-backfill sub-İmleç + sayfa boyut · incremental dry-run guard · compose loopback + TEI 86-1.8.2 · searxng default_lang · env URL'ler · KURULUM/API-RAPOR/AGENTS/plan dok düzeltmeleri
+
+### Süreçnotu
+- Yeni PR açmak yerine mevcut PR'ler güncellendi (orchestrator bu PR'ye cherry-pick; diğer fiksleri sırasıyla kendi PR'lerine işlendi: #3 orchestrator, #4 counterpart, #5 deepen, #6 recluster, #7 assign)
+- Geçici 8. PR kapatıldı ve silindi
+
+### SKIP + gerekçe
+1. embed.ts 4xx terminal status (`embed_failed`) — status kontratına değer ekler; pilot-sonrası
+2. SearXNG unresponsive_engines parsiyelliği — v0.1 için overengineering
+3. settings.yml secret_key değişimi — loopback bind yeterli
+
+---
+
 ## 2026-09-21 — Oturum 5: grill oturumu — plan v3.2 kararları
 
 Grill oturumuyla v3.1'in hipotezleri tek tek sınandı; **plan.md → v3.2** güncellendi
