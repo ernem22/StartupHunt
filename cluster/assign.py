@@ -7,12 +7,17 @@
 # Eşik: 0.55 — pilot veriyle kalibre edilecek (TR/EN çift testi sonrası).
 
 import json
-import sys
+import os
 
 import numpy as np
 import psycopg
+from dotenv import load_dotenv
 
-DB_URL = "postgresql://startuphunt:startuphunt@localhost:5432/startuphunt"
+load_dotenv()
+DB_URL = os.environ.get(
+    "DATABASE_URL",
+    "postgresql://startuphunt:startuphunt@localhost:5432/startuphunt",
+)
 SIMILARITY_THRESHOLD = 0.55
 
 
@@ -41,8 +46,18 @@ def main():
                 select o.id, o.embedding::text
                 from observations o
                 where o.status = 'embedded' and o.embedding is not null
+                  -- 'embedded_noise' işaretliler yeniden atanmaz (recluster'ın kararına saygı)
+                  and o.status <> 'embedded_noise'
+                  -- deep_dive_for GEÇİCİ obs cluster'a giremez (plan: geçici corpus)
+                  and not (o.metadata ? 'deep_dive_for')
+                  -- CodeRabbit: sadece AKTİF pattern link'i "atanmış" sayar —
+                  -- yalnızca archived/merged linki olan obs yeniden atanabilir
                   and not exists (
-                    select 1 from pattern_observations po where po.observation_id = o.id
+                    select 1
+                    from pattern_observations po
+                    join patterns p on p.id = po.pattern_id
+                    where po.observation_id = o.id
+                      and p.status = 'active'
                   )
                 """
             )
