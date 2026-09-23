@@ -4,6 +4,18 @@
 
 ---
 
+## 2026-09-23 — Oturum 10: deepen — geçmiş destek modu (feat/deepen branch, PR)
+
+### 20) `src/deepen.ts` — `pnpm deepen --pattern <id> --months N [--dry-run]` + `pnpm deepen prune`
+- Amaç (plan PILOT / Geçmiş destek modu): "olasılık / yeterlilik eksik" pattern için BACKFILL_SINCE'ten **N ay geriye** geçici toplanma
+- Sub kapsamı deterministik: pattern'in kendi observation'larında görülen subreddit'ler; hiç yoksa config'teki 10 sub
+- Sorgu: Arctic Shift `title=` araması, top-3 keywords; pencere `[BACKFILL_SINCE-months → BACKFILL_SINCE)` — kalıcı corpus dışı
+- **Geçicilik garantisi:** obs'ler `metadata.deep_dive_for=pattern_id` işaretli; `pnpm deepen prune` obs+raw'ı çift siler
+- İmleç/sayfalama: asc + cursor=son created_utc; oturum güvenlik tavanı MAX 2000 obs; idempotent upsert
+- typecheck ✓; smoke: arg parse→pipeline'a kadar akış, DB yok ECONNREFUSED düzgün duruş — DB/Arctic Shift zinciri 3060'ta
+
+---
+
 ## 2026-09-21 — Oturum 5: grill oturumu — plan v3.2 kararları
 
 Grill oturumuyla v3.1'in hipotezleri tek tek sınandı; **plan.md → v3.2** güncellendi
