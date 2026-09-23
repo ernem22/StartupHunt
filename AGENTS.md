@@ -18,7 +18,8 @@
 - `pnpm collect [adapter] [-- --dry-run] [-- --limit N]` — dry-run DB yazmaz.
 - `pnpm pipeline clean|embed|all`
 - `pnpm review` (src/review.ts — pilot inceleme aracı)
-- Planlı: `pnpm deepen --pattern <id> --months N` | `pnpm prune-deep-dive` | `pnpm counterpart --pattern <id>` (TR araması, yalnız review_status='interesting')
+- Planlı: `pnpm deepen -- --pattern <id> --months N` | `pnpm deepen prune` | `pnpm counterpart -- --pattern <id>` (TR araması, yalnız review_status='interesting')
+- `pnpm orchestrate` — günlük insansız koşum (pilot'un rutin girişi; Task Scheduler logon tetik)
 
 ## Mimari özet (ayrıntı: plan.md v3.2 — sözleşme değil hipotez)
 - Akış: arşiv/resmî API → raw_observations(JSONB, immutable) → observations(normalize+clean+embed) → centroid assignment(günlük) → BERTopic recluster(TETİK: atanmamış oran eşiği; overlap eşleşme → pattern_history, review_status taşınır) → review server(insan) → TR araması(YALNIZCA onaylı) → UI(ertelendi).

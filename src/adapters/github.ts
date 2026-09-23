@@ -1,9 +1,9 @@
-// GitHubAdapter — REST API (plan v3.1 FAZ 1)
-// - search/issues → şikâyet sinyali (SaaS/startup keyword'leri)
-// - search/repositories (created:>imleç) → launch sinyali
-// Catch-up: her ikisi de imleç tarihinden itibaren sayfalar.
+// GitHubAdapter — REST API (plan v3.2 FAZ 1: live katman; derin backfill GH Archive'dan)
+// CodeRabbit düzeltmeleri: sorgu başına / topic başına bağımsız created imleci
+// (ortak imleç diğer sorgu/topic'in ilerlemesini eziyordu → sessiz veri kaybı).
 import type { Adapter, CollectOptions, NormalizedObservation } from "../types.js";
 import { upsertRaw, upsertNormalized, contentHash, loadAdapterState, saveAdapterState } from "../db.js";
+import { BACKFILL_SINCE } from "../config.js";
 
 interface SearchIssue {
   id: number;
@@ -45,7 +45,6 @@ interface SearchResponse<T> {
 const API = "https://api.github.com";
 const PAGE_DELAY_MS = 2200; // search secondary limit ~30 req/dk → nazik 1/2.2s
 const MAX_PAGES = 10; // search 1000 sonuç tavanı → 10 sayfa x 100
-const BACKFILL_SINCE = "2020-01-01";
 
 /** Issue sinyal taraması — pain point niyetiyle (FAZ 1 tablosu). */
 const ISSUE_QUERIES = [
@@ -59,8 +58,16 @@ const ISSUE_QUERIES = [
 const REPO_TOPICS = ["saas", "startup", "no-code", "indie-hackers", "productivity"];
 
 interface GhCursor {
-  issueLastRun?: string;
-  repoCreatedSince: string; // YYYY-MM-DD imleci
+  issueSince: Record<string, string>; // sorgu → created_cursor (YYYY-MM-DD)
+  repoSince: Record<string, string>; // topic → created_cursor
+}
+
+function defaultCursors(): { issueSince: Record<string, string>; repoSince: Record<string, string> } {
+  const base = BACKFILL_SINCE.toISOString().slice(0, 10);
+  return {
+    issueSince: Object.fromEntries(ISSUE_QUERIES.map((q) => [q, base])),
+    repoSince: Object.fromEntries(REPO_TOPICS.map((t) => [t, base])),
+  };
 }
 
 function token(): string | undefined {
@@ -167,13 +174,15 @@ export class GitHubAdapter implements Adapter {
   name = "github";
 
   async collect(_since: Date | null, opts: CollectOptions): Promise<void> {
-    const store = makeStateStore<GhCursor>(opts.dryRun, () => ({ repoCreatedSince: BACKFILL_SINCE }));
+    const store = makeStateStore<GhCursor>(opts.dryRun, defaultCursors);
     const cursor = await store.load();
+    if (!cursor.issueSince || !cursor.repoSince) Object.assign(cursor, defaultCursors());
     let processed = 0;
 
-    // 1) Issue'lar — şikâyet/gap sinyali
+    // 1) Issue'lar — şikâyet/gap sinyali (sorgu başına bağımsız imleç)
     for (const q of ISSUE_QUERIES) {
-      console.log(`▶ GH issues: "${q}"`);
+      const qSince = cursor.issueSince[q] ?? BACKFILL_SINCE.toISOString().slice(0, 10);
+      console.log(`▶ GH issues: "${q}" created:>=${qSince}`);
       for (let page = 1; page <= MAX_PAGES; page++) {
         if (opts.limit !== undefined && processed >= opts.limit) {
           await store.save(cursor);
@@ -181,7 +190,7 @@ export class GitHubAdapter implements Adapter {
           return;
         }
         const params = new URLSearchParams({
-          q,
+          q: `${q} created:>=${qSince}`,
           sort: "created",
           order: "asc",
           per_page: "100",
@@ -202,18 +211,21 @@ export class GitHubAdapter implements Adapter {
             }
           }
           processed++;
-          cursor.issueLastRun = it.created_at;
           opts.onProgress?.({ processed, totalFetched: processed });
         }
+        // imleç: bu sorgunun son işlenenlerinin en son created'ı (asc sıra → son item)
+        const last = res.items.at(-1);
+        if (last) cursor.issueSince[q] = last.created_at.slice(0, 10);
         if (page * 100 >= res.total_count || res.items.length < 100) break;
         await sleep(PAGE_DELAY_MS);
       }
-      console.log(`  "${q}" tamam.`);
+      console.log(`  "${q}" tamam (cursor=${cursor.issueSince[q]}).`);
     }
 
-    // 2) Yeni repo'lar — launch sinyali (imleç: repoCreatedSince ilerler)
+    // 2) Yeni repo'lar — launch sinyali (topic başına bağımsız imleç)
     for (const topic of REPO_TOPICS) {
-      console.log(`▶ GH repo'lar: topic:${topic} created:>${cursor.repoCreatedSince}`);
+      const tSince = cursor.repoSince[topic] ?? BACKFILL_SINCE.toISOString().slice(0, 10);
+      console.log(`▶ GH repo'lar: topic:${topic} created:>=${tSince}`);
       for (let page = 1; page <= MAX_PAGES; page++) {
         if (opts.limit !== undefined && processed >= opts.limit) {
           await store.save(cursor);
@@ -221,7 +233,8 @@ export class GitHubAdapter implements Adapter {
           return;
         }
         const params = new URLSearchParams({
-          q: `topic:${topic} created:>${cursor.repoCreatedSince}`,
+          // inclusive created:>= — imleç o günkü kısmi sayfaları tekrar toplayabilsin (idempotent upsert)
+          q: `topic:${topic} created:>=${tSince}`,
           sort: "created",
           order: "asc",
           per_page: "100",
@@ -242,13 +255,14 @@ export class GitHubAdapter implements Adapter {
             }
           }
           processed++;
-          cursor.repoCreatedSince = r.created_at.slice(0, 10); // imleç ilerler
           opts.onProgress?.({ processed, totalFetched: processed });
         }
+        const last = res.items.at(-1);
+        if (last) cursor.repoSince[topic] = last.created_at.slice(0, 10);
         if (page * 100 >= res.total_count || res.items.length < 100) break;
         await sleep(PAGE_DELAY_MS);
       }
-      console.log(`  topic:${topic} tamam.`);
+      console.log(`  topic:${topic} tamam (cursor=${cursor.repoSince[topic]}).`);
     }
 
     await store.save(cursor);

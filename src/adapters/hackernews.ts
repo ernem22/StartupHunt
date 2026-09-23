@@ -1,8 +1,10 @@
-// HackerNewsAdapter — Algolia Search API (plan v3.1 FAZ 1)
-// Story + comment; `numericFilters=created_at_i>imleç` ile catch-up sayfalama.
-// Firebase API'si canlı akış için; bu adapter Algolia üzerinden hem story hem comment çeker.
+// HackerNewsAdapter — Algolia Search API (plan v3.2 FAZ 1)
+// Story + comment; **arama tarihi-sıralı** (search_by_date) ve **sorgu terimi başına ayrı
+// imleç** — relevance-sorted result üzerinden ortak imleç ilerlemek sayfa atlatabilir
+// (CodeRabbit review düzeltmesi). Catch-up: created_at_i mantığı korunur.
 import type { Adapter, CollectOptions, NormalizedObservation } from "../types.js";
 import { upsertRaw, upsertNormalized, contentHash, loadAdapterState, saveAdapterState } from "../db.js";
+import { BACKFILL_SINCE } from "../config.js";
 
 /** Dry-run'da DB yok — bellek içi state (test amacıyla yeterli). */
 function makeStateStore<T>(dryRun: boolean, initial: () => T) {
@@ -45,9 +47,8 @@ interface AlgoliaResponse {
   hitsPerPage: number;
 }
 
-const BASE = "https://hn.algolia.com/api/v1/search";
+const BASE = "https://hn.algolia.com/api/v1/search_by_date"; // tarih-sıralı (created desc)
 const PAGE_DELAY_MS = 700; // nazik ol — resmi limit yok ama tavan: nbPages=1000
-const BACKFILL_SINCE = Math.floor(new Date("2020-01-01T00:00:00Z").getTime() / 1000);
 
 /** Backfill süresi boyunca SaaS/startup ile ilgili anahtar kelimeler —
  *  HN'in tamamı değil, sinyal radarına hizmet eden dilim. */
@@ -62,7 +63,8 @@ const QUERY_TERMS = [
 ];
 
 interface HnCursor {
-  lastCreatedAt: number; // unix sn — en son işlenen created_at
+  /** sorgu terimi başına yüksek su işareti (unix sn) — ortak imleç yanlış ilerletirdi */
+  lastByTerm: Record<string, number>;
   doneBackfill: boolean;
 }
 
@@ -103,19 +105,23 @@ export class HackerNewsAdapter implements Adapter {
   name = "hackernews";
 
   async collect(_since: Date | null, opts: CollectOptions): Promise<void> {
-    const store = makeStateStore<HnCursor>(opts.dryRun, () => ({
-      lastCreatedAt: BACKFILL_SINCE,
+    const initial = () => ({
+      lastByTerm: Object.fromEntries(QUERY_TERMS.map((t) => [t, Math.floor(BACKFILL_SINCE.getTime() / 1000)])),
       doneBackfill: false,
-    }));
-    const cursor: HnCursor = await store.load();
+    });
+    const store = makeStateStore<HnCursor>(opts.dryRun, initial);
+    const cursor = await store.load();
+    if (!cursor.lastByTerm || typeof cursor.lastByTerm !== "object") {
+      cursor.lastByTerm = initial().lastByTerm;
+    }
 
     let processed = 0;
-    const sinceUnix = cursor.lastCreatedAt;
 
     for (const term of QUERY_TERMS) {
       let page = 0;
       let done = false;
-      console.log(`▶ HN "${term}" — created_at_i > ${sinceUnix}`);
+      const termSince = cursor.lastByTerm[term] ?? Math.floor(BACKFILL_SINCE.getTime() / 1000);
+      console.log(`▶ HN "${term}" — created_at_i > ${termSince}`);
 
       while (!done) {
         if (opts.limit !== undefined && processed >= opts.limit) {
@@ -127,7 +133,7 @@ export class HackerNewsAdapter implements Adapter {
         const params = new URLSearchParams({
           query: term,
           tags: "(story,comment)",
-          numericFilters: `created_at_i>${sinceUnix}`,
+          numericFilters: `created_at_i>${termSince}`,
           hitsPerPage: "100",
           page: String(page),
         });
@@ -142,13 +148,14 @@ export class HackerNewsAdapter implements Adapter {
           break;
         }
 
+        // search_by_date: desc sıra — sayfanın ilk hit'i en yeni; imleç = en yeni işlenen
+        const first = res.hits.at(0);
+        const firstUnix = first ? Math.floor(new Date(first.created_at).getTime() / 1000) : 0;
+        if (firstUnix > (cursor.lastByTerm[term] ?? 0)) cursor.lastByTerm[term] = firstUnix;
+
         for (const hit of res.hits) {
           const norm = toNormalized(hit);
           if (!norm) continue;
-
-          const createdAtUnix = Math.floor(new Date(hit.created_at).getTime() / 1000);
-          if (createdAtUnix > (cursor.lastCreatedAt ?? 0)) cursor.lastCreatedAt = createdAtUnix;
-
           if (!opts.dryRun) {
             await upsertRaw({ source: "hackernews", sourceId: hit.objectID, rawData: hit });
             try {
@@ -161,11 +168,13 @@ export class HackerNewsAdapter implements Adapter {
           opts.onProgress?.({ processed, totalFetched: processed });
         }
 
+        // capazo sayfa ilerlemesinden sonra imleç kaydet (kaybetmez catch-up)
+        await store.save(cursor);
         page++;
         if (page >= res.nbPages || res.hits.length === 0) done = true;
         await sleep(PAGE_DELAY_MS);
       }
-      console.log(`  "${term}" tamam.`);
+      console.log(`  "${term}" tamam (cursor=${cursor.lastByTerm[term]}).`);
     }
 
     cursor.doneBackfill = true;

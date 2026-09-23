@@ -8,8 +8,9 @@
     "collect": "tsx src/cli.ts collect",
     "collect:reddit-backfill": "tsx src/cli.ts collect reddit-backfill",
     "collect:reddit-incremental": "tsx src/cli.ts collect reddit-incremental",
-    "pipeline": "tsx src/pipeline-cli.ts",
-    "typecheck": "tsc --noEmit"
+      "pipeline": "tsx src/pipeline-cli.ts",
+      "orchestrate": "tsx src/orchestrator.ts",
+      "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "csv-parse": "^5.6.0",

@@ -4,6 +4,32 @@
 
 ---
 
+## 2026-09-23 — Oturum 8: orchestrator
+
+### 18) `src/orchestrator.ts` — insansız günlük koşum çalıştırıcısı (`pnpm orchestrate`)
+- Sabit sıra (plan FAZ 13 Çalıştırma modeli): compose up → pg sağlık (15s bekleme) → `collect` (all, imleçli) → `clean` → `embed` → `python -m cluster.assign` → recluster (TETİK) → counterpart kuyruğu
+- **Recluster tetik:** atanmamış embedded obs oranı eşiği (env `RECLUSTER_UNASSIGNED_RATIO`, başlangıç 0.05) + güvenlik ağı (`RECLUSTER_MAX_GAP_DAYS`, başlangıç 7) — takvim yok; karar SQL'den ölçülür ve loglanır
+- **Counterpart kuyruğu:** `review_status='interesting'` (`BU` = onay) + `counterpart_searches` kaydı yok → `pnpm counterpart --pattern <id>` sırayla (FAZ 14 onay-yalnız kuralı; komut kendisi sonraki branch'lerde — boş kuyrukta koşmaz)
+- Hata disiplini: çöken adım `logs/orchestrator.log`'a yazılır, sıradaki devam eder (catch-up ilkesi); tüm adımlar idempotent
+- typecheck temiz; **3060'a bekleme (tüm zincir):** docker compose komutu, pg sağlık, gerçek adım sırası, python çağrıları
+
+---
+
+## 2026-09-23 — Oturum 13: CodeRabbit bulguları (mevcut PR'ler güncellendi; yeni PR AÇILMADI)
+
+### Ortak taban (bu PR'ye eklendi — collect zincirinin çalıştırıcısı)
+- config 18 takvim ayı · cli `--` · HN search_by_date + terim-başı imleç · GH sorgu/topic-imleçleri · reddit-backfill sub-imleç + sayfa boyutu · incremental dry-run guard · compose loopback + TEI 86-1.8.2 · searxng default_lang · env URL'ler · KURULUM/API-RAPOR/AGENTS/plan dok düzeltmeleri
+
+### Süreç notu
+- **Yeni PR açmak yerine mevcut PR'ler güncellendi** (kulağa ihanet gibi gelen 8. PR kapatıldı ve silindi); ortak-taban fiksler bu PR'ye cherry-pick; PR-özel fiksler kendi branchlerine işlendi (#4 #5 #6 #7)
+
+### SKIP + gerekçe
+1. embed.ts 4xx terminal status (`embed_failed`) — status kontratına değer ekler; pilot-sonrası
+2. SearXNG unresponsive_engines parsiyelliği — v0.1 için overengineering
+3. settings.yml secret_key değişimi — loopback bind yeterli
+
+---
+
 ## 2026-09-21 — Oturum 5: grill oturumu — plan v3.2 kararları
 
 Grill oturumuyla v3.1'in hipotezleri tek tek sınandı; **plan.md → v3.2** güncellendi
