@@ -32,10 +32,10 @@ function logFile(msg: string): void {
 }
 
 async function step(name: string, cmd: string, args: string[]): Promise<boolean> {
-  console.log(`\n══ [${ts()}] ${name}: ${args.join(" ")}`);
-  logFile(`START ${name}`);
+  console.log(`\n══ [${ts()}] ${name}: ${cmd} ${args.join(" ")}`);
+  logFile(`START ${name}: ${cmd} ${args.join(" ")}`);
   try {
-    const { stdout } = await runcmd(args[0]!, args.slice(1), {
+    const { stdout } = await runcmd(cmd, args, {
       cwd: process.cwd(),
       shell: process.platform === "win32",
       timeout: 120 * 60 * 1000,
@@ -62,20 +62,23 @@ async function infrastructure(): Promise<boolean> {
     console.warn(`compose hata (zaten çalışıyor olabilir): ${(e as Error).message}`);
   }
   const pool = new pg.Pool({ connectionString: config.databaseUrl });
-  for (let i = 0; i < HEALTH_TIMEOUT_S; i++) {
-    try {
-      await pool.query("select 1");
-      console.log("pg ✓");
-      // TEI: 8080'de /health — ayakta olmadan embed koşamaz; o zaman da 'pipeline embed' kendisi durur.
-      return true;
-    } catch {
-      await new Promise((r) => setTimeout(r, 1000));
+  try {
+    for (let i = 0; i < HEALTH_TIMEOUT_S; i++) {
+      try {
+        await pool.query("select 1");
+        console.log("pg ✓");
+        // TEI: 8080'de /health — ayakta olmadan embed koşamaz; o zaman da 'pipeline embed' kendisi durur.
+        return true;
+      } catch {
+        await new Promise((r) => setTimeout(r, 1000));
+      }
     }
+    console.warn("pg ayağa kalkamadı — collect adımları yine de dener (DB olmayan çağrılar hata verir)");
+    logFile("WARN pg hazır değil");
+    return false;
+  } finally {
+    await pool.end().catch(() => {}); // her çıkış yolunda pool kapanır (CodeRabbit)
   }
-  await pool.end().catch(() => {});
-  console.warn("pg ayağa kalkamadı — collect adımları yine de dener (dry olmayan DB çağrıları hata verir)");
-  logFile("WARN pg hazır değil");
-  return false;
 }
 
 /** Recluster tetiği: atanmamış embedded oranı eşiği + güvenlik ağı (gün sayısı). */
@@ -84,7 +87,9 @@ async function reclusterNeeded(): Promise<boolean> {
   try {
     const r = await pool.query<{ total: string; unassigned: string; last_run: Date | null }>(
       `select
-         (select count(*) from observations where status='embedded' and embedding is not null)::text as total,
+          -- total: HDBSCAN noise işaretlileri dışla (bunlar bileşen olmayan obs olarak işlendi)
+         (select count(*) from observations
+           where status='embedded' and embedding is not null and status <> 'embedded_noise')::text as total,
          (select count(*) from observations o
             where o.status='embedded' and o.embedding is not null
               and not exists (select 1 from pattern_observations po where po.observation_id=o.id))::text as unassigned,
