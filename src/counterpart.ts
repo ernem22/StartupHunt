@@ -67,6 +67,7 @@ async function runForPattern(pool: pg.Pool, patternId: number, dryRun: boolean):
 
   const collected: NormalizedObservation[] = [];
   let searched = 0;
+  const searchRows: Array<{ q: string; resultCount: number; status: string }> = [];
   for (const q of queries) {
     searched++;
     // idempotentlik: bu sorgu daha önce done ise tekrar koşma
@@ -88,44 +89,57 @@ async function runForPattern(pool: pg.Pool, patternId: number, dryRun: boolean):
     }
     console.log(`  query "${q}" → ${results.length} sonuç`);
 
-    // sorgunun kaydi — idempotentlik anahtarı (fail de kaydedilir: sonraki koşum tekrar dener)
-    await pool.query(
-      `insert into counterpart_searches (pattern_id, query, engine, result_count, status)
-       values ($1, $2, 'searxng', $3, $4)`,
-      [patternId, q, status === "done" ? results.length : 0, status],
-    );
-
     for (const r of results.slice(0, 20)) {
       const text = `${r.title}\n\n${r.content}`.trim();
       if (text.length < 40) continue;
       collected.push({
         source: "searxng",
-        sourceId: shaUrl(r.url),
+        // pattern'e özel kimlik — aynı URL başka pattern'ın sorgusunda ayrı obs kabul edilir
+        // (CR: üst-zeroDown kaydı sollama yok; metadata.parent_pattern_id bilgisayı kaybetmemek şart)
+        sourceId: `searx:${patternId}:${shaUrl(r.url)}`,
         sourceUrl: r.url,
         title: r.title,
         text,
         author: null,
         observedAt: r.publishedDate ? new Date(r.publishedDate) : null,
-        language: "tr",
+        // dil: burada zorla 'tr' yazılmaz — searxng TR sorgusu EN sonuç da getirebilir;
+        // franc tespiti (tur/eng) upsertNormalized fallback'inde yapılır (CodeRabbit)
+        language: null,
         metadata: { parent_pattern_id: patternId, query: q, engine: r.engine ?? null },
       });
     }
 
+    // karar (deterministk): done + obs kayıtları ATOMİK OLMAYA ZORLANMASIN
+    // — önce obs yazılır, en son aramak kaydı tamamlanır (akma/yarım koşumda
+    // 'yanlış done' karından koruma — CodeRabbit)
+    searchRows.push({ q, resultCount: results.length, status });
+
     if (status !== "done") break;
   }
 
-  if (!dryRun) {
-    for (const o of collected) {
-      await upsertRaw({ source: o.source, sourceId: o.sourceId, rawData: o });
-      try {
-        await upsertNormalized({ ...o, contentHash: contentHash(o) });
-      } catch (err) {
-        if (!(err as Error).message.includes("duplicate key")) throw err;
-      }
+  if (dryRun) {
+    console.log(`  (dry-run) sorgu kaydı ve obs yazımI yapılmaz — q=${searched}, obs=${collected.length}`);
+    return;
+  }
+
+  // 1) önce obs'ler; 2) sonra sorgu kaydi — done işareti ancak verdikten sonra
+  for (const o of collected) {
+    await upsertRaw({ source: o.source, sourceId: o.sourceId, rawData: o });
+    try {
+      await upsertNormalized({ ...o, contentHash: contentHash(o) });
+    } catch (err) {
+      if (!(err as Error).message.includes("duplicate key")) throw err;
     }
   }
+  for (const s of searchRows) {
+    await pool.query(
+      `insert into counterpart_searches (pattern_id, query, engine, result_count, status)
+       values ($1, $2, 'searxng', $3, $4)`,
+      [patternId, s.q, s.resultCount, s.status],
+    );
+  }
   console.log(
-    `✔ pattern #${pat.id}: sorgu=${searched}; sonuç obs (dry-run'da yazılmaz): ${collected.length}`,
+    `✔ pattern #${pat.id}: sorgu=${searched}; obs=${collected.length}`,
   );
 }
 
