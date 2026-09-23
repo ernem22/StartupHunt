@@ -4,6 +4,17 @@
 
 ---
 
+## 2026-09-23 — Oturum 8: orchestrator
+
+### 18) `src/orchestrator.ts` — insansız günlük koşum çalıştırıcısı (`pnpm orchestrate`)
+- Sabit sıra (plan FAZ 13 Çalıştırma modeli): compose up → pg sağlık (15s bekleme) → `collect` (all, imleçli) → `clean` → `embed` → `python -m cluster.assign` → recluster (TETİK) → counterpart kuyruğu
+- **Recluster tetik:** atanmamış embedded obs oranı eşiği (env `RECLUSTER_UNASSIGNED_RATIO`, başlangıç 0.05) + güvenlik ağı (`RECLUSTER_MAX_GAP_DAYS`, başlangıç 7) — takvim yok; karar SQL'den ölçülür ve loglanır
+- **Counterpart kuyruğu:** `review_status='interesting'` (`BU` = onay) + `counterpart_searches` kaydı yok → `pnpm counterpart --pattern <id>` sırayla (FAZ 14 onay-yalnız kuralı; komut kendisi sonraki branch'lerde — boş kuyrukta koşmaz)
+- Hata disiplini: çöken adım `logs/orchestrator.log`'a yazılır, sıradaki devam eder (catch-up ilkesi); tüm adımlar idempotent
+- typecheck temiz; **3060'a bekleme (tüm zincir):** docker compose komutu, pg sağlık, gerçek adım sırası, python çağrıları
+
+---
+
 ## 2026-09-21 — Oturum 5: grill oturumu — plan v3.2 kararları
 
 Grill oturumuyla v3.1'in hipotezleri tek tek sınandı; **plan.md → v3.2** güncellendi
