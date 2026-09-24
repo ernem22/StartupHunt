@@ -4,8 +4,6 @@
 
 ---
 
----
-
 ## 2026-09-23 — Oturum 13: CodeRabbit bulguları (mevcut PR'ler güncellendi; yeni PR AÇILMADI)
 
 ### Ortak taban (PR #3 orchestrator'ına işlendi — collect zincirinin çalıştırıcısı)
@@ -32,31 +30,15 @@
 
 ---
 
-## 2026-09-23 — Oturum 8: orchestrator
+## 2026-09-23 — Oturum 11: recluster.py — pattern ID sürekliliği (fix/recluster-pattern-history branch, PR)
 
-### 18) `src/orchestrator.ts` — insansız günlük koşum çalıştırıcısı (`pnpm orchestrate`)
-- Sabit sıra (plan FAZ 13 Çalıştırma modeli): compose up → pg sağlık (15s bekleme) → `collect` (all, imleçli) → `clean` → `embed` → `python -m cluster.assign` → recluster (TETİK) → counterpart kuyruğu
-- **Recluster tetik:** atanmamış embedded obs oranı eşiği (env `RECLUSTER_UNASSIGNED_RATIO`, başlangıç 0.05) + güvenlik ağı (`RECLUSTER_MAX_GAP_DAYS`, başlangıç 7) — takvim yok; karar SQL'den ölçülür ve loglanır
-- **Counterpart kuyruğu:** `review_status='interesting'` (`BU` = onay) + `counterpart_searches` kaydı yok → `pnpm counterpart --pattern <id>` sırayla (FAZ 14 onay-yalnız kuralı)
-- Hata disiplini: çöken adım `logs/orchestrator.log`'a yazılır, sıradaki devam eder (catch-up ilkesi); tüm adımlar idempotent
-
----
-
-## 2026-09-23 — Oturum 6: branch+PR akışı başlatıldı + review server
-
-### 0) Süreç kararı
-- Geliştirme cihazı laptop (GPU/Docker yok) → build/typecheck/dry-run burada; DB-GPU testleri 3060'a bekleme işaretli
-- AGENTS.md yazıldı (agent referansı): ortam kısıtı, branch+PR akışı (`feat/*`,`fix/*`, base=main), ilkeler, komutlar, mimari özet
-
-### 16) Review server — `src/review.ts` (PR #1, feat/review-server)
-- `pnpm review` → `localhost:3001` (node:http, ~230 satır, framework yok)
-- pattern kartları: isim + description + keywords + **8 temsili obs** (centroid'e en yakın 5 `halfvec<=>` + en yeni 3 — sabit kural) + kaynak sayaçları + tarih aralığı
-- Aksiyon butonları doğrudan DB'ye: **BU→interesting (FAZ 14 TR tetiği)**, **junk→review_status='junk' + status='archived'** (silme yok, geri alınabilir), seen→seen
-- `pnpm typecheck` temiz; **DB testi bekler (3060)**: bağlantı, `halfvec<=>` davranışı, POST akışı
-
-### Sonraki adım
-- 3060'ta: compose up → şema → `collect` → `pipeline` → recluster → review server gerçek test
->>>>>>> origin/main
+### 21) `cluster/recluster.py` v0.2 — v3.2 karar işleme (py_compile ✓; DB testi 3060'ta)
+- **Düzeltme (kritik eski davranış):** `update patterns set status='archived'` → `'merged'` — insan junk ile recluster üstlenilmesi artık karışmaz (FAZ 12/13 durum ayrımı)
+- **pattern_history yazımı:** her eski aktif pattern için en yüksek ortak-obs oranlı yeni pattern'a eşleşme kaydı (SQL kesişim yerine bellekte set kesişimi — aynı matematik, ücretsiz debug); eşik OVERLAP_MIN=0.50
+- **review_status taşınma:** yalnızca matched (≥%50) + hedef halen `unreviewed` ise; `status='active'` birlikte set edilir. Deterministik: sabit old-id sırası, tek yönlü
+- timeline doldurma sorgusu korundu (obs'tan min/max) — FAZ 11 notuyla uyumlu
+- Fark edildi ve giderildi: eski koddaki `values ($1,...)` placeholder kullanımı psycopg3'te çalışmazdı (%s gerekir) — ilk gerçek run öncesi vitese kondu
+- 3060'a bekleme: gerçek DB'de çalışma, overlap sayıları, transfer davranışı
 
 ---
 
@@ -138,19 +120,6 @@ Ek sınırlama belgelendi: HN/GitHub live adapter'lar **sorgu-seeded** (örtül�
 - `src/adapters/reddit-backfill.ts` yorumu "2020+" → "son 18 ay"
 
 Sonuç: çelişki kalmadı; sistem bir bütün olarak tutarlı. Sıradaki gerçek adım: pilot koşumu (3060 kurulumu).
-
----
-
-## 2026-09-23 — Oturum 7: GH Archive backfill adapter
-
-### 17) `src/adapters/gharchive.ts` (feat/gharchive-backfill branch, PR)
-- Kaynak: `data.gharchive.org/{YYYY-MM-DD}-{H}.json.gz` saatlik dump (~139MB/dosya); 2011+için plan ama backfill tabanı = BACKFILL_SINCE (18 ay)
-- Kapsam deterministik, keyword'süz: `IssuesEvent(action=opened)` (şikâyet/gap) + `CreateEvent(ref_type=repository)` (launch); push/watch/fork gibi metinsizler obs değil
-- **Streaming parse** (fetch web stream → gunzip → readline): limit dolunca indirme kesilir, dosyanın tamamı inmemiş olur
-- İmleç: saat bazlı; dosya ortasında limit dolarsa imleç İLERLEMEZ → kalan satırlar sonraki koşumda (idempotent upsert güvenli); 404/hata catch-up uyumlu (yeniden dener)
-- cli: `gharchive` collect all dahil; **dry-run CANLI TEST ✓ (bu cihazda, DB'siz)**: 946 satır stream, 50 obs çıkarıldı, imleç 16.saatte kaldı (17. dosyanın kalanı sonraki koşumda)
-- typecheck temiz; **3060'a bekleme:** DB yazım testi (upsertRaw + upsertNormalized unique davranışı), gerçek event/obs oranı ölçümü
-- Not: pilot kapsam dışı (pilot = 10 sub + HN); pilot sağlandıktan sonra devreye alınır
 
 ---
 
