@@ -111,7 +111,8 @@ export class RedditIncrementalAdapter implements Adapter {
         if (!row.id || (!row.title && !row.selftext)) continue;
         if (opts.limit !== undefined && processed >= opts.limit) {
           console.log(`oturum limiti (${opts.limit}) doldu — dosya yarıda: ${rel}`);
-          saveState(state);
+          // dry-run state KAYDETMEMEZ — işlenmemiş satırlar sonraki gerçek koşumda (CodeRabbit)
+          if (!opts.dryRun) saveState(state);
           return;
         }
 

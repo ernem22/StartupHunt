@@ -5,15 +5,15 @@ use_default_settings: true
 
 server:
   base_url: false
-  secret_key: "ultra-secret-key-change-me"  # üretimde değiştir
-  limiter: false   # lokal; tek istemci kendimiziz
+  secret_key: "ultra-secret-key-change-me"   # 3060 kurulumunda .env'e SEARXNG_SECRET girilerek değiştirilir (port 127.0.0.1'e bağlı → lokal dışına kapalı; CodeRabbit)
+  limiter: false   # lokal; tek istemci kendimiziz (public exposure YASAK)
   image_proxy: true
 
 search:
   formats:
     - html
     - json          # FAZ 14 için şart
-  language: tr
+  default_lang: tr   # CodeRabbit: bu alan 'language' değil (TR varsayılan arama dili)
 
 # Upstream motorlarda bot koruması toleranslı olanlar öncelikli (plan v3.1, Açık Soru 5)
 engines:
