@@ -4,6 +4,8 @@
 
 ---
 
+---
+
 ## 2026-09-23 — Oturum 13: CodeRabbit bulguları (mevcut PR'ler güncellendi; yeni PR AÇILMADI)
 
 ### Ortak taban (PR #3 orchestrator'ına işlendi — collect zincirinin çalıştırıcısı)
@@ -18,6 +20,18 @@
 1. embed.ts 4xx terminal status (`embed_failed`) — status kontratına değer ekler; pilot-sonrası
 2. SearXNG unresponsive_engines parsiyelliği — v0.1 için overengineering
 3. settings.yml secret_key değişimi — loopback bind yeterli
+
+---
+
+## 2026-09-23 — Oturum 9: counterpart — TR karşılık araması komutu
+
+### 19) `src/counterpart.ts` — `pnpm counterpart -- --pattern <id> [-- --dry-run]`
+- **Koşul kilitli:** pattern `review_status='interesting'` + `status='active'` değilse sessiz çıkar (FAZ 14 onay-yalnız kuralı)
+- Kurallı TR sorgu üretimi (deterministik): top-5 keywords + pattern adı; LLM TR çevirisi v0.1'de YOK (FAZ 14 "kurallı + gerektiğinde" — kurallı yeter)
+- SearXNG `format=json&language=tr` → ilk 20 sonuç → observations (`source='searxng'`, `metadata.parent_pattern_id`); <40 karakter atlanır
+- **Idempotentlik:** her sorgu `counterpart_searches`'e kaydedilir; done olan koşmaz, error sonraki koşumda yeniden dener; sourceId = URL FNV-1a + pattern kimliği ile (aynı URL başka pattern'da ayrı obs kabul edilir)
+- SMOKE (bu cihaz): `--dry-run` → arg parse → pool çağrısına kadar akış; DB yok (ECONNREFUSED) düzgün duruş ✓ — DB/SearXNG zinciri 3060'ta
+- Not: pilot sırasında koşmaz (onaylı pattern yok); FAZ 14 ön koşulu TR/EN mini testi geçilmeden pasif kalır
 
 ---
 
@@ -39,6 +53,7 @@
 - timeline doldurma sorgusu korundu (obs'tan min/max) — FAZ 11 notuyla uyumlu
 - Fark edildi ve giderildi: eski koddaki `values ($1,...)` placeholder kullanımı psycopg3'te çalışmazdı (%s gerekir) — ilk gerçek run öncesi vitese kondu
 - 3060'a bekleme: gerçek DB'de çalışma, overlap sayıları, transfer davranışı
+>>>>>>> origin/main
 
 ---
 

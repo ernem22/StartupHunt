@@ -11,6 +11,7 @@
     "pipeline": "tsx src/pipeline-cli.ts",
     "orchestrate": "tsx src/orchestrator.ts",
     "review": "tsx src/review.ts",
+    "counterpart": "tsx src/counterpart.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
