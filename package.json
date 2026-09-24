@@ -9,6 +9,8 @@
     "collect:reddit-backfill": "tsx src/cli.ts collect reddit-backfill",
     "collect:reddit-incremental": "tsx src/cli.ts collect reddit-incremental",
     "pipeline": "tsx src/pipeline-cli.ts",
+    "orchestrate": "tsx src/orchestrator.ts",
+    "review": "tsx src/review.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

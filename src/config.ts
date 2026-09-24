@@ -34,8 +34,10 @@ export const SUBREDDITS = [
   "SideProject",
 ] as const;
 
-/** Backfill tabanı — v3.2 karar: orta-yakın güncellik, son 18 ay.
+/** Backfill tabanı — v3.2 karar: orta-yakın güncellik, son 18 TAKVİM ayı (30-gün çarpımı değil).
  * Daha derin geçmiş yalnızca "olasılık destek sorgusu" ile geçici toplanır (bkz. plan.md PILOT). */
-export const BACKFILL_SINCE = new Date(
-  Date.now() - 18 * 30 * 24 * 60 * 60 * 1000,
-);
+export const BACKFILL_SINCE = (() => {
+  const d = new Date();
+  d.setUTCMonth(d.getUTCMonth() - 18);
+  return d;
+})();
