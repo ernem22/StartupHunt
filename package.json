@@ -12,6 +12,7 @@
     "orchestrate": "tsx src/orchestrator.ts",
     "review": "tsx src/review.ts",
     "counterpart": "tsx src/counterpart.ts",
+    "deepen": "tsx src/deepen.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
