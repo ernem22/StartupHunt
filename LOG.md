@@ -7,7 +7,18 @@
 
 ---
 
-## 2026-09-23 — Oturum 13: CodeRabbit bulguları (mevcut PR'ler güncellendi; yeni PR AÇILMADI)
+## 2026-09-23 — Oturum 14: merge akışı tamam — 7/7 PR MERGED
+
+- Kök neden düzeltildi: local main push edilmemişti + remote'ta eski Python "phase2" proto baseline (7fa5aac) vardı; bu tüm PR'leri unmergeable yapıyordu
+- Alias meanings: phase2 proto (main.py/collectors/ vb.) legacy korundu — plan v3.2 mimaride yer tutmaz, bakım almaz; ileride silme kararı için bekler
+- Merge sırası: #3, #2, #1 (gh normal) → #7, #6, #4, #5 (her biri git merge origin/main + LOG/package.json deterministik union çözümü; PowerShell-with-raw mojibake kural ihlali iki kez yapıldı — kural yeniden uyarı: LOG gibi Türkçe dosyalarda yalnız edit aracı)
+- Tüm merge sonrası pnpm typecheck temiz; branch+PR akışı önde senkron şekilde main sonrası lock'landı
+
+### Birlikte çalışma özet durumu
+- `pnpm typecheck` temiz; pilot zinciri kod hazır; `pnpm orchestrate` (collect→clean→embed→assign→recluster→counterpart kuyruğu) artık tek komutla koşum
+- Geri kalan tek gereklilik: **3060 PC kurulumu → `pnpm orchestrate` ilk koşum → review server + "BU" işaretlemesi → TR/EN mini testi** — çıktı pilot sonuçları LOG'a yazılır
+
+---
 
 ### Ortak taban (PR #3 orchestrator'ına işlendi — collect zincirinin çalıştırıcısı)
 - config 18 takvim ayı · cli `--` · HN search_by_date + terim-başı imleç · GH sorgu/topic-imleçleri · reddit-backfill sub-imleç + sayfa boyutu · incremental dry-run guard · compose loopback + TEI 86-1.8.2 · searxng default_lang · env URL'ler · KURULUM/API-RAPOR/AGENTS/plan dok düzeltmeleri
