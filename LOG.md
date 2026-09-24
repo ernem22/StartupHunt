@@ -4,6 +4,32 @@
 
 ---
 
+## 2026-09-23 — Oturum 13: CodeRabbit bulguları (mevcut PR'ler güncellendi; yeni PR AÇILMADI)
+
+### Ortak taban (PR #3 orchestrator'ına işlendi — collect zincirinin çalıştırıcısı)
+- config 18 takvim ayı · cli `--` · HN search_by_date + terim-başı imleç · GH sorgu/topic-imleçleri · reddit-backfill sub-imleç + sayfa boyutu · incremental dry-run guard · compose loopback + TEI 86-1.8.2 · searxng default_lang · env URL'ler · KURULUM/API-RAPOR/AGENTS/plan dok düzeltmeleri
+- Round2: schema MA4 range-28-gün penceresi; KURULUM çift cp; reddit-backfill `after+1s` iptali; (PR#6) recluster embedded_noise yeniden değerlendirme + min_df sabit 1; (PR#7) LOG garbled fix
+
+### Süreç notu
+- **Yeni PR açmak yerine mevcut PR'ler güncellendi** (geçici 8. PR kapatılıp silindi); PR-özel fiksler kendi branchlarına işlendi (#4 #5 #6 #7)
+- Merge akışı: main push + remote'taki eski Python "phase2" baseline merge (legacy korundu) → PR #3, #2 birleşti → kalan PR'ler sırayla rebase+merge
+
+### SKIP + gerekçe
+1. embed.ts 4xx terminal status (`embed_failed`) — status kontratına değer ekler; pilot-sonrası
+2. SearXNG unresponsive_engines parsiyelliği — v0.1 için overengineering
+3. settings.yml secret_key değişimi — loopback bind yeterli
+
+---
+
+## 2026-09-23 — Oturum 12: assign.py — psycopg placeholder fix (fix/assign-psycopg-placeholders branch, PR)
+
+### 22) `cluster/assign.py` — `$1`-tarzı placeholder'lar psycopg3'te çalışmıyor → `%s`
+- Değiştirilen noktalar: pattern_observations insert ($1,$2,$3) ve observation_count/last_seen update ($1 ×3)
+- python -m py_compile temiz; DB davranışı 3060'a bekleme
+- Aynı hata sınıfının numaralandırıcısı: recluster.py PR #6'da giderildi; assign.py bu PR'da — artık $placeholder kalmadı (grep doğrulandı)
+
+---
+
 ## 2026-09-23 — Oturum 11: recluster.py — pattern ID sürekliliği (fix/recluster-pattern-history branch, PR)
 
 ### 21) `cluster/recluster.py` v0.2 — v3.2 karar işleme (py_compile ✓; DB testi 3060'ta)

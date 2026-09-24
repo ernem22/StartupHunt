@@ -553,7 +553,7 @@ create index on pattern_observations (observation_id);
 
 * **~50k obs**: config'teki 10 subreddit + HN (kural/eşik yok — seçim kuralı kendisi filtre olur ve sinyal kaybettirir; liste elle genişletilebilir config'dir). Bütçe eşit bölünmez: küçük sub'lar tümünü verir, 50k dolana kadar zaman sırasıyla doldurulur.
 * **Güncellik — orta-yakın pencere (v3.2 karar):** backfill tabanı **son 18 ay**. "Yıl" ölçeğinde bayat data gerekmez; trend tespiti için de 18 ay taban çizgisi yeterli (±2σ şeridi kalibrasyonu).
-* **Geçmiş destek modu (istisnai):** yakın zamanda bir "olasılık" bulunup "yeterlilik" eksik görülürse, ek bir yapı ile daha derin geçmişten data toplanır — bu data **geçici** tutulur (olasılığı desteklemek amaçlı, kalıcı corpus'a karışmaz). Uygulama: hazır komut `pnpm deepen --pattern <id> --months N` (tetikleme: elle veya review server butonundan — ikisi de aynı komutu çağırır). Depolama: aynı `observations` tablosu + `metadata.deep_dive_for=pattern_id`; temizlik: `pnpm prune-deep-dive`. Sorgu: Arctic Shift keyword araması pattern keywords'ü üzerinden.
+* **Geçmiş destek modu (istisnai):** yakın zamanda bir "olasılık" bulunup "yeterlilik" eksik görülürse, ek bir yapı ile daha derin geçmişten data toplanır — bu data **geçici** tutulur (olasılığı desteklemek amaçlı, kalıcı corpus'a karışmaz). Uygulama: hazır komut `pnpm deepen --pattern <id> --months N` (tetikleme: elle veya review server butonundan — ikisi de aynı komutu çağırır). Depolama: aynı `observations` tablosu + `metadata.deep_dive_for=pattern_id`; temizlik: `pnpm deepen prune`. Sorgu: Arctic Shift keyword araması pattern keywords'ü üzerinden.
 * Tek kaynağa inmemek için: "aynı pain point'in farklı kaynaklarda tekrarı" davranışı projenin merkezi iddiasıdır.
 
 ## Başarı kriteri: gerçek pain point yakalama (insan denetimi)
@@ -666,7 +666,7 @@ Detaylı gerekçeler "Proje İlkeleri" bölümünde; FAZ metinlerine gömüldü:
 1. **Reddit scraper iptal** → canlı uç resmî Reddit API (OAuth); gap + geçmiş Arctic Shift. Proxy/ban/CSV karmaşası ortadan kalktı, tek Reddit bağımlılık ailesi.
 2. **Backfill arşivlere taşındı:** GitHub → GH Archive; Stack Exchange → SE Data Dump. Backfill = arşiv, live = resmî API iki katmanlı adapter mimarisi. Tek key'li kaynak: YouTube (ücretsiz).
 3. **Signal typing yeniden tasarlandı:** kurallı lexicon elendi → **prototip vektör** yöntemi (deterministik, insansız, veri-ekleyerek self-improvement). Pilot'tan önce yazılmaz.
-4. **Filtre/skor/ağırlık yok** — sistem kanıt sunar, karar verir; FAZ 12'ye review_status + deterministik temsili seçim (en yakın 5 + en yeni 3) eklendi.
+4. **Filtre/skor/ağırlık yok** — sistem kanıt sunar, karar VERMEZ (ilke 1); FAZ 12'ye review_status + deterministik temsili seçim (en yakın 5 + en yeni 3) eklendi.
 5. **Recluster tetik bazlı:** haftalık takvim → atanmamış observation oranı eşiği + güvenlik ağı.
 6. **Çalıştırma modeli:** Task Scheduler logon tetiği + catch-up imleçleri; compose up + sağlık kontrolü içeren orchestrator script.
 7. **Pilot bölümü eklendi:** 50k obs (10 sub + HN, 18 ay taban), başarı kriteri = insan denetiminde gerçek pain point yakalama; pilot raw cluster ile koşar; inceleme minimal review server ile.

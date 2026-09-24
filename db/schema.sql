@@ -133,8 +133,11 @@ with weekly as (
 select pattern_id,
        week,
        cnt,
-       avg(cnt) over (
-         partition by pattern_id
-         order by week rows between 3 preceding and current row
-       ) as ma4
+      avg(cnt) over (
+        partition by pattern_id
+        -- CodeRabbit fix: 'rows between' boş-haftaları düz sırada sayar (eksik hafta
+        -- lost). RANGE takvim aralığı kullanmalı (4 haftalık pencere, zero-filled olmasa da
+        -- time-sayısı bursun sönükted):
+        order by week range between interval '28 days' preceding and current row
+      ) as ma4
 from weekly;

@@ -1,4 +1,4 @@
-# FAZ 13 — SIK güncelleme: centroid assignment worker (plan v3.1)
+# FAZ 13 — SIK güncelleme: centroid assignment worker (plan v3.2)
 # Yeni embedded observation'ları UMAP/HDBSCAN ÇALIŞTIRMADAN mevcut pattern
 # centroid'lerine cosine similarity ile atar; eşik altındaysa atama yok (sıradaki
 # recluster'ı bekler). run_kind='centroid'.
@@ -7,12 +7,17 @@
 # Eşik: 0.55 — pilot veriyle kalibre edilecek (TR/EN çift testi sonrası).
 
 import json
-import sys
+import os
 
 import numpy as np
 import psycopg
+from dotenv import load_dotenv
 
-DB_URL = "postgresql://startuphunt:startuphunt@localhost:5432/startuphunt"
+load_dotenv()
+DB_URL = os.environ.get(
+    "DATABASE_URL",
+    "postgresql://startuphunt:startuphunt@localhost:5432/startuphunt",
+)
 SIMILARITY_THRESHOLD = 0.55
 
 
@@ -41,8 +46,18 @@ def main():
                 select o.id, o.embedding::text
                 from observations o
                 where o.status = 'embedded' and o.embedding is not null
+                  -- 'embedded_noise' işaretliler yeniden atanmaz (recluster'ın kararına saygı)
+                  and o.status <> 'embedded_noise'
+                  -- deep_dive_for GEÇİCİ obs cluster'a giremez (plan: geçici corpus)
+                  and not (o.metadata ? 'deep_dive_for')
+                  -- CodeRabbit: sadece AKTİF pattern link'i "atanmış" sayar —
+                  -- yalnızca archived/merged linki olan obs yeniden atanabilir
                   and not exists (
-                    select 1 from pattern_observations po where po.observation_id = o.id
+                    select 1
+                    from pattern_observations po
+                    join patterns p on p.id = po.pattern_id
+                    where po.observation_id = o.id
+                      and p.status = 'active'
                   )
                 """
             )
@@ -72,7 +87,7 @@ def main():
                     cur.execute(
                         """
                         insert into pattern_observations (pattern_id, observation_id, similarity, run_kind)
-                        values ($1, $2, $3, 'centroid')
+                        values (%s, %s, %s, 'centroid')
                         on conflict do nothing
                         """,
                         (pid, obs_id, float(sims[i][j])),
@@ -85,17 +100,17 @@ def main():
                 cur.execute(
                     """
                     update patterns
-                       set observation_count = (
-                             select count(*) from pattern_observations where pattern_id = $1
-                           ),
-                           last_seen = (
-                             select max(o.observed_at) from pattern_observations po
-                             join observations o on o.id = po.observation_id
-                             where po.pattern_id = $1
-                           )
-                     where id = $1
+                     set observation_count = (
+                          select count(*) from pattern_observations where pattern_id = %s
+                       ),
+                       last_seen = (
+                         select max(o.observed_at) from pattern_observations po
+                         join observations o on o.id = po.observation_id
+                         where po.pattern_id = %s
+                       )
+                     where id = %s
                     """,
-                    (pid,),
+                    (pid, pid, pid),
                 )
         conn.commit()
 
