@@ -4,6 +4,7 @@ import { RedditBackfillAdapter } from "./adapters/reddit-backfill.js";
 import { RedditIncrementalAdapter } from "./adapters/reddit-incremental.js";
 import { HackerNewsAdapter } from "./adapters/hackernews.js";
 import { GitHubAdapter } from "./adapters/github.js";
+import { GhArchiveAdapter } from "./adapters/gharchive.js";
 import { StackExchangeAdapter } from "./adapters/stackexchange.js";
 import { YouTubeAdapter } from "./adapters/youtube.js";
 import type { Adapter, CollectOptions } from "./types.js";
@@ -12,6 +13,7 @@ const ADAPTERS: Record<string, () => Adapter> = {
   "reddit-backfill": () => new RedditBackfillAdapter(),
   hackernews: () => new HackerNewsAdapter(),
   github: () => new GitHubAdapter(),
+  gharchive: () => new GhArchiveAdapter(),
   stackexchange: () => new StackExchangeAdapter(),
   youtube: () => new YouTubeAdapter(),
 };
@@ -28,7 +30,8 @@ function parseArgs(argv: string[]) {
   const opts: CollectOptions = { dryRun: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]!;
-    if (a === "--dry-run") opts.dryRun = true;
+    if (a === "--") continue; // pnpm'in forward ayırıcıyı pozisyonel yapma (docs: collect -- --dry-run)
+    else if (a === "--dry-run") opts.dryRun = true;
     else if (a === "--limit") opts.limit = Number(argv[++i]);
     else positional.push(a);
   }
