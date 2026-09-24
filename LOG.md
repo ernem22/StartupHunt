@@ -4,6 +4,8 @@
 
 ---
 
+---
+
 ## 2026-09-23 — Oturum 13: CodeRabbit bulguları (mevcut PR'ler güncellendi; yeni PR AÇILMADI)
 
 ### Ortak taban (PR #3 orchestrator'ına işlendi — collect zincirinin çalıştırıcısı)
@@ -18,6 +20,15 @@
 1. embed.ts 4xx terminal status (`embed_failed`) — status kontratına değer ekler; pilot-sonrası
 2. SearXNG unresponsive_engines parsiyelliği — v0.1 için overengineering
 3. settings.yml secret_key değişimi — loopback bind yeterli
+
+---
+
+## 2026-09-23 — Oturum 12: assign.py — psycopg placeholder fix (fix/assign-psycopg-placeholders branch, PR)
+
+### 22) `cluster/assign.py` — `$1`-tarzı placeholder'lar psycopg3'te çalışmıyor → `%s`
+- Değiştirilen noktalar: pattern_observations insert ($1,$2,$3) ve observation_count/last_seen update ($1 ×3)
+- python -m py_compile temiz; DB davranışı 3060'a bekleme
+- Aynı hata sınıfının numaralandırıcısı: recluster.py PR #6'da giderildi; assign.py bu PR'da — artık $placeholder kalmadı (grep doğrulandı)
 
 ---
 
@@ -45,6 +56,7 @@
 
 ### Sonraki adım
 - 3060'ta: compose up → şema → `collect` → `pipeline` → recluster → review server gerçek test
+>>>>>>> origin/main
 
 ---
 

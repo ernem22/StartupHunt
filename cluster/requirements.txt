@@ -4,3 +4,4 @@
 bertopic>=0.16.4
 psycopg[binary]>=3.2
 numpy>=1.26
+python-dotenv>=1.0
