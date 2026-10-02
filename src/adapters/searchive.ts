@@ -48,26 +48,37 @@ interface SeCursor {
   lastId: Record<string, number>; // site → son işlenen Posts.Id
 }
 
+/** HTML etiketlerini söker; entity'ler parseRow'da önceden çözülmüş olur. */
 function stripHtml(s: string): string {
   return s
     .replace(/<[^>]+>/g, " ")
-    .replace(/&quot;/g, '"')
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
     .replace(/\s+/g, " ")
     .trim();
 }
 
+/** XML attribute entity'lerini çözer: &#xA; &#39; &quot; &amp; &lt; &gt; &apos; */
+function decodeXml(s: string): string {
+  return s
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(parseInt(d, 10)))
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+}
+
+/** Tek <row .../> bloğunu attribute map'ine çevirir (değerler decode'lu). */
 function parseRow(line: string): Record<string, string> | null {
   if (!line.includes("<row ")) return null;
   const attrs: Record<string, string> = {};
   const re = /(\w+)="((?:[^"\\]|\\.)*)"/g;
   let m: RegExpExecArray | null;
-  while ((m = re.exec(line)) !== null) attrs[m[1]!] = m[2]!;
+  while ((m = re.exec(line)) !== null) attrs[m[1]!] = decodeXml(m[2]!);
   return attrs.Id ? attrs : null;
 }
 
+/** SE soru satırını normalize observation'a çevirir (PostTypeId=1 + Title zorunlu). */
 function toNormalized(site: string, a: Record<string, string>): NormalizedObservation | null {
   if (a["PostTypeId"] !== "1") return null; // yalnız soru
   const title = (a["Title"] ?? "").trim();
@@ -96,6 +107,7 @@ function toNormalized(site: string, a: Record<string, string>): NormalizedObserv
   };
 }
 
+/** Site dump'unu indirir (yoksa); yarım indirme .part dosyasında kalır, rename atomiktir. */
 async function ensureDump(site: string): Promise<string> {
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
   const file = path.join(DATA_DIR, `${site}.7z`);
@@ -104,30 +116,36 @@ async function ensureDump(site: string): Promise<string> {
     return file;
   }
   console.log(`▼ ${site}.7z indiriliyor...`);
-  let res: Response;
+  const part = `${file}.part`;
   try {
-    res = await fetch(`${DUMP_BASE}/${site}.7z`, { signal: AbortSignal.timeout(600_000) });
+    const res = await fetch(`${DUMP_BASE}/${site}.7z`, { signal: AbortSignal.timeout(600_000) });
+    if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`);
+    const ws = fs.createWriteStream(part);
+    await res.body.pipeTo(
+      new WritableStream({
+        write: (c) => new Promise<void>((ok, bad) => ws.write(c, (e) => (e ? bad(e) : ok()))),
+        close: () => new Promise<void>((ok) => ws.end(ok)),
+      }),
+    );
+    fs.renameSync(part, file); // atomik: yarım dosya asla geçerli sayılmaz
   } catch (e) {
-    if (fs.existsSync(file)) fs.unlinkSync(file); // yarım dosya kalmasın — sonraki koşum baştan
+    if (fs.existsSync(part)) fs.unlinkSync(part);
     throw e;
   }
-  if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`);
-  const ws = fs.createWriteStream(file);
-  await res.body.pipeTo(
-    new WritableStream({
-      write: (c) => new Promise<void>((ok, bad) => ws.write(c, (e) => (e ? bad(e) : ok()))),
-      close: () => new Promise<void>((ok) => ws.end(ok)),
-    }),
-  );
   return file;
 }
 
 export class SeArchiveAdapter implements Adapter {
   name = "searchive";
 
-  async collect(_since: Date | null, opts: CollectOptions): Promise<void> {
+  /** SE dump backfill koşusu: site → Posts.xml stream → soru obs'leri + site imleci. */
+  async collect(since: Date | null, opts: CollectOptions): Promise<void> {
     const store = makeStateStore<SeCursor>(opts.dryRun, () => ({ lastId: {} }));
     const cursor = await store.load();
+    // since = catch-up sınırı (Adapter kontratı): verilen tarihten öncesi atlanır;
+    // config/test tabanıyla birleşir — büyük olan kazanır
+    const baseMin = process.env.SE_MIN_DATE ? new Date(process.env.SE_MIN_DATE) : BACKFILL_SINCE;
+    const minDate = since && since > baseMin ? since : baseMin;
     let processed = 0;
 
     for (const site of SITES) {
@@ -138,48 +156,61 @@ export class SeArchiveAdapter implements Adapter {
       const seven = spawn(SEVEN_ZIP, ["x", "-so", "-bd", file, "Posts.xml"], {
         stdio: ["ignore", "pipe", "pipe"],
       });
+      // 7z hatası sessiz geçilemez: nonzero exit / spawn error → site atlanır, imleç İLERLEMEZ
+      const sevenDone = new Promise<void>((ok, bad) => {
+        seven.on("error", (e) => bad(e));
+        seven.on("close", (code, signal) => {
+          if (code !== 0 && signal !== "SIGTERM" && signal !== "SIGKILL") {
+            bad(new Error(`7z exit=${code}`));
+          } else ok();
+        });
+      });
       const rl = createInterface({ input: seven.stdout!, crlfDelay: Infinity });
       let maxId = seenFrom;
       let rows = 0;
       // Posts.xml: Body içindeki newline'lar satırı böler — "/>" görene kadar biriktir
       let buf = "";
-      for await (const line of rl) {
-        buf += line;
-        if (!buf.includes("/>")) continue;
-        const row = buf;
-        buf = "";
-        const a = parseRow(row);
-        if (!a) continue;
-        const id = Number(a["Id"]);
-        if (id <= seenFrom) continue; // snapshot re-parse: idempotent, hızlı geç
-        rows++;
-        const norm = toNormalized(site, a);
-        if (id > maxId) maxId = id;
-        if (!norm) continue;
-        // BACKFILL_SINCE öncesi bayat sorular v0.1'de atlanır (18 ay penceresi).
-        // Test override: SE_MIN_DATE=2020-01-01 (yalnız dry-run doğrulama için)
-        const minDate = process.env.SE_MIN_DATE ? new Date(process.env.SE_MIN_DATE) : BACKFILL_SINCE;
-        if (norm.observedAt && norm.observedAt < minDate) continue;
-        if (opts.limit !== undefined && processed >= opts.limit) {
-          console.log(`oturum limiti (${opts.limit}) doldu — imleç ${site}:${maxId}'de kaldı`);
-          cursor.lastId[site] = maxId;
-          await store.save(cursor);
-          seven.kill();
-          return;
-        }
-        if (!opts.dryRun) {
-          await upsertRaw({ source: "stackexchange", sourceId: norm.sourceId, rawData: a });
-          try {
-            await upsertNormalized({ ...norm, contentHash: contentHash(norm) });
-          } catch (err) {
-            if (!(err as Error).message.includes("duplicate key")) throw err;
+      try {
+        for await (const line of rl) {
+          buf += line;
+          if (!buf.includes("/>")) continue;
+          const row = buf;
+          buf = "";
+          const a = parseRow(row);
+          if (!a) continue;
+          const id = Number(a["Id"]);
+          if (id <= seenFrom) continue; // snapshot re-parse: idempotent, hızlı geç
+          rows++;
+          const norm = toNormalized(site, a);
+          // soru-değil / tarih-dışı satırlar da imleci ilerletir (tekrar parse edilmez)
+          if (id > maxId) maxId = id;
+          if (!norm) continue;
+          if (norm.observedAt && norm.observedAt < minDate) continue;
+          if (opts.limit !== undefined && processed >= opts.limit) {
+            // limit: BU soru işlenmedi → imleç bu sorunun ÖNCESİNDE kalır (kayıp yok)
+            const resumeFrom = maxId > id ? maxId : id - 1;
+            console.log(`oturum limiti (${opts.limit}) doldu — imleç ${site}:${resumeFrom}'de kaldı`);
+            cursor.lastId[site] = resumeFrom;
+            await store.save(cursor);
+            seven.kill();
+            return;
           }
+          if (!opts.dryRun) {
+            await upsertRaw({ source: "stackexchange", sourceId: norm.sourceId, rawData: a });
+            try {
+              await upsertNormalized({ ...norm, contentHash: contentHash(norm) });
+            } catch (err) {
+              if (!(err as Error).message.includes("duplicate key")) throw err;
+            }
+          }
+          processed++;
+          opts.onProgress?.({ processed, totalFetched: processed });
         }
-        processed++;
-        opts.onProgress?.({ processed, totalFetched: processed });
+      } finally {
+        rl.close();
       }
 
-      await new Promise<void>((ok) => seven.on("close", () => ok()));
+      await sevenDone; // nonzero → throw: imleç ilerlemez, site sonraki koşumda tekrar
       cursor.lastId[site] = maxId;
       await store.save(cursor);
       console.log(`  ${site} tamam (satır=${rows}, obs=${processed} toplam, imleç=${maxId}).`);
