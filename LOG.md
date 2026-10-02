@@ -7,7 +7,14 @@
 
 ---
 
-## 2026-09-23 — Oturum 14: merge akışı tamam — 7/7 PR MERGED
+## 2026-09-23 — Oturum 15: Reddit live kararı — OAuth donduruldu, Arctic Shift incremental
+
+- Responsible Builder Policy (Haz 2026) doğrulandı: API erişimi onay şartlı; ret-ağırlıklı pratik (topluluk raporları 2025-26) → "2-4 hafta onay" ilk tahminim GERİ ÇEKİLDİ (iyimserdi)
+- Politika metninden kritik madde: "non-commercial mining" bile onaysız yasak; bizim savunmamız (ticket metni): salt-okunur ~30-50 istek/gün, etkileşim sıfır, model EĞİTMİYORUZ (hazır embedding çıkarımı), Devvit dışı salt-okunur hat olduğu için Devvit kapsama girmez
+- **Karar: OAuth yolu donduruldu, cevap beklenmiyor.** Canlı uç = Arctic Shift `after=` incremental (~36 saat gecikme) — `reddit-backfill` imleci bunu zaten yapıyor; pilot etkilenmez
+- plan.md FAZ 1 + AGENTS.md güncellendi
+
+---
 
 - Kök neden düzeltildi: local main push edilmemişti + remote'ta eski Python "phase2" proto baseline (7fa5aac) vardı; bu tüm PR'leri unmergeable yapıyordu
 - Alias meanings: phase2 proto (main.py/collectors/ vb.) legacy korundu — plan v3.2 mimaride yer tutmaz, bakım almaz; ileride silme kararı için bekler

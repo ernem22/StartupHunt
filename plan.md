@@ -59,7 +59,7 @@ Kaynaklar iki sınıftır: **metin kaynakları** (observation üretir) ve **metr
 | Kaynak | Yöntem | Not |
 | --- | --- | --- |
 | Reddit (backfill + gap-fill) | [Arctic Shift](https://github.com/ArthurHeitmann/arctic_shift) API/dump | Taban **son 18 ay** (v3.2 karar: orta-yakın güncellik; "yıl" ölçeğinde bayat data gerekmez). Roller: backfill + uzun kapalı kalma dönemlerinin gap doldurması + istisnai "olasılık destek sorgusu" (bkz. PILOT / Geçmiş destek modu). `subreddit+after+limit=auto` sayfalama. `title`/`selftext` keyword araması yalnız `subreddit`/`author` filtresiyle çalışır. `score` ~36 saat sonraya hamlıdır — popülerlik için sonradan enrich. 429'da `X-RateLimit-Reset`'e uy; büyük hacimde dump indir. |
-| Reddit (live) | **Resmî Reddit API (OAuth)** — karar 2026-09-21 | Reddit-universal-scraper **iptal edildi** (proxy/ban/CSV karmaşası, ikinci dış bağımlılık). Canlı uç resmî OAuth API ile: `/r/<sub>/new` listing, istek başına ~100 post. **Ücretsiz katman: 100 istek/dk (OAuth)** — bizim iş yükü (~30-50 istek/gün, 10 sub listing) kotanın çok altında. KOŞUL: Reddit'in Haziran 2026 Responsible Builder Policy gereği **access talebi onayı** gerekmektedir; onay 2-4 hafta sürebilir → app kaydı pilotla paralel şimdi başlatılır. Kayıttan sonra OAuth token akışı + özel User-Agent formatı zorunlu. |
+| Reddit (live) | **Arctic Shift incremental** (`after=` catch-up) — karar 2026-09-23: resmî OAuth yolu **donduruldu** (Responsible Builder Policy onayı ret-ağırlıklı + süre belirsiz; ticket atıldı, cevap beklenmiyor). `reddit-backfill` adapter'ının sub-bazlı imleci kaldığı yerden devam eder; canlı uç ~36 saat gecikmeli. Pilot bundan etkilenmez. |
 | Hacker News | Firebase API + Algolia | Firebase: canlı akış, limit yok. Algolia (`hn.algolia.com/api/v1/search`): tam metin arama story+comment, `numericFilters=created_at_i` ile tarih; Show HN = launch, Ask HN = gap sinyali. `nbPages=1000` tavanı → derin geçmişte sayfalama sınırı. |
 | GitHub (live) | REST API | `search/issues` (şikâyet), `search/repositories` (launch: yeni repo, `created:` filtresi), `/releases` (changelog = development), issue comments. Tokenlı 5.000 req/saat; search secondary limit ~30 req/dk. |
 | GitHub (backfill + gap-fill) | **GH Archive** ([gharchive.org](https://www.gharchive.org)) — karar 2026-09-21 | 2011'den beri tüm public GitHub event'leri (issues, PR, CreateEvent=launch, star) saatlik `.json.gz` dump'lar; BigQuery'de de sorgulanabilir. Free, legal. Backfill adapter'ın arşiv katmanı — API kotası hiç baskı altına girmez. |
@@ -100,7 +100,7 @@ Playwright / Crawlee
 
 ```text
 BACKFILL katmanı  = arşiv kaynakları: Arctic Shift, GH Archive, SE Data Dump
-LIVE katmanı      = resmî API'ler: Reddit OAuth, HN Algolia/Firebase, SE API, YouTube Data API
+LIVE katmanı      = Arctic Shift incremental (Reddit) + resmî API'ler: HN Algolia/Firebase, SE API, YouTube Data API
 ```
 
 * Scraper (reddit-universal-scraper) ve proxy yaklaşımı **terk edildi** — tüm toplama legal API/arşiv üzerinden.
@@ -116,7 +116,7 @@ Her kaynak için adapter:
 
 ```text
 RedditBackfillAdapter    (Arctic Shift → son 18 ay + gap-fill; subreddit bazlı)
-RedditLiveAdapter        (resmî OAuth API → günlük; scraper iptal edildi)
+RedditLiveAdapter        (Arctic Shift incremental — aynı adapter, imleç devamı; OAuth donduruldu)
 HNAdapter, GitHubLiveAdapter, GitHubArchiveAdapter (GH Archive),
 StackExchangeAdapter (API) + SE Archive Dump backfill,
 YouTubeAdapter, SearXNGAdapter, FirecrawlAdapter, ...

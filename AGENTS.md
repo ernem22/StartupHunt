@@ -23,7 +23,7 @@
 
 ## Mimari özet (ayrıntı: plan.md v3.2 — sözleşme değil hipotez)
 - Akış: arşiv/resmî API → raw_observations(JSONB, immutable) → observations(normalize+clean+embed) → centroid assignment(günlük) → BERTopic recluster(TETİK: atanmamış oran eşiği; overlap eşleşme → pattern_history, review_status taşınır) → review server(insan) → TR araması(YALNIZCA onaylı) → UI(ertelendi).
-- İlkeler: sistem kanıt sunar; filtre/skor/ağırlık YOK; LLM yalnız yorum katmanı; veri yolu %100 deterministik; scraper/proxy yok (arşiv=ArcticShift/GHArchive/SEDump; live=resmî API); gap yok sadece gecikme (imleç catch-up); junk=archived (silme yok), recluster üstlenmesi=merged.
+- İlkeler: sistem kanıt sunar; filtre/skor/ağırlık YOK; LLM yalnız yorum katmanı; veri yolu %100 deterministik; scraper/proxy yok (arşiv=ArcticShift/GHArchive/SEDump; live=ArcticShift-incremental+HN/SE/YT API; Reddit OAuth donduruldu); gap yok sadece gecikme (imleç catch-up); junk=archived (silme yok), recluster üstlenmesi=merged.
 - Durum eşlemesi: patterns.status: active|merged(recluster)|archived(insan junk); review_status: unreviewed|seen|interesting(="BU", TR tetiği)|junk.
 - One-off: reddit-incremental(scraper tabanlı) OPT_IN — collect all'da YOK; RedditLiveAdapter(resmî OAuth) slotu devralacak.
 - Temsili seçim kuralı (sabit): centroid'e en yakın 5 + en yeni 3.
