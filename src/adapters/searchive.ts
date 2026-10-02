@@ -70,11 +70,12 @@ function decodeXml(s: string): string {
     .replace(/&amp;/g, "&");
 }
 
-/** Tek <row .../> bloğunu attribute map'ine çevirir (değerler decode'lu). */
+/** Tek <row .../> bloğunu attribute map'ine çevirir (değerler decode'lu).
+ *  XML'de backslash kaçışı yoktur — değer bir sonraki literal tırnakta biter. */
 function parseRow(line: string): Record<string, string> | null {
   if (!line.includes("<row ")) return null;
   const attrs: Record<string, string> = {};
-  const re = /(\w+)="((?:[^"\\]|\\.)*)"/g;
+  const re = /(\w+)="([^"]*)"/g;
   let m: RegExpExecArray | null;
   while ((m = re.exec(line)) !== null) attrs[m[1]!] = decodeXml(m[2]!);
   return attrs.Id ? attrs : null;
