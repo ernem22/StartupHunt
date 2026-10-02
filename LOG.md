@@ -7,6 +7,17 @@
 
 ---
 
+## 2026-10-02 — Oturum 16: SE dump backfill adapter (feat/searchive-backfill, PR #9)
+
+### 23) `src/adapters/searchive.ts` — archive.org SE dump backfill
+- `site.7z` indir → `7z x -so Posts.xml` stream → `<row/>` parse; kapsam: PostTypeId=1 sorular (Title zorunlu, HTML strip); cevaplar v0.1 dışı
+- Site başına Id imleci (adapter_state); BACKFILL_SINCE öncesi atlanır; idempotent upsert; stackoverflow bilinçli dışarıda
+- **dry-run CANLI TEST ✓ (bu cihazda):** softwarerecs dump (52MB) → 20 obs çıkarıldı, imleç doğru. Ara bulgular: (1) Body newline'ları `&#xA;` encode'lu → satırlar tek satır (multiline buffer yine de korundu); (2) dump snapshot Mar-2024'e kadar → 18-ay penceresinde obs=0 DOĞRU davranış (test SE_MIN_DATE override ile); (3) superuser GB'lerce — bu ağda inmez, 3060'ta
+- 7-Zip önkoşul (SEVEN_ZIP_BIN env); test dump'u silindi
+- 3060'a bekleme: DB yazımı, büyük site hacmi
+
+---
+
 ## 2026-09-23 — Oturum 15: Reddit live kararı — OAuth donduruldu, Arctic Shift incremental
 
 - Responsible Builder Policy (Haz 2026) doğrulandı: API erişimi onay şartlı; ret-ağırlıklı pratik (topluluk raporları 2025-26) → "2-4 hafta onay" ilk tahminim GERİ ÇEKİLDİ (iyimserdi)
