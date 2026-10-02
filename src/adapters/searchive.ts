@@ -7,6 +7,8 @@
 // Gereksinim: 7-Zip binary (SEVEN_ZIP_BIN env, varsayılan "C:\\Program Files\\7-Zip\\7z.exe").
 import { spawn } from "node:child_process";
 import { createInterface } from "node:readline";
+import { pipeline } from "node:stream/promises";
+import { Readable } from "node:stream";
 import fs from "node:fs";
 import path from "node:path";
 import type { Adapter, CollectOptions, NormalizedObservation } from "../types.js";
@@ -116,18 +118,20 @@ async function ensureDump(site: string): Promise<string> {
     return file;
   }
   console.log(`▼ ${site}.7z indiriliyor...`);
-  const part = `${file}.part`;
+  // benzersiz temp adı: aynı dizinde çakışan/ölü .part'lar birbirini ezmesin
+  const part = `${file}.${process.pid}.part`;
   try {
     const res = await fetch(`${DUMP_BASE}/${site}.7z`, { signal: AbortSignal.timeout(600_000) });
     if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`);
     const ws = fs.createWriteStream(part);
-    await res.body.pipeTo(
-      new WritableStream({
-        write: (c) => new Promise<void>((ok, bad) => ws.write(c, (e) => (e ? bad(e) : ok()))),
-        close: () => new Promise<void>((ok) => ws.end(ok)),
-      }),
-    );
-    fs.renameSync(part, file); // atomik: yarım dosya asla geçerli sayılmaz
+    // pipeline: fetch-abort/yazma hatalarını yayar, iki akışı da kapatır
+    await pipeline(Readable.fromWeb(res.body as never), ws);
+    if (fs.existsSync(file)) {
+      // yarış: bu arada geçerli dosya belirdiyse üzerine yazma, temp'i at
+      fs.unlinkSync(part);
+    } else {
+      fs.renameSync(part, file); // atomik: yarım dosya asla geçerli sayılmaz
+    }
   } catch (e) {
     if (fs.existsSync(part)) fs.unlinkSync(part);
     throw e;
@@ -144,7 +148,11 @@ export class SeArchiveAdapter implements Adapter {
     const cursor = await store.load();
     // since = catch-up sınırı (Adapter kontratı): verilen tarihten öncesi atlanır;
     // config/test tabanıyla birleşir — büyük olan kazanır
-    const baseMin = process.env.SE_MIN_DATE ? new Date(process.env.SE_MIN_DATE) : BACKFILL_SINCE;
+    const baseMinStr = process.env.SE_MIN_DATE;
+    if (baseMinStr && Number.isNaN(Date.parse(baseMinStr))) {
+      throw new Error(`SE_MIN_DATE geçersiz tarih: ${baseMinStr}`);
+    }
+    const baseMin = baseMinStr ? new Date(baseMinStr) : BACKFILL_SINCE;
     const minDate = since && since > baseMin ? since : baseMin;
     let processed = 0;
 
@@ -169,10 +177,11 @@ export class SeArchiveAdapter implements Adapter {
       let maxId = seenFrom;
       let rows = 0;
       // Posts.xml: Body içindeki newline'lar satırı böler — "/>" görene kadar biriktir
+      // (ayraç korunur: birleşen satırlar arası kelime yapışmasın)
       let buf = "";
       try {
         for await (const line of rl) {
-          buf += line;
+          buf += `${line}\n`;
           if (!buf.includes("/>")) continue;
           const row = buf;
           buf = "";
@@ -196,11 +205,25 @@ export class SeArchiveAdapter implements Adapter {
             return;
           }
           if (!opts.dryRun) {
-            await upsertRaw({ source: "stackexchange", sourceId: norm.sourceId, rawData: a });
             try {
-              await upsertNormalized({ ...norm, contentHash: contentHash(norm) });
+              await upsertRaw({ source: "stackexchange", sourceId: norm.sourceId, rawData: a });
+              try {
+                await upsertNormalized({ ...norm, contentHash: contentHash(norm) });
+              } catch (err) {
+                if (!(err as Error).message.includes("duplicate key")) throw err;
+              }
             } catch (err) {
-              if (!(err as Error).message.includes("duplicate key")) throw err;
+              // satır-hatası: child leak olmasın — öldür, kapanışı bekle, sonra fırlat
+              // (imleç ilerlemez; sonraki koşum kaldığı yerden — catch-up)
+              seven.kill();
+              try {
+                await sevenDone;
+              } catch {
+                /* kapanış hatası zaten loglandı */
+              } finally {
+                rl.close();
+              }
+              throw err;
             }
           }
           processed++;
