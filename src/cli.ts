@@ -5,6 +5,7 @@ import { RedditIncrementalAdapter } from "./adapters/reddit-incremental.js";
 import { HackerNewsAdapter } from "./adapters/hackernews.js";
 import { GitHubAdapter } from "./adapters/github.js";
 import { GhArchiveAdapter } from "./adapters/gharchive.js";
+import { SeArchiveAdapter } from "./adapters/searchive.js";
 import { StackExchangeAdapter } from "./adapters/stackexchange.js";
 import { YouTubeAdapter } from "./adapters/youtube.js";
 import type { Adapter, CollectOptions } from "./types.js";
@@ -14,6 +15,7 @@ const ADAPTERS: Record<string, () => Adapter> = {
   hackernews: () => new HackerNewsAdapter(),
   github: () => new GitHubAdapter(),
   gharchive: () => new GhArchiveAdapter(),
+  searchive: () => new SeArchiveAdapter(),
   stackexchange: () => new StackExchangeAdapter(),
   youtube: () => new YouTubeAdapter(),
 };
