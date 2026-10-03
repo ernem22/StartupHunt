@@ -8,6 +8,8 @@
 
 import json
 import os
+import sys
+import time
 
 import numpy as np
 import psycopg
@@ -16,13 +18,26 @@ from dotenv import load_dotenv
 load_dotenv()
 DB_URL = os.environ.get(
     "DATABASE_URL",
-    "postgresql://startuphunt:startuphunt@localhost:5432/startuphunt",
+    "postgresql://startuphunt:startuphunt@127.0.0.1:5432/startuphunt",
 )
 SIMILARITY_THRESHOLD = 0.55
 
 
+def db_connect():
+    """Timeout + retry'lı baglanti (bkz. recluster.py — port-forward wedge'i)."""
+    last = None
+    for i in range(6):
+        try:
+            return psycopg.connect(DB_URL, connect_timeout=15)
+        except Exception as e:
+            last = e
+            print(f"  db baglanti deneme {i + 1}/6 basarisiz ({e}); 5sn bekleniyor...")
+            time.sleep(5)
+    raise last
+
+
 def main():
-    with psycopg.connect(DB_URL) as conn:
+    with db_connect() as conn:
         with conn.cursor() as cur:
             # 1) aktif pattern'ler: (id, centroid)
             cur.execute(
@@ -34,7 +49,7 @@ def main():
             )
             rows = cur.fetchall()
             if not rows:
-                print("✖ aktif pattern yok — önce recluster çalıştır")
+                print("X aktif pattern yok — önce recluster çalıştır")
                 sys.exit(0)
             pattern_ids = [r[0] for r in rows]
             centroids = np.array([json.loads(r[1]) for r in rows], dtype=np.float32)
@@ -64,12 +79,12 @@ def main():
             new_rows = cur.fetchall()
 
     if not new_rows:
-        print("✔ atanacak yeni observation yok")
+        print("OK atanacak yeni observation yok")
         return
 
     obs_ids = [r[0] for r in new_rows]
     obs_vecs = np.array([json.loads(r[1]) for r in new_rows], dtype=np.float32)
-    print(f"▶ {len(obs_ids)} yeni observation, {len(pattern_ids)} aktif pattern")
+    print(f"> {len(obs_ids)} yeni observation, {len(pattern_ids)} aktif pattern")
 
     # cosine: hepsi normalize (embedding'ler TEI'den normalize gelmeyebilir — güvenli normalize)
     def norm(m):
@@ -78,7 +93,7 @@ def main():
     sims = norm(obs_vecs) @ norm(centroids).T  # (n_obs, n_pat)
     assigned = 0
 
-    with psycopg.connect(DB_URL) as conn:
+    with db_connect() as conn:
         with conn.cursor() as cur:
             for i, obs_id in enumerate(obs_ids):
                 j = int(np.argmax(sims[i]))
@@ -114,7 +129,7 @@ def main():
                 )
         conn.commit()
 
-    print(f"✔ atama tamam: {assigned}/{len(obs_ids)} atandı (eşik {SIMILARITY_THRESHOLD})")
+    print(f"OK atama tamam: {assigned}/{len(obs_ids)} atandı (eşik {SIMILARITY_THRESHOLD})")
 
 
 if __name__ == "__main__":

@@ -15,6 +15,24 @@ export async function withDb<T>(fn: (client: pg.PoolClient) => Promise<T>): Prom
   }
 }
 
+/** HTML entity çözümü — adapter'lar kaçışlı metin döner (HN Algolia, Arctic Shift:
+ *  `&#x27;`, `&quot;`, `&#x2f;`, SE dump'ta `&#xA;`). Raw immutable kalır; normalize
+ *  katmanında çözülür (dil tespiti + embed temiz metni görür). `&amp;` EN SON
+ *  çözülür (çift-çözme yok: `&amp;#x27;` → `&#x27;` olarak kalır). */
+export function decodeEntities(s: string): string {
+  const code = (n: number): string =>
+    Number.isFinite(n) && n >= 0 && n <= 0x10ffff ? String.fromCodePoint(n) : "";
+  return s
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, h: string) => code(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, d: string) => code(parseInt(d, 10)))
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&");
+}
+
 /** Ham veriyi değiştirmeden sakla — unique (source, source_id) upsert. */
 export async function upsertRaw(
   obs: RawObservation,
@@ -37,7 +55,9 @@ export async function upsertRaw(
 export async function upsertNormalized(
   o: NormalizedObservation & { contentHash: string | null }
 ): Promise<"inserted" | "unchanged"> {
-  const language = o.language ?? detectLanguage(o.title, o.text);
+  const title = o.title ? decodeEntities(o.title) : o.title;
+  const text = decodeEntities(o.text);
+  const language = o.language ?? detectLanguage(title, text);
   return withDb(async (c) => {
     const r = await c.query(
       `insert into observations
@@ -50,8 +70,8 @@ export async function upsertNormalized(
         o.source,
         o.sourceId,
         o.sourceUrl,
-        o.title,
-        o.text,
+        title,
+        text,
         o.author,
         o.observedAt,
         language,

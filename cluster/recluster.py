@@ -15,6 +15,7 @@
 import json
 import os
 import sys
+import time
 
 import numpy as np
 import psycopg
@@ -27,7 +28,7 @@ from umap import UMAP
 load_dotenv()
 DB_URL = os.environ.get(
     "DATABASE_URL",
-    "postgresql://startuphunt:startuphunt@localhost:5432/startuphunt",
+    "postgresql://startuphunt:startuphunt@127.0.0.1:5432/startuphunt",
 )
 
 # —— parametreler (plan FAZ 8: hacme göre kalibre) ——
@@ -38,6 +39,25 @@ HDBSCAN_MIN_SAMPLES = 10
 RANDOM_STATE = 42  # tekrarlanabilirlik — plan kararı
 OVERLAP_MIN = 0.50  # pattern_history eşleşme eşiği (plan FAZ 13 kararı)
 TRANSFER_MIN = 0.50  # review_status taşınma aynı eşikle
+
+DB_CONNECT_TIMEOUT = 15  # sn — Docker Desktop port-forward wedge'ine takılmamak için
+DB_CONNECT_RETRIES = 6
+DB_RETRY_SLEEP = 5  # sn
+
+
+def db_connect():
+    """Timeout + retry'lı baglanti: Windows port-forward yeni TCP'yi arada
+    select()'te yutuyor; uretim kosumu (Task Scheduler) buna takilmamali."""
+    last = None
+    for i in range(DB_CONNECT_RETRIES):
+        try:
+            return psycopg.connect(DB_URL, connect_timeout=DB_CONNECT_TIMEOUT)
+        except Exception as e:
+            last = e
+            print(f"  db baglanti deneme {i + 1}/{DB_CONNECT_RETRIES} basarisiz ({e}); "
+                  f"{DB_RETRY_SLEEP}sn bekleniyor...")
+            time.sleep(DB_RETRY_SLEEP)
+    raise last
 
 
 def fetch_embeddings(cur):
@@ -65,17 +85,17 @@ def fetch_embeddings(cur):
 
 
 def main():
-    with psycopg.connect(DB_URL) as conn:
+    with db_connect() as conn:
         with conn.cursor() as cur:
             ids, docs, embeddings = fetch_embeddings(cur)
 
     n = len(ids)
     if n < HDBSCAN_MIN_CLUSTER_SIZE * 2:
-        print(f"✖ yetersiz veri: {n} observation (en az ~{HDBSCAN_MIN_CLUSTER_SIZE*2} gerekir)")
+        print(f"X yetersiz veri: {n} observation (en az ~{HDBSCAN_MIN_CLUSTER_SIZE*2} gerekir)")
         sys.exit(0)
 
     # —— eski aktif pattern'ların kaydı (overlap için, yazımdan ÖNCE) ——
-    with psycopg.connect(DB_URL) as conn:
+    with db_connect() as conn:
         with conn.cursor() as cur:
             cur.execute(
                 """
@@ -91,7 +111,7 @@ def main():
             ]
             print(f"eski aktif pattern: {len(old_patterns)}")
 
-    print(f"▶ {n} embedding — UMAP({UMAP_N_COMPONENTS}D) + HDBSCAN(min_cluster={HDBSCAN_MIN_CLUSTER_SIZE})")
+    print(f"> {n} embedding — UMAP({UMAP_N_COMPONENTS}D) + HDBSCAN(min_cluster={HDBSCAN_MIN_CLUSTER_SIZE})")
 
     umap_model = UMAP(
         n_neighbors=UMAP_N_NEIGHBORS,
@@ -141,7 +161,7 @@ def main():
     }
 
     # —— DB yazımı ——
-    with psycopg.connect(DB_URL) as conn:
+    with db_connect() as conn:
         with conn.cursor() as cur:
             topic_docs: dict[int, list[int]] = {}
             noise_ids: list[int] = []
@@ -263,7 +283,7 @@ def main():
         conn.commit()
 
     print(
-        f"✔ recluster tamam: {n_clusters} pattern yazıldı (noise: {noise}); "
+        f"OK recluster tamam: {n_clusters} pattern yazıldı (noise: {noise}); "
         f"history={len(history_rows)}, review_transfer={len(transferred)}"
     )
 
