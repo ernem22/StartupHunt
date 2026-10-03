@@ -11,7 +11,7 @@ function required(name: string, fallback?: string): string {
 }
 
 export const config = {
-  databaseUrl: required("DATABASE_URL", "postgresql://startuphunt:startuphunt@localhost:5432/startuphunt"),
+  databaseUrl: required("DATABASE_URL", "postgresql://startuphunt:startuphunt@127.0.0.1:5432/startuphunt"),
   arcticShiftBaseUrl: required("ARCTIC_SHIFT_URL", "https://arctic-shift.photon-reddit.com"),
   // toplama disiplini: Arctic Shift "birkaç istek/sn" istiyor; nazik kal
   arcticShift: {

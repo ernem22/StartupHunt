@@ -117,7 +117,6 @@
 - timeline doldurma sorgusu korundu (obs'tan min/max) — FAZ 11 notuyla uyumlu
 - Fark edildi ve giderildi: eski koddaki `values ($1,...)` placeholder kullanımı psycopg3'te çalışmazdı (%s gerekir) — ilk gerçek run öncesi vitese kondu
 - 3060'a bekleme: gerçek DB'de çalışma, overlap sayıları, transfer davranışı
->>>>>>> origin/main
 
 ---
 

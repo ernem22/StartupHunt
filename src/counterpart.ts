@@ -7,7 +7,7 @@ import { config } from "./config.js";
 import { upsertRaw, upsertNormalized, contentHash } from "./db.js";
 import type { NormalizedObservation } from "./types.js";
 
-const SEARXNG_URL = process.env.SEARXNG_URL ?? "http://localhost:8888";
+const SEARXNG_URL = process.env.SEARXNG_URL ?? "http://127.0.0.1:8888";
 
 interface PatternRow {
   id: number;

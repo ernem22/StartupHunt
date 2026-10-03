@@ -28,12 +28,12 @@ docker compose ps            # hepsi healthy/running olmalı
 docker exec startuphunt-postgres psql -U startuphunt -d startuphunt -c "\dt"
 
 # 2) TEI + GPU çalışıyor mu (1024 boyutlu vektör dönmeli)
-curl -s http://localhost:8080/embed \
+curl -s http://127.0.0.1:8080/embed \
   -H "Content-Type: application/json" \
   -d '{"inputs": ["merhaba dünya", "hello world"]}' | python -m json.tool
 
 # 3) SearXNG JSON API açık mı (results dizisi dönmeli)
-curl -s "http://localhost:8888/search?q=fiyat+artışı&language=tr&format=json" | python -m json.tool | head -40
+curl -s "http://127.0.0.1:8888/search?q=fiyat+artışı&language=tr&format=json" | python -m json.tool | head -40
 ```
 
 ## Portlar

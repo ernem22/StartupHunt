@@ -5,7 +5,7 @@
 import pg from "pg";
 import { config } from "../config.js";
 
-const TEI_URL = process.env.TEI_URL ?? "http://localhost:8080";
+const TEI_URL = process.env.TEI_URL ?? "http://127.0.0.1:8080";
 const BATCH = 64; // TEI max-client-batch 256; DB okuma yazma dengesi için 64
 const EXPECTED_DIM = 1024; // Qwen3-0.6B — halfvec(1024) şema uyumu kontrolü
 

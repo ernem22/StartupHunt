@@ -17,13 +17,28 @@ from dotenv import load_dotenv
 load_dotenv()
 DB_URL = os.environ.get(
     "DATABASE_URL",
-    "postgresql://startuphunt:startuphunt@localhost:5432/startuphunt",
+    "postgresql://startuphunt:startuphunt@127.0.0.1:5432/startuphunt",
 )
 SIMILARITY_THRESHOLD = 0.55
 
 
+def db_connect():
+    """Timeout + retry'lı baglanti (bkz. recluster.py — port-forward wedge'i).
+    Genis except bilinclidir (ayni gerekce); uyku yalnizca yeni deneme oncesi."""
+    last = None
+    for i in range(6):
+        try:
+            return psycopg.connect(DB_URL, connect_timeout=15)
+        except Exception as e:
+            last = e
+            if i < 5:
+                print(f"  db baglanti deneme {i + 1}/6 basarisiz ({e}); 5sn bekleniyor...")
+                time.sleep(5)
+    raise last
+
+
 def main():
-    with psycopg.connect(DB_URL) as conn:
+    with db_connect() as conn:
         with conn.cursor() as cur:
             # 1) aktif pattern'ler: (id, centroid)
             cur.execute(
@@ -79,7 +94,7 @@ def main():
     sims = norm(obs_vecs) @ norm(centroids).T  # (n_obs, n_pat)
     assigned = 0
 
-    with psycopg.connect(DB_URL) as conn:
+    with db_connect() as conn:
         with conn.cursor() as cur:
             for i, obs_id in enumerate(obs_ids):
                 j = int(np.argmax(sims[i]))

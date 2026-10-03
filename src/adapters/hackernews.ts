@@ -125,7 +125,7 @@ export class HackerNewsAdapter implements Adapter {
 
       while (!done) {
         if (opts.limit !== undefined && processed >= opts.limit) {
-          console.log(`oturum limiti (${opts.limit}) doldu.`);
+          console.log(`oturum limiti (${opts.limit}) doldu (processed=${processed}).`);
           await store.save(cursor);
           return;
         }
@@ -148,7 +148,10 @@ export class HackerNewsAdapter implements Adapter {
           break;
         }
 
-        // search_by_date: desc sıra — sayfanın ilk hit'i en yeni; imleç = en yeni işlenen
+        // search_by_date: desc sıra — sayfanın ilk hit'i en yeni; imleç sayfa hizasında
+        // ilerler. Limit sayfa SONUNDA kontrol edilir: taşma en fazla 1 sayfa olur
+        // (limit kota değil oturum disiplinidir); sayfa-ortası imleç timestamp `>` filtresi
+        // altında işlenmemiş hit kaybettirirdi — bilerek yapılmıyor.
         const first = res.hits.at(0);
         const firstUnix = first ? Math.floor(new Date(first.created_at).getTime() / 1000) : 0;
         if (firstUnix > (cursor.lastByTerm[term] ?? 0)) cursor.lastByTerm[term] = firstUnix;
