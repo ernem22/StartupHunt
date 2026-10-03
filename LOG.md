@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-10-03 — Oturum 25: review granülarite açığı (kullanıcı bulgusu)
+
+- Sorun: kart altı karışık — aynı cluster'da tanıtım çöpü + gerçek sinyal bir arada; ama karar kart-seviyesinde ikili (BU/junk). İkisi birden doğru olabiliyor.
+- Geçici kural (pilot): kartta TEK değerli sinyal varsa BU (kart kurtulur); junk yalnızca tamamı çöpse. Kayıp yok, gürültü tolere.
+- Tasarım sorusu (pilot-sonrası): observation-seviyesi işaret (kolon/metadata) gerekli mi? Bölünme isteği review'den tetiklenmeli mi? Karar verilmedi — kod değişikliği YOK.
+
 ## 2026-10-03 — Oturum 24: review server yayında
 
 - `pnpm review` bağımsız süreç olarak başlatıldı (job çağrı bitince ölüyordu → Start-Process ile kalıcı pencere): http://127.0.0.1:3001/ — 200, ~1.2MB sayfa, 252 kart.
