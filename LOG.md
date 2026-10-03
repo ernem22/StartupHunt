@@ -7,6 +7,70 @@
 
 ---
 
+## 2026-10-03 — Oturum 25: review granülarite açığı (kullanıcı bulgusu)
+
+- Sorun: kart altı karışık — aynı cluster'da tanıtım çöpü + gerçek sinyal bir arada; ama karar kart-seviyesinde ikili (BU/junk). İkisi birden doğru olabiliyor.
+- Geçici kural (pilot): kartta TEK değerli sinyal varsa BU (kart kurtulur); junk yalnızca tamamı çöpse. Kayıp yok, gürültü tolere.
+- Tasarım sorusu (pilot-sonrası): observation-seviyesi işaret (kolon/metadata) gerekli mi? Bölünme isteği review'den tetiklenmeli mi? Karar verilmedi — kod değişikliği YOK.
+
+## 2026-10-03 — Oturum 24: review server yayında
+
+- `pnpm review` bağımsız süreç olarak başlatıldı (job çağrı bitince ölüyordu → Start-Process ile kalıcı pencere): http://127.0.0.1:3001/ — 200, ~1.2MB sayfa, 252 kart.
+- Not: mobil webden açılamaz, PC tarayıcıdan bakılacak. İnsan denetimi ("BU" işaretleri) kullanıcıyı bekliyor.
+
+## 2026-10-03 — Oturum 23: full pilot çekimi + 55k recluster
+
+- Toplama: reddit 5x10k chunk + HN 5k chunk → ham ~50.7k (hedef 50k tuttu).
+- KAPSAM SAPMASI: corpus tek-sub ağırlıklı (SaaS 50.3k + HN 5.2k) — adapter oturum-limiti ilk sub tükenmeden sonrakine geçmiyor. Geçerli ölçek testi ama plan 10 sub diyordu; sub-dönüşü (round-robin) sonraki PR'a.
+- clean: 39.453 cleaned, 604 discarded (%1.5); embed: 39.453/39.453, 0 fail.
+- Recluster (54.579 obs): **252 pattern**, noise %44 (15k'da %47'ydi — ölçekle hafif iyileşme, eşik üstü; otopsi hükmü geçerli).
+- En büyükler tutarlı: cold-email 1024, video/UGC 929, SEO 877, validation 635, stripe 551, cofounder 540. history=109 (eski hepsi eşleşti).
+- 252 pattern review'e hazır; review server kullanıcı müsait olunca.
+
+## 2026-10-03 — Oturum 22: kararlılık probu (pattern'lar gerçek mi?)
+
+- Yöntem: salt-okunur prob, üretim girdisinin aynısı (15.126 vektör, .npy önbellek; koşum ~30sn).
+- seed0 vs seed1 ARI=0.703 (SAĞLAM): 101/107 cluster, noise %48/%47 — üretim seed'i (42→109 cluster) artefakt üretmiyor.
+- %80 alt-örneklem ARI=0.521 (orta): küçük cluster'lar eriyor — density yöntemin doğası; 50k'da artması beklenir.
+- Hüküm: pattern'lar review'e girebilir; kör parametre oynaması YOK (otopsiyle tutarlı — noise seyrekliği yapısal). Noise kalibrasyonu veri büyüyünce yeniden ölçülür.
+- Not: prob ilk seferde status filtresini dar tutmuş (7.933/15.126) — recluster.py'nin `embedded_noise`'u da kattığı fark edilip düzeltildi.
+
+## 2026-10-03 — Oturum 21: merge kaybı + kurtarma + pilot chunk 1
+
+- PR #10 + #11 merge edildi (main 7ff231f). Web "Update branch" çözümü 2 kayıp yaratmış (diff ile doğrulandı, başka dosya etkilenmedi): `cluster/assign.py`'da `import time` satırı + LOG Oturum 18/19/20 (31 satır).
+- Kurtarma (bu dal): import geri eklendi; retry yolu İLK KEZ gerçekten test edildi (ölü porta 6 deneme → raise, NameError yok); LOG 18/19/20 geri yazıldı.
+- Pilot chunk 1: `reddit-backfill --limit 10000` → 10.005 new, sorunsuz ve hızlı (~dakikalar). Sıradaki: chunk 2 (HN) → clean/embed → ilk gerçek recluster.
+- Ders: web "Update branch" çakışmayı sessizce main lehine çözmüş — eklemeli dosyalarda (LOG) branch güncellenirken diff kontrolü şart; bundan sonra update-branch sonrası `git diff` bakılacak.
+
+## 2026-10-03 — Oturum 20: CodeRabbit incelemesi (4 yorum — 3 kabul, 1 kısmi)
+
+- #10 minör (LOG ifadesi): HAKLI — "üretim verisinde de doğru" seed testini abartıyordu; PR #10 dalında düzeltildi.
+- #11 minör (retry): KISMİ — son-deneme sonrası uyku kaldırıldı; geniş except bilinçli kaldı (psycopg tüm bağlantı hatalarını OperationalError'da birleştirir; kalıcı/geçici ayrımı bu katmanda güvenilmez, deneme sayısı sınırlı).
+- #11 majör (pageMax kaybı): HAKLI — sayfa-ortası imleç, timestamp `>` filtresi altında işlenmemiş hit kaybettirirdi (kendi düzeltmem regresyonmuş). Sayfa-hizasına geri alındı; taşma ≤1 sayfa tasarım olarak kodda belgelendi (limit kota değil, oturum disiplini).
+- #11 majör (NUL): HAKLI — `&#0;`/`&#x0;` Postgres insert'i patlatırdı; `code()` U+0000'i eliyor + 2 unit test.
+- Doğrulama: typecheck/py_compile temiz; entity 9/9; HN dry-run limit 150 → sayfa-sınırında 200 duruyor; assign koştu.
+
+## 2026-10-03 — Oturum 19: chain-hardening (4 fix) + doğrulama
+
+- **F1 localhost→127.0.0.1:** `config.ts` (DATABASE_URL), `embed.ts` (TEI_URL), `counterpart.ts` (SEARXNG_URL) varsayılanları + `.env.example` + KURULUM curl örnekleri. Doğrulama: env'siz `pipeline clean` artık ECONNREFUSED yerine sunucuya ulaşıp auth_hatası veriyor (host çözümü düzeldi; kalan fark örnek kimlik bilgileri).
+- **F2 HN limit:** sayfa-içi break + imleç yalnızca işlenen hit'lerden ilerler (limit kesintisinde kayıp yok, tekrarlı limitli koşumlar ilerler) + processed sayılı log. Doğrulama: dry-run `--limit 150` → processed=150 (önce 200 yazıyordu). (Oturum 20 güncellemesi: sayfa-ortası imleç veri kaybı riskiyle geri alındı, sayfa-hizasına dönüldü.)
+- **F3 cluster db_connect:** timeout 15sn + 6 deneme; `recluster.py` (3) + `assign.py` (2) tüm bağlantılar taşındı; varsayılan URL'ler 127.0.0.1. Doğrulama: py_compile + assign koşumu (458 tarama, çökme yok). `sys.exit` yolu (patterns boşken) test edilmedi.
+- **F4 decodeEntities (`db.ts`, merkezi):** hex/desimal/named entity + `&amp;` en son + geçersiz kod koruması; dil tespiti ve kayıt çözülmüş metinle. 7/7 unit PASS; reddit `--limit 5` gerçek yazımda entity kalıntısı 0. contentHash decode-öncesi hesaplanıyor (girdi başına tutarlı; not). (Oturum 20 güncellemesi: U+0000 elendi, 9/9 test.)
+- Ek: main'deki sahipsiz `>>>>>>> origin/main` artığı LOG'dan silindi (eski merge'den kalma).
+- Not: assign/recluster'daki import-sys + ASCII baskılar PR #10 ile birebir çakışık — hangi PR önce merge olursa diğeri temiz birleşir (aynı metin).
+
+## 2026-10-03 — Oturum 18: format kontrolü + embedding/clustering sağlık
+
+### Format kararı (types.ts sözleşmesi ↔ gerçek veri)
+- 9 alan tüm adapter'larda ortak; reddit 300 + HN 200'de başlık/yazar/tarih %100 dolu; dil boşları tasarım gereği (kısa/üçüncü-dil)
+- Asimetri: HN gövdesiz story'de text=title kopyalanıyor (`title\n\ntitle`) → terim ağırlığı iki kat, keywords hafif sapar (küçük kalite notu, düzeltme sonraki PR'a)
+- Hüküm: boru hattını tıkayan format farkı YOK; embed/cluster girişi her kaynakta dolu
+
+### Sağlık kontrolü (496 gerçek obs, salt-okunur script — DB'ye yazmaz)
+- Embedding SAĞLIKLI: 496x1024, norm 1.000 (TEI normalize ediyor); rastgele-çift cosine 0.30±0.11 (çökme/dağılma yok); en-yakın-komşu ort 0.66, %4.4 >0.90 (makul yakın-tekrar), %0 <0.30; birebir kopya 5 çift (cross-post şüphesi, content_hash exact-dedup kapsamı dışında kalmış olabilir)
+- Clustering (recluster.py parametreleriyle bellek-içi, yazmasız): 2 cluster + noise %4 (Açık Soru 7 eşiği %40'ın çok altı ✓)
+- BULGU (FAZ 5 açığı): keyword'lerde `x27/x2f/quot` çöpü — `&#x27;`, `&#x2f;`, `&quot;` HTML entity'leri temizlikte çözülmüyor (HN Algolia + Arctic Shift kaçışlı dönüyor). `clean.ts`/normalize'a HTML-unescape gerekli (F4'te kapandı)
+- Not: 444 üyelik mega-cluster bu ölçekte normal (veri homojen SaaS; min_cluster 25); pilot ölçeğinde bölünür. UMAP `random_state` uyarısı zararsız (tek-çekirdek dayatması)
 ## 2026-10-03 — Oturum 26: review junk sayımı + arşiv bölümü
 
 - Bug: junk oyu `status='archived'` yapıyordu; liste/sayaç yalnız `active` bakıyordu → junk'lar buharlaşıyordu (251/252 farkı da buydu).
