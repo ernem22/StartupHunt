@@ -7,6 +7,11 @@
 
 ---
 
+## 2026-10-03 — Oturum 28: review görsel makyaj
+
+- Kullanıcı "çok ilkel" buldu; aynı dosya, yeni stylesheet: kart gölgeleri, hap rozetler, keyword çip'leri, kaynak rozetleri (reddit/HN renkli), renkli BU/junk butonları, "yeni" etiketleri, üye-sayısı hapı.
+- Ek düzeltme: ilk denemede `:root` değişkenleri düşmüş (renkler tanımsız) — yakalanıp eklendi, canlı DOM'da doğrulandı (2520 çip, 252 hap).
+
 ## 2026-10-03 — Oturum 27: review UX (not + atlama + filtre + görsel)
 
 - Kullanıcı isteği: kart-notu, sonraki-kart, filtre/sıralama, az ilkel görünüm. Hepsi aynı dosyada, frameworksüz.
