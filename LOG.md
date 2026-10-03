@@ -7,6 +7,15 @@
 
 ---
 
+## 2026-10-03 — Oturum 27: review UX (not + atlama + filtre + görsel)
+
+- Kullanıcı isteği: kart-notu, sonraki-kart, filtre/sıralama, az ilkel görünüm. Hepsi aynı dosyada, frameworksüz.
+- Kart-notu: `patterns.review_note` kolonu (schema.sql + sunucu açılışında `add column if not exists`); kartta not formu, kaydedince aynı karta dönüş. Karışık kart sorununa (Oturum 25) kısmi çözüm.
+- Atlama: başlıkta ilerleme (1/250 %0) + "sıradaki #id" çapası; oylama/not sonrası aynı karta dönüş (303 → `#p-id`).
+- Filtre (`?f=all|unreviewed|interesting|seen|junk`) + dizme (`?sort=size|id|new`); arşiv bölümü yalnız `f=all`'da.
+- Görsel: kart çerçevesi, yapışkan başlık, not şeridi, büyük butonlar.
+- Doğrulama: typecheck temiz; filtreli sayfa (249 kart + 249 form), not kaydet/temizle arşiv kartında test edilip iz silindi (junk/archived bozulmadı).
+
 ## 2026-10-03 — Oturum 25: review granülarite açığı (kullanıcı bulgusu)
 
 - Sorun: kart altı karışık — aynı cluster'da tanıtım çöpü + gerçek sinyal bir arada; ama karar kart-seviyesinde ikili (BU/junk). İkisi birden doğru olabiliyor.
