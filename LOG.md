@@ -23,7 +23,7 @@
 ### Test 2 — uçtan uca (TEI Qwen3-Embedding-0.6B → recluster → assign → recluster)
 - Seed: 3 konu x 40 (export/dark/slow) + 6 noise → 126 obs `embedded` (TEI batch /embed, ~0.4s/batch)
 - recluster: **3 pattern, noise %0**; dağılım export 40/40, dark 40/40, slow 40/40 (noise 3+3 en yakınlara); keywords dosdoğru (export/csv/bulk; dark/dark mode/theme; slow/startup/launch)
-- assign (8 yeni: 5 export-benzeri + 3 alakasız): **5/8 atandı, tamamı pattern 1'e sim 0.71-0.83**; 3 alakasız boşta — eşik davranışı üretim verisinde de doğru
+- assign (8 yeni: 5 export-benzeri + 3 alakasız): **5/8 atandı, tamamı pattern 1'e sim 0.71-0.83**; 3 alakasız boşta — seed edilmiş uçtan uca testte eşik bu örneklerde beklendiği gibi çalıştı
 - Süreklilik: eski pattern'lar `merged` (archived DEĞİL ✓); pattern_history overlap 1.000; `review_status='interesting'` **tek halefe taşındı**, diğerleri unreviewed kaldı
 
 ### Bulunan bug'lar (düzeltildi, bu oturumda — commit bekliyor)
