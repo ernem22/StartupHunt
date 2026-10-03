@@ -7,6 +7,15 @@
 
 ---
 
+## 2026-10-03 — Oturum 23: full pilot çekimi + 55k recluster
+
+- Toplama: reddit 5x10k chunk + HN 5k chunk → ham ~50.7k (hedef 50k tuttu).
+- KAPSAM SAPMASI: corpus tek-sub ağırlıklı (SaaS 50.3k + HN 5.2k) — adapter oturum-limiti ilk sub tükenmeden sonrakine geçmiyor. Geçerli ölçek testi ama plan 10 sub diyordu; sub-dönüşü (round-robin) sonraki PR'a.
+- clean: 39.453 cleaned, 604 discarded (%1.5); embed: 39.453/39.453, 0 fail.
+- Recluster (54.579 obs): **252 pattern**, noise %44 (15k'da %47'ydi — ölçekle hafif iyileşme, eşik üstü; otopsi hükmü geçerli).
+- En büyükler tutarlı: cold-email 1024, video/UGC 929, SEO 877, validation 635, stripe 551, cofounder 540. history=109 (eski hepsi eşleşti).
+- 252 pattern review'e hazır; review server kullanıcı müsait olunca.
+
 ## 2026-10-03 — Oturum 22: kararlılık probu (pattern'lar gerçek mi?)
 
 - Yöntem: salt-okunur prob, üretim girdisinin aynısı (15.126 vektör, .npy önbellek; koşum ~30sn).
