@@ -7,6 +7,14 @@
 
 ---
 
+## 2026-10-03 — Oturum 22: kararlılık probu (pattern'lar gerçek mi?)
+
+- Yöntem: salt-okunur prob, üretim girdisinin aynısı (15.126 vektör, .npy önbellek; koşum ~30sn).
+- seed0 vs seed1 ARI=0.703 (SAĞLAM): 101/107 cluster, noise %48/%47 — üretim seed'i (42→109 cluster) artefakt üretmiyor.
+- %80 alt-örneklem ARI=0.521 (orta): küçük cluster'lar eriyor — density yöntemin doğası; 50k'da artması beklenir.
+- Hüküm: pattern'lar review'e girebilir; kör parametre oynaması YOK (otopsiyle tutarlı — noise seyrekliği yapısal). Noise kalibrasyonu veri büyüyünce yeniden ölçülür.
+- Not: prob ilk seferde status filtresini dar tutmuş (7.933/15.126) — recluster.py'nin `embedded_noise`'u da kattığı fark edilip düzeltildi.
+
 ## 2026-10-03 — Oturum 21: merge kaybı + kurtarma + pilot chunk 1
 
 - PR #10 + #11 merge edildi (main 7ff231f). Web "Update branch" çözümü 2 kayıp yaratmış (diff ile doğrulandı, başka dosya etkilenmedi): `cluster/assign.py`'da `import time` satırı + LOG Oturum 18/19/20 (31 satır).
