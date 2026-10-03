@@ -7,6 +7,14 @@
 
 ---
 
+## 2026-10-03 — Oturum 20: CodeRabbit incelemesi (4 yorum — 3 kabul, 1 kısmi)
+
+- #10 minör (LOG ifadesi): HAKLI — "üretim verisinde de doğru" seed testini abartıyordu; PR #10 dalında düzeltildi.
+- #11 minör (retry): KISMİ — son-deneme sonrası uyku kaldırıldı; geniş except bilinçli kaldı (psycopg tüm bağlantı hatalarını OperationalError'da birleştirir; kalıcı/geçici ayrımı bu katmanda güvenilmez, deneme sayısı sınırlı).
+- #11 majör (pageMax kaybı): HAKLI — sayfa-ortası imleç, timestamp `>` filtresi altında işlenmemiş hit kaybettirirdi (kendi düzeltmem regresyonmuş). Sayfa-hizasına geri alındı; taşma ≤1 sayfa tasarım olarak kodda belgelendi (limit kota değil, oturum disiplini).
+- #11 majör (NUL): HAKLI — `&#0;`/`&#x0;` Postgres insert'i patlatırdı; `code()` U+0000'i eliyor + 2 unit test.
+- Doğrulama: typecheck/py_compile temiz; entity 9/9; HN dry-run limit 150 → sayfa-sınırında 200 duruyor; assign koştu.
+
 ## 2026-10-03 — Oturum 19: chain-hardening (4 fix) + doğrulama
 
 - **F1 localhost→127.0.0.1:** `config.ts` (DATABASE_URL), `embed.ts` (TEI_URL), `counterpart.ts` (SEARXNG_URL) varsayılanları + `.env.example` + KURULUM curl örnekleri. Doğrulama: env'siz `pipeline clean` artık ECONNREFUSED yerine sunucuya ulaşıp auth_hatası veriyor (host çözümü düzeldi; kalan fark örnek kimlik bilgileri).

@@ -24,15 +24,17 @@ SIMILARITY_THRESHOLD = 0.55
 
 
 def db_connect():
-    """Timeout + retry'lı baglanti (bkz. recluster.py — port-forward wedge'i)."""
+    """Timeout + retry'lı baglanti (bkz. recluster.py — port-forward wedge'i).
+    Genis except bilinclidir (ayni gerekce); uyku yalnizca yeni deneme oncesi."""
     last = None
     for i in range(6):
         try:
             return psycopg.connect(DB_URL, connect_timeout=15)
         except Exception as e:
             last = e
-            print(f"  db baglanti deneme {i + 1}/6 basarisiz ({e}); 5sn bekleniyor...")
-            time.sleep(5)
+            if i < 5:
+                print(f"  db baglanti deneme {i + 1}/6 basarisiz ({e}); 5sn bekleniyor...")
+                time.sleep(5)
     raise last
 
 

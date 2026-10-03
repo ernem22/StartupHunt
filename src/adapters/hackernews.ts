@@ -148,12 +148,15 @@ export class HackerNewsAdapter implements Adapter {
           break;
         }
 
-        // search_by_date: desc sıra — imleç yalnızca İŞLENEN hit'lerden ilerler
-        // (limit sayfayı ortada keserse işlenmeyenler sonraki koşuda alınır, kayıp yok)
-        let pageMax = cursor.lastByTerm[term] ?? 0;
+        // search_by_date: desc sıra — sayfanın ilk hit'i en yeni; imleç sayfa hizasında
+        // ilerler. Limit sayfa SONUNDA kontrol edilir: taşma en fazla 1 sayfa olur
+        // (limit kota değil oturum disiplinidir); sayfa-ortası imleç timestamp `>` filtresi
+        // altında işlenmemiş hit kaybettirirdi — bilerek yapılmıyor.
+        const first = res.hits.at(0);
+        const firstUnix = first ? Math.floor(new Date(first.created_at).getTime() / 1000) : 0;
+        if (firstUnix > (cursor.lastByTerm[term] ?? 0)) cursor.lastByTerm[term] = firstUnix;
 
         for (const hit of res.hits) {
-          if (opts.limit !== undefined && processed >= opts.limit) break;
           const norm = toNormalized(hit);
           if (!norm) continue;
           if (!opts.dryRun) {
@@ -165,16 +168,7 @@ export class HackerNewsAdapter implements Adapter {
             }
           }
           processed++;
-          const hitUnix = Math.floor(new Date(hit.created_at).getTime() / 1000);
-          if (Number.isFinite(hitUnix) && hitUnix > pageMax) pageMax = hitUnix;
           opts.onProgress?.({ processed, totalFetched: processed });
-        }
-        cursor.lastByTerm[term] = pageMax;
-
-        if (opts.limit !== undefined && processed >= opts.limit) {
-          console.log(`oturum limiti (${opts.limit}) doldu (processed=${processed}).`);
-          await store.save(cursor);
-          return;
         }
 
         // capazo sayfa ilerlemesinden sonra imleç kaydet (kaybetmez catch-up)

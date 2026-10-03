@@ -47,16 +47,20 @@ DB_RETRY_SLEEP = 5  # sn
 
 def db_connect():
     """Timeout + retry'lı baglanti: Windows port-forward yeni TCP'yi arada
-    select()'te yutuyor; uretim kosumu (Task Scheduler) buna takilmamali."""
+    select()'te yutuyor; uretim kosumu (Task Scheduler) buna takilmamali.
+    Genis except bilinclidir: psycopg tum baglanti hatalarini (timeout, DNS,
+    auth) OperationalError'da birlestirir; kalici/gecici ayrimi bu katmanda
+    guvenilir degildir. Deneme sayisi sinirli, kalici hata yine yukselir."""
     last = None
     for i in range(DB_CONNECT_RETRIES):
         try:
             return psycopg.connect(DB_URL, connect_timeout=DB_CONNECT_TIMEOUT)
         except Exception as e:
             last = e
-            print(f"  db baglanti deneme {i + 1}/{DB_CONNECT_RETRIES} basarisiz ({e}); "
-                  f"{DB_RETRY_SLEEP}sn bekleniyor...")
-            time.sleep(DB_RETRY_SLEEP)
+            if i < DB_CONNECT_RETRIES - 1:
+                print(f"  db baglanti deneme {i + 1}/{DB_CONNECT_RETRIES} basarisiz ({e}); "
+                      f"{DB_RETRY_SLEEP}sn bekleniyor...")
+                time.sleep(DB_RETRY_SLEEP)
     raise last
 
 

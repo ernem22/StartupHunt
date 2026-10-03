@@ -20,8 +20,9 @@ export async function withDb<T>(fn: (client: pg.PoolClient) => Promise<T>): Prom
  *  katmanında çözülür (dil tespiti + embed temiz metni görür). `&amp;` EN SON
  *  çözülür (çift-çözme yok: `&amp;#x27;` → `&#x27;` olarak kalır). */
 export function decodeEntities(s: string): string {
+  // U+0000 hariç — PostgreSQL text'te NUL barındıramaz (insert patlar)
   const code = (n: number): string =>
-    Number.isFinite(n) && n >= 0 && n <= 0x10ffff ? String.fromCodePoint(n) : "";
+    Number.isFinite(n) && n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : "";
   return s
     .replace(/&#x([0-9a-fA-F]+);/g, (_, h: string) => code(parseInt(h, 16)))
     .replace(/&#(\d+);/g, (_, d: string) => code(parseInt(d, 10)))
