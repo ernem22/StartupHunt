@@ -8,6 +8,7 @@
 
 import json
 import os
+import sys
 
 import numpy as np
 import psycopg
@@ -34,7 +35,7 @@ def main():
             )
             rows = cur.fetchall()
             if not rows:
-                print("✖ aktif pattern yok — önce recluster çalıştır")
+                print("X aktif pattern yok — önce recluster çalıştır")
                 sys.exit(0)
             pattern_ids = [r[0] for r in rows]
             centroids = np.array([json.loads(r[1]) for r in rows], dtype=np.float32)
@@ -64,12 +65,12 @@ def main():
             new_rows = cur.fetchall()
 
     if not new_rows:
-        print("✔ atanacak yeni observation yok")
+        print("OK atanacak yeni observation yok")
         return
 
     obs_ids = [r[0] for r in new_rows]
     obs_vecs = np.array([json.loads(r[1]) for r in new_rows], dtype=np.float32)
-    print(f"▶ {len(obs_ids)} yeni observation, {len(pattern_ids)} aktif pattern")
+    print(f"> {len(obs_ids)} yeni observation, {len(pattern_ids)} aktif pattern")
 
     # cosine: hepsi normalize (embedding'ler TEI'den normalize gelmeyebilir — güvenli normalize)
     def norm(m):
@@ -114,7 +115,7 @@ def main():
                 )
         conn.commit()
 
-    print(f"✔ atama tamam: {assigned}/{len(obs_ids)} atandı (eşik {SIMILARITY_THRESHOLD})")
+    print(f"OK atama tamam: {assigned}/{len(obs_ids)} atandı (eşik {SIMILARITY_THRESHOLD})")
 
 
 if __name__ == "__main__":

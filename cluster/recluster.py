@@ -71,7 +71,7 @@ def main():
 
     n = len(ids)
     if n < HDBSCAN_MIN_CLUSTER_SIZE * 2:
-        print(f"✖ yetersiz veri: {n} observation (en az ~{HDBSCAN_MIN_CLUSTER_SIZE*2} gerekir)")
+        print(f"X yetersiz veri: {n} observation (en az ~{HDBSCAN_MIN_CLUSTER_SIZE*2} gerekir)")
         sys.exit(0)
 
     # —— eski aktif pattern'ların kaydı (overlap için, yazımdan ÖNCE) ——
@@ -91,7 +91,7 @@ def main():
             ]
             print(f"eski aktif pattern: {len(old_patterns)}")
 
-    print(f"▶ {n} embedding — UMAP({UMAP_N_COMPONENTS}D) + HDBSCAN(min_cluster={HDBSCAN_MIN_CLUSTER_SIZE})")
+    print(f"> {n} embedding — UMAP({UMAP_N_COMPONENTS}D) + HDBSCAN(min_cluster={HDBSCAN_MIN_CLUSTER_SIZE})")
 
     umap_model = UMAP(
         n_neighbors=UMAP_N_NEIGHBORS,
@@ -263,7 +263,7 @@ def main():
         conn.commit()
 
     print(
-        f"✔ recluster tamam: {n_clusters} pattern yazıldı (noise: {noise}); "
+        f"OK recluster tamam: {n_clusters} pattern yazıldı (noise: {noise}); "
         f"history={len(history_rows)}, review_transfer={len(transferred)}"
     )
 
