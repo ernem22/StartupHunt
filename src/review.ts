@@ -73,12 +73,13 @@ interface PatternRow {
   review_status: string;
 }
 
-async function listPatterns(): Promise<PatternRow[]> {
+async function listPatterns(status: "active" | "archived" = "active"): Promise<PatternRow[]> {
   const r = await pool.query<PatternRow>(
     `select id, name, description, keywords, observation_count,
             first_seen, last_seen, review_status
-     from patterns where status = 'active'
+     from patterns where status = $1
      order by observation_count desc, id asc`,
+    [status],
   );
   return r.rows;
 }
@@ -114,15 +115,16 @@ async function cardFor(p: PatternRow): Promise<string> {
     )
     .join("\n");
   const srcHtml = src.rows.map((s) => `${esc(s.source)}:${s.c}`).join(" · ");
+  // junk (arşivde) kartta yalnızca geri-al butonları: BU / gördüm (applyVerdict active'e çevirir)
+  const allowed = Object.entries(VERDICTS).filter(([k]) => p.review_status !== "junk" || k !== "junk");
   const btns =
-    p.review_status === "junk"
-      ? `<em>junk — arşivde</em>`
-      : Object.entries(VERDICTS)
-          .map(
-            ([k, v]) =>
-              `<form method="post" action="/review" class="inline"><input type="hidden" name="id" value="${p.id}"><input type="hidden" name="v" value="${k}"><button>${esc(v.label)}</button></form>`,
-          )
-          .join(" ");
+    (p.review_status === "junk" ? `<em>junk — arşivde · geri al:</em> ` : "") +
+    allowed
+      .map(
+        ([k, v]) =>
+          `<form method="post" action="/review" class="inline"><input type="hidden" name="id" value="${p.id}"><input type="hidden" name="v" value="${k}"><button>${esc(v.label)}</button></form>`,
+      )
+      .join(" ");
   return `
   <details><summary><b>#${p.id}</b> ${esc(p.name ?? "(isimsiz)")}${badge}
     <span class="meta"> · ${p.observation_count} obs · ${srcHtml} · ${day(p.first_seen)}→${day(p.last_seen)}</span></summary>
@@ -156,7 +158,11 @@ async function loadStats(): Promise<string> {
   );
   const map = new Map(r.rows.map((x) => [x.review_status, Number(x.c)]));
   const total = r.rows.reduce((a, x) => a + Number(x.c), 0);
-  return `${total} pattern · BU=interesting:${map.get("interesting") ?? 0} · seen:${map.get("seen") ?? 0} · junk:${map.get("junk") ?? 0} · unreviewed:${map.get("unreviewed") ?? 0}`;
+  const a = await pool.query<{ c: string }>(
+    `select count(*)::int as c from patterns where status='archived'`,
+  );
+  const archived = Number(a.rows[0]?.c ?? 0);
+  return `${total} aktif (+${archived} arşiv) · BU:${map.get("interesting") ?? 0} · seen:${map.get("seen") ?? 0} · junk(arşivde):${archived} · unreviewed:${map.get("unreviewed") ?? 0}`;
 }
 
 async function applyVerdict(id: number, v: VerdictKey): Promise<void> {
@@ -179,9 +185,14 @@ async function main(): Promise<void> {
   const server = http.createServer(async (req, res) => {
     try {
       if (req.method === "GET" && req.url === "/") {
-        const patterns = await listPatterns();
+        const patterns = await listPatterns("active");
         const cards: string[] = [];
         for (const p of patterns) cards.push(await cardFor(p));
+        const archived = await listPatterns("archived");
+        if (archived.length > 0) {
+          cards.push(`<h2>Arşiv (junk) — ${archived.length}</h2>`);
+          for (const p of archived) cards.push(await cardFor(p));
+        }
         res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
         res.end(page(cards, await loadStats()));
         return;

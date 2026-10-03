@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-10-03 — Oturum 26: review junk sayımı + arşiv bölümü
+
+- Bug: junk oyu `status='archived'` yapıyordu; liste/sayaç yalnız `active` bakıyordu → junk'lar buharlaşıyordu (251/252 farkı da buydu).
+- Fix (`src/review.ts`, frameworksüz): sayaç arşivi de sayar (`250 aktif (+2 arşiv) · junk(arşivde):2`); altta "Arşiv" bölümü + BU/gördüm geri-al butonları.
+- Operasyon notu: öksüz `node` süreci portu tutuyordu (tsx parent'sız yaşıyor) → netstat'la bulunup öldürüldü; server taze kodla yeniden başlatıldı, başlık doğrulandı.
+
 ## 2026-10-03 — Oturum 17: cluster 3060 testi (recluster + assign, gerçek Qwen3 vektörleri)
 
 ### Ortam (bu cihaz = 3060 PC doğrulandı)
