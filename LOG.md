@@ -7,6 +7,11 @@
 
 ---
 
+## 2026-10-03 — Oturum 24: review server yayında
+
+- `pnpm review` bağımsız süreç olarak başlatıldı (job çağrı bitince ölüyordu → Start-Process ile kalıcı pencere): http://127.0.0.1:3001/ — 200, ~1.2MB sayfa, 252 kart.
+- Not: mobil webden açılamaz, PC tarayıcıdan bakılacak. İnsan denetimi ("BU" işaretleri) kullanıcıyı bekliyor.
+
 ## 2026-10-03 — Oturum 23: full pilot çekimi + 55k recluster
 
 - Toplama: reddit 5x10k chunk + HN 5k chunk → ham ~50.7k (hedef 50k tuttu).
