@@ -7,36 +7,6 @@
 
 ---
 
-## 2026-10-03 — Oturum 20: CodeRabbit incelemesi (4 yorum — 3 kabul, 1 kısmi)
-
-- #10 minör (LOG ifadesi): HAKLI — "üretim verisinde de doğru" seed testini abartıyordu; PR #10 dalında düzeltildi.
-- #11 minör (retry): KISMİ — son-deneme sonrası uyku kaldırıldı; geniş except bilinçli kaldı (psycopg tüm bağlantı hatalarını OperationalError'da birleştirir; kalıcı/geçici ayrımı bu katmanda güvenilmez, deneme sayısı sınırlı).
-- #11 majör (pageMax kaybı): HAKLI — sayfa-ortası imleç, timestamp `>` filtresi altında işlenmemiş hit kaybettirirdi (kendi düzeltmem regresyonmuş). Sayfa-hizasına geri alındı; taşma ≤1 sayfa tasarım olarak kodda belgelendi (limit kota değil, oturum disiplini).
-- #11 majör (NUL): HAKLI — `&#0;`/`&#x0;` Postgres insert'i patlatırdı; `code()` U+0000'i eliyor + 2 unit test.
-- Doğrulama: typecheck/py_compile temiz; entity 9/9; HN dry-run limit 150 → sayfa-sınırında 200 duruyor; assign koştu.
-
-## 2026-10-03 — Oturum 19: chain-hardening (4 fix) + doğrulama
-
-- **F1 localhost→127.0.0.1:** `config.ts` (DATABASE_URL), `embed.ts` (TEI_URL), `counterpart.ts` (SEARXNG_URL) varsayılanları + `.env.example` + KURULUM curl örnekleri. Doğrulama: env'siz `pipeline clean` artık ECONNREFUSED yerine sunucuya ulaşıp auth_hatası veriyor (host çözümü düzeldi; kalan fark örnek kimlik bilgileri).
-- **F2 HN limit:** sayfa-içi break + imleç yalnızca işlenen hit'lerden ilerler (limit kesintisinde kayıp yok, tekrarlı limitli koşumlar ilerler) + processed sayılı log. Doğrulama: dry-run `--limit 150` → processed=150 (önce 200 yazıyordu).
-- **F3 cluster db_connect:** timeout 15sn + 6 deneme; `recluster.py` (3) + `assign.py` (2) tüm bağlantılar taşındı; varsayılan URL'ler 127.0.0.1. Doğrulama: py_compile + assign koşumu (458 tarama, çökme yok). `sys.exit` yolu (patterns boşken) test edilmedi.
-- **F4 decodeEntities (`db.ts`, merkezi):** hex/desimal/named entity + `&amp;` en son + geçersiz kod koruması; dil tespiti ve kayıt çözülmüş metinle. 7/7 unit PASS; reddit `--limit 5` gerçek yazımda entity kalıntısı 0. contentHash decode-öncesi hesaplanıyor (girdi başına tutarlı; not).
-- Ek: main'deki sahipsiz `>>>>>>> origin/main` artığı LOG'dan silindi (eski merge'den kalma).
-- Not: assign/recluster'daki import-sys + ASCII baskılar PR #10 ile birebir çakışık — hangi PR önce merge olursa diğeri temiz birleşir (aynı metin).
-
-## 2026-10-03 — Oturum 18: format kontrolü + embedding/clustering sağlık
-
-### Format kararı (types.ts sözleşmesi ↔ gerçek veri)
-- 9 alan tüm adapter'larda ortak; reddit 300 + HN 200'de başlık/yazar/tarih %100 dolu; dil boşları tasarım gereği (kısa/üçüncü-dil)
-- Asimetri: HN gövdesiz story'de text=title kopyalanıyor (`title\n\ntitle`) → terim ağırlığı iki kat, keywords hafif sapar (küçük kalite notu, düzeltme sonraki PR'a)
-- Hüküm: boru hattını tıkayan format farkı YOK; embed/cluster girişi her kaynakta dolu
-
-### Sağlık kontrolü (496 gerçek obs, salt-okunur script — DB'ye yazmaz)
-- Embedding SAĞLIKLI: 496x1024, norm 1.000 (TEI normalize ediyor); rastgele-çift cosine 0.30±0.11 (çökme/dağılma yok); en-yakın-komşu ort 0.66, %4.4 >0.90 (makul yakın-tekrar), %0 <0.30; birebir kopya 5 çift (cross-post şüphesi, content_hash exact-dedup kapsamı dışında kalmış olabilir)
-- Clustering (recluster.py parametreleriyle bellek-içi, yazmasız): 2 cluster + noise %4 (Açık Soru 7 eşiği %40'ın çok altı ✓)
-- BULGU (FAZ 5 açığı): keyword'lerde `x27/x2f/quot` çöpü — `&#x27;`, `&#x2f;`, `&quot;` HTML entity'leri temizlikte çözülmüyor (HN Algolia + Arctic Shift kaçışlı dönüyor). `clean.ts`/normalize'a HTML-unescape gerekli (sonraki PR)
-- Not: 444 üyelik mega-cluster bu ölçekte normal (veri homojen SaaS; min_cluster 25); pilot ölçeğinde bölünür. UMAP `random_state` uyarısı zararsız (tek-çekirdek dayatması)
-
 ## 2026-10-03 — Oturum 17: cluster 3060 testi (recluster + assign, gerçek Qwen3 vektörleri)
 
 ### Ortam (bu cihaz = 3060 PC doğrulandı)
@@ -53,7 +23,7 @@
 ### Test 2 — uçtan uca (TEI Qwen3-Embedding-0.6B → recluster → assign → recluster)
 - Seed: 3 konu x 40 (export/dark/slow) + 6 noise → 126 obs `embedded` (TEI batch /embed, ~0.4s/batch)
 - recluster: **3 pattern, noise %0**; dağılım export 40/40, dark 40/40, slow 40/40 (noise 3+3 en yakınlara); keywords dosdoğru (export/csv/bulk; dark/dark mode/theme; slow/startup/launch)
-- assign (8 yeni: 5 export-benzeri + 3 alakasız): **5/8 atandı, tamamı pattern 1'e sim 0.71-0.83**; 3 alakasız boşta — eşik davranışı üretim verisinde de doğru
+- assign (8 yeni: 5 export-benzeri + 3 alakasız): **5/8 atandı, tamamı pattern 1'e sim 0.71-0.83**; 3 alakasız boşta — seed edilmiş uçtan uca testte eşik bu örneklerde beklendiği gibi çalıştı
 - Süreklilik: eski pattern'lar `merged` (archived DEĞİL ✓); pattern_history overlap 1.000; `review_status='interesting'` **tek halefe taşındı**, diğerleri unreviewed kaldı
 
 ### Bulunan bug'lar (düzeltildi, bu oturumda — commit bekliyor)
