@@ -7,6 +7,21 @@
 
 ---
 
+## 2026-10-04 — Oturum 33: B/C koşumları + ilk karşılaştırma
+
+- B (Qwen2.5-3B, prompt v2): 2.000/2.000, keep 852 (%43), err 0. Cluster: 4 pattern, noise %36.
+- C (Laya): noul sorusu çöp çıktı (promo 0.93 keep, TR hepsi ~0) → choice-tipine geçildi (4/4 doğru) → 2.000/2.000, keep 1.250 (%63), err 0. Cluster: 4 pattern, noise %26. Hız ~0.1sn/obs.
+- Anlaşma: B∩C keep 535, ikisi-red 433 → **%48 aynı fikirde**. B-only 317, C-only 715.
+- A-cluster tutma oranları uçuyor: örn. cluster-10'da B %8 / C %72; cluster-12'de B %26 / C %74. En az biri çok yanılıyor (ya da görev muğlak).
+- Karar için eksik: insan denetimi (reject örneklemi). Sıradaki: denetim listeleri + `experiment:compare` komutu.
+
+## 2026-10-04 — Oturum 32: Experiment B (LLM filtre + cluster)
+
+- Prompt v1 hepsini reddetti (aşırı sert çerçeve) → v2 (pozitif çerçeve + 2 örnek): 4/4 duman testi doğru.
+- 2.000 snapshot: keep 852 (%43), reject 1.148, processing_error 0. Hız ~1.5sn/obs (chunk 250, 50'de bir commit).
+- B cluster (852 keep): 4 cluster, noise %36. A: 14 cluster, %40. Filtre çeşitliliği daralttı; mega-cluster (342) kaldı. Keyword notu: "just/ve" stopword eksiği.
+- Sıradaki: C (Laya kurulum + mini test + koşum), sonra compare + false-negative denetimi.
+
 ## 2026-10-04 — Oturum 31: snapshot + baseline A
 
 - Snapshot: 2.000 obs (seed 123, reddit+HN embedded havuzundan; run_id=1, ID listesi `experiment_runs.snapshot`'ta donduruldu).
