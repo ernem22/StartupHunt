@@ -7,6 +7,79 @@
 
 ---
 
+## 2026-10-04 — Oturum 39: filtre yapıyı yıkıyor (kontrol deneyli hüküm)
+
+- C-10k: 6.538 keep → **2 cluster, noise %0** (6432'lik mega-blob + job). A-10k (aynı havuz): 62 cluster, %47.
+- Kontrol (rastgele 6.538 alt-örneklem): **42 cluster, %43** — yapı korunuyor. Demek ki çöküş boyut değil, FİLTRE etkisi.
+- Mekanizma: filtre ayırt edici uçları yiyor (niş cluster'lar 25 barajının altına düşüyor, sınır noktaları gidiyor) → UMAP manifoldu düzleşiyor → lapa topaklanıyor. B-2k'de de aynı örüntü vardı (14→4).
+- Hüküm: semantik ön-filtre (bu haliyle) cluster'lamanın ihtiyaç duyduğu varyansı yok ediyor. Filtre "gürültüyü" değil, yapıyı temizliyor. B-10k ertelendi (örüntü 3 kez replike; batching olmadan ~4 saat).
+- `experiment/cluster_filtered.py` repoya eklendi (parametrik: EXP_RUN/EXP_PREFIX).
+
+## 2026-10-04 — Oturum 38: etiketli set + `laya-evals` (B 0.86 vs C 0.64)
+
+- 36 satırlık etiketli set (`experiment/evals/startup-signal-v1.jsonl`): 24 çekişmeli (insan hükümlü) + 12 net (6/6).
+- `laya-evals run --slice language --slice tag`: genel choice_accuracy 0.639; agreement dilimi 1.000 (12/12, kendini tekrar — tutarlılık kanıtı); contested dilimi 0.458 (yazı-tura altı).
+- Aynı sette B (LLM): 31/36 = 0.861. Hüküm sayısal: B insanla hizalı, C değil.
+- Karar: C (mevcut soruyla) filtre adayı değil; soru-mühendisliği veya fine-tune olmadan üretime giremez. B teknik pilotu geçti; 50k kararı + B/C cluster insan oyu (human_verdict) sıradaki.
+
+## 2026-10-04 — Oturum 37: Laya önerilen kullanım (staged-adoption + evals)
+
+- Dokümanlar tasarımımızı doğruladı: shadow (üretim yetkili, Laya yalnız kaydedilir), disagreement=sinyal (bizim %48), eşik politikası held-out veriden, soru metni değişimi = yeni deney (bizim v1→v2).
+- Eksikler kapatıldı: `preprocessing_results`'a `elapsed_ms` + `checkpoint_rev` (schema + canlı); soru-hash'i run config'inde.
+- C v2 koşumu (`laya-filter-v2`, aynı soru): 2.000/2.000, keep 1.250 (v1 ile birebir aynı — tekrarlanabilirlik ✓), ort 54ms/obs, %100 revizyonlu.
+- Runner'lar repoya taşındı: `experiment/run_{baseline,llm_filter,laya_filter}.py` (+ `experiment:compare` zaten repodaydı).
+- Sıradaki: etiketli mini set (denetim hükümlerinden) + `laya-evals` ile dilim-bazlı skor (EN/TR).
+
+## 2026-10-04 — Oturum 36: TR checkpoint pin testi
+
+- Soru: TR neden ayrı test ediliyor, global EN olmaz mı? Yanıt: router otomatik yönlendiriyor (seçim bizim değil) + FAZ14'te TR gözlem gelecek, önden bilmek zorundaydık.
+- Pin sonucu: EN checkpoint TR sinyali anlıyor (keep ✓) ama TR promoyu da yutuyor (keep ✗). Globally-EN temiz çözüm değil.
+- Yan bulgu: choice confidence bazı girdilerde kalibresiz (RuntimeWarning: invalid temperatures) — "confidence olasılık sayılmaz" kuralı doğrulandı.
+- Hüküm: TR filtreleme FAZ14'e kadar bekler; o gün pin/fine-tune kararı verilir. Bugünü bloklamıyor.
+
+## 2026-10-04 — Oturum 35: Laya neden böyle davranıyor (kök neden)
+
+- Soru-tipi deneyi (tekil önermeler): `noul` "aracı istiyor mu?" sorusuna tanıtım metni ("try it free!") 0.95 EVET veriyor — **faili-mefhul körlüğü**: aracı SUNMAK ile İSTEMEK ayırt edilemiyor. Tanıtımlar arzu-dili kullandığı için skor şişiyor.
+- Gerçek şikayetler düşük (0.03-0.28): nötr soru dili duygu sinyali taşımıyor, head ateşlemiyor.
+- TR checkpoint görev-kör: tüm TR örnekler ~0.00-0.07 (ayırt edicilik yok, kalibrasyon değil).
+- `choice` tipi çalışıyor çünkü kriterler karşıtsal çapa veriyor (eşleştirme, açık hüküm değil).
+- Hüküm: C'de `noul` yasak, `choice` zorunlu. Derin çözüm (fine-tune) ayrı faz. `?` işareti etkisiz.
+
+## 2026-10-04 — Oturum 34: denetim hükmü + `experiment:compare`
+
+- İnsan denetimi (kullanıcı): B listesinde 5/8/9 kaçmış olabilir; C listesinde 2/8/9 bariz dert (SDS ihtiyacı, başarısız lansman muhasebesi, ucuz stack sorusu). Hüküm: B güvenli, C hem tanıtımı tutuyor hem derdi eliyor.
+- `pnpm experiment:compare` repoya eklendi (`src/experiment/compare.ts`): run blokları (tutulan/elenen/hata, cluster, noise, ort. üye) + B/C anlaşma + denetim örnekleri. Skor yok. 2 bug yakalanıp düzeltildi (alias'siz `count(*)` → 0 okuma; noise tanımı reject'i katıyordu).
+- Sıradaki: B/C cluster insan değerlendirmesi (experiment_patterns human_verdict) + 50k kararı.
+
+## 2026-10-04 — Oturum 33: B/C koşumları + ilk karşılaştırma
+
+- B (Qwen2.5-3B, prompt v2): 2.000/2.000, keep 852 (%43), err 0. Cluster: 4 pattern, noise %36.
+- C (Laya): noul sorusu çöp çıktı (promo 0.93 keep, TR hepsi ~0) → choice-tipine geçildi (4/4 doğru) → 2.000/2.000, keep 1.250 (%63), err 0. Cluster: 4 pattern, noise %26. Hız ~0.1sn/obs.
+- Anlaşma: B∩C keep 535, ikisi-red 433 → **%48 aynı fikirde**. B-only 317, C-only 715.
+- A-cluster tutma oranları uçuyor: örn. cluster-10'da B %8 / C %72; cluster-12'de B %26 / C %74. En az biri çok yanılıyor (ya da görev muğlak).
+- Karar için eksik: insan denetimi (reject örneklemi). Sıradaki: denetim listeleri + `experiment:compare` komutu.
+
+## 2026-10-04 — Oturum 32: Experiment B (LLM filtre + cluster)
+
+- Prompt v1 hepsini reddetti (aşırı sert çerçeve) → v2 (pozitif çerçeve + 2 örnek): 4/4 duman testi doğru.
+- 2.000 snapshot: keep 852 (%43), reject 1.148, processing_error 0. Hız ~1.5sn/obs (chunk 250, 50'de bir commit).
+- B cluster (852 keep): 4 cluster, noise %36. A: 14 cluster, %40. Filtre çeşitliliği daralttı; mega-cluster (342) kaldı. Keyword notu: "just/ve" stopword eksiği.
+- Sıradaki: C (Laya kurulum + mini test + koşum), sonra compare + false-negative denetimi.
+
+## 2026-10-04 — Oturum 31: snapshot + baseline A
+
+- Snapshot: 2.000 obs (seed 123, reddit+HN embedded havuzundan; run_id=1, ID listesi `experiment_runs.snapshot`'ta donduruldu).
+- A koşumu: mevcut vektörler yeniden kullanıldı (re-embed yok) → UMAP+HDBSCAN (üretim parametreleri) → 14 pattern, noise %40 (810). `experiment_patterns/observations` tablolarına, üretim etkilenmedi. Mega-cluster 543 (jenerik SaaS).
+- Runner scriptleri şimdilik /tmp'de (`exp_a.py`); `experiment:compare` ile birlikte repoya taşınacak.
+- Sıradaki: B adapter (Qwen2.5-3B indirme + duman testi).
+
+## 2026-10-04 — Oturum 30: deney programı çerçevesi + LLM kararı
+
+- Kararlar: deney üretimi bloklamaz (ayrı dal, yeni tablo/dosya dışında temas yok); VRAM toplam 12GB'ye göre değerlendirilir (Laya + LLM sıralı koşar); embedding'ler DB'den yeniden kullanılır; review yükü şimdilik sınırsız.
+- Local LLM: **Qwen2.5-3B-Instruct** (fp16, transformers, temp 0, JSON). Gerekçe: toplam bütçeye sığar (~6GB + TEI 1.5GB), Türkçe dahil 29 dil, ikili görev için yeterli; 7B fp16 sığmaz, quant karmaşası gereksiz.
+- Laya: `laya-multilingual` (`noul` keep/reject + confidence + abstention), 322M, Apache-2.0, pip + torch hazır.
+- Bu adım: plan.md "DENEY PROGRAMI (v3.3)" + 4 deney tablosu (schema.sql) — kod yok, yalnız sözleşme. Sıradaki: snapshot + A koşumu.
+
 ## 2026-10-03 — Oturum 25: review granülarite açığı (kullanıcı bulgusu)
 
 - Sorun: kart altı karışık — aynı cluster'da tanıtım çöpü + gerçek sinyal bir arada; ama karar kart-seviyesinde ikili (BU/junk). İkisi birden doğru olabiliyor.

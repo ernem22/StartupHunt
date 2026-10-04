@@ -141,3 +141,53 @@ select pattern_id,
         order by week range between interval '28 days' preceding and current row
       ) as ma4
 from weekly;
+
+-- DENEY PROGRAMI (plan v3.3) — üretim tablolarına dokunmaz; reject = cikarma, silme degil
+create table if not exists experiment_runs (
+  id          bigserial primary key,
+  name        text not null unique,  -- baseline-v1 | llm-filter-v1 | laya-filter-v1
+  type        text not null,          -- baseline | llm-filter | laya-filter
+  model       text,                  -- NULL | Qwen2.5-3B-Instruct | laya-multilingual
+  config      jsonb not null default '{}',
+  snapshot    jsonb,                  -- dondurulmus observation id listesi + alinma zamani
+  status      text not null default 'ready',  -- ready|running|done|failed
+  created_at  timestamptz not null default now()
+);
+
+create table if not exists preprocessing_results (
+  experiment_id  bigint not null references experiment_runs(id) on delete cascade,
+  observation_id bigint not null references observations(id) on delete cascade,
+  model          text not null,
+  decision       text not null,  -- keep | reject | processing_error
+  confidence     double precision,
+  raw_result     jsonb not null default '{}',
+  elapsed_ms     double precision,  -- Laya staged-adoption: shadow kaydinda surec sarti
+  checkpoint_rev text,              -- cevap veren checkpoint revizyonu (run identity)
+  created_at     timestamptz not null default now(),
+  primary key (experiment_id, observation_id)
+);
+create index if not exists idx_prep_exp_decision on preprocessing_results (experiment_id, decision);
+
+create table if not exists experiment_patterns (
+  id                bigserial primary key,
+  experiment_id     bigint not null references experiment_runs(id) on delete cascade,
+  name              text,
+  description       text,
+  centroid          halfvec(1024),
+  keywords          text[] not null default '{}',
+  first_seen        timestamptz,
+  last_seen         timestamptz,
+  observation_count integer not null default 0,
+  human_verdict     text,             -- yes | no | uncertain (NULL = degerlendirilmedi)
+  human_note        text not null default '',
+  created_at        timestamptz not null default now()
+);
+
+create table if not exists experiment_pattern_observations (
+  experiment_id  bigint not null references experiment_runs(id) on delete cascade,
+  pattern_id     bigint not null references experiment_patterns(id) on delete cascade,
+  observation_id bigint not null references observations(id) on delete cascade,
+  similarity     real,
+  run_kind       text not null,
+  primary key (experiment_id, pattern_id, observation_id)
+);

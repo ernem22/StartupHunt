@@ -678,3 +678,32 @@ Detaylı gerekçeler "Proje İlkeleri" bölümünde; FAZ metinlerine gömüldü:
 13. **Review server tek komut çoklu tetik** (`pnpm counterpart --pattern <id>`; orchestrator + buton aynı komutu çağırır).
 14. **Backfill tabanı son 18 ay** (`BACKFILL_SINCE` config'te çekildi); derin geçmiş yalnızca `pnpm deepen` geçici modu.
 15. **Bilinen sınırlama FAZ 2'ye eklendi:** HN/GitHub live sorgu-seeded toplama = örtülü filtre; kabul edilen sınır, arşiv kaynaklarıyla dengelemek.
+
+---
+
+# DENEY PROGRAMI — Semantik Ön-filtreleme (v3.3)
+
+Soru: ham veriyi embedding öncesinde semantik olarak ayıklamak, değerli gerçek dünya sinyallerini bulma kabiliyetini artırıyor mu; artırıyorsa bunu local LLM mi, Laya mı daha güvenli yapıyor?
+
+## Kurallar (pazarlıksız)
+
+1. Üretim pipeline'ı aynen çalışmaya devam eder; deneyler üretimi bloklamaz, üretim tablolarına yazmaz.
+2. Raw ve cleaned observation'lar deneylerce değiştirilmez/silinmez. `reject` = "bu deneyde embedding'e gönderme" demektir, silme değildir.
+3. A/B/C aynı dondurulmuş cleaned snapshot'tan başlar; embedding modeli (Qwen3-0.6B) ve clustering parametreleri (UMAP 15/10/cosine/rs42, HDBSCAN 25/10/eom) deneyler arası SABİTTİR. Tek değişken preprocessing'dir.
+4. Tutulan observation'ların vektörleri DB'den yeniden kullanılır (aynı model + aynı metin = aynı vektör; re-embed yok).
+5. Karşılaştırma skora dönüştürülmez (ilke 1). Birincil metrik: false-negative (B/C'nin elediği değerli sinyal).
+6. İlke-5 bayrağı: keep/reject filtresi veri yolunda model kararıdır; deney olarak izole yürütülür. Benimsenmesi ilke değişikliği gerektirir, sessizce olmaz.
+
+## Deneyler
+
+- **A (baseline):** mevcut pipeline, izole sonuç tablolarına. Kontrol grubu.
+- **B (local LLM):** Qwen2.5-3B-Instruct (fp16, transformers, temp 0, JSON çıktı). Tek binary görev: "gerçek dünya sinyali içeriyor mu?" → `{keep, confidence}`. Parse edilemeyen çıktı reject DEĞİL `processing_error` olur. Confidence olasılık sayılmaz, yalnız kaydedilir.
+- **C (Laya):** `laya-multilingual` checkpoint, `noul` tipi aynı soru. EN/TR/mixed mini testi koşulsuz (benchmark güveni yasak).
+
+## Tablolar
+
+`experiment_runs (id, name unique, type, model, config JSONB, snapshot JSONB, status, created_at)`, `preprocessing_results (experiment_id, observation_id, model, decision: keep|reject|processing_error, confidence, raw_result JSONB)`, `experiment_patterns` (+ `experiment_id`, + `human_verdict`, + `human_note`), `experiment_pattern_observations`.
+
+## Sıra
+
+framework → snapshot (1-2k teknik pilot) → A → B adapter+koşum → C adapter+koşum (+mini test) → izole cluster → insan değerlendirmesi (worth_researching: yes/no/uncertain) → false-negative denetimi → `pnpm experiment:compare` → 50k pilot → JEV ayrı faz.

@@ -13,6 +13,7 @@
     "review": "tsx src/review.ts",
     "counterpart": "tsx src/counterpart.ts",
     "deepen": "tsx src/deepen.ts",
+    "experiment:compare": "tsx src/experiment/compare.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
