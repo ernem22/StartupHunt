@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-10-04 — Oturum 40: TR/EN mini testi GEÇTİ
+
+- 50 çift taslağından 31 temiz çift kaldı (19'u Qwen-3B çeviri hatası: anlam tersi, halüsinasyon, "kelebek/Eczacı" seviyesi — elendi).
+- TEI ölçümü: çift-cosine ort 0.772, min 0.645, 31/31 ≥0.55 (assign eşiği), 26/31 ≥0.70.
+- Hüküm: Qwen3 dil-bazlı sahte cluster üretmiyor; yedek embedding modeline gerek YOK. FAZ14'ün TR-önkoşulu geçti — kalan tek şart insan BU onayı.
+- Not: çiftler Qwen-çevirisi (el-yapımı değil); marj geniş (min 0.645) olduğu için sonuç sağlam.
+
 ## 2026-10-03 — Oturum 25: review granülarite açığı (kullanıcı bulgusu)
 
 - Sorun: kart altı karışık — aynı cluster'da tanıtım çöpü + gerçek sinyal bir arada; ama karar kart-seviyesinde ikili (BU/junk). İkisi birden doğru olabiliyor.
