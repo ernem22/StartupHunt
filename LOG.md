@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-10-04 — Oturum 31: snapshot + baseline A
+
+- Snapshot: 2.000 obs (seed 123, reddit+HN embedded havuzundan; run_id=1, ID listesi `experiment_runs.snapshot`'ta donduruldu).
+- A koşumu: mevcut vektörler yeniden kullanıldı (re-embed yok) → UMAP+HDBSCAN (üretim parametreleri) → 14 pattern, noise %40 (810). `experiment_patterns/observations` tablolarına, üretim etkilenmedi. Mega-cluster 543 (jenerik SaaS).
+- Runner scriptleri şimdilik /tmp'de (`exp_a.py`); `experiment:compare` ile birlikte repoya taşınacak.
+- Sıradaki: B adapter (Qwen2.5-3B indirme + duman testi).
+
 ## 2026-10-04 — Oturum 30: deney programı çerçevesi + LLM kararı
 
 - Kararlar: deney üretimi bloklamaz (ayrı dal, yeni tablo/dosya dışında temas yok); VRAM toplam 12GB'ye göre değerlendirilir (Laya + LLM sıralı koşar); embedding'ler DB'den yeniden kullanılır; review yükü şimdilik sınırsız.
