@@ -7,6 +7,10 @@
 
 ---
 
+## 2026-10-03 — Oturum 29: tam sistem raporu
+
+- Kullanıcı isteği: fazların bitmiş-halini açıklayan eksiksiz rapor → `SISTEM-RAPORU.md` (21 bölüm: amaç, akış, FAZ 1-14, şema, ilkeler, altyapı, pilot, açık ölçümler, bilinen sapmalar). Sade cümleler, bilgi kesilmedi.
+
 ## 2026-10-03 — Oturum 25: review granülarite açığı (kullanıcı bulgusu)
 
 - Sorun: kart altı karışık — aynı cluster'da tanıtım çöpü + gerçek sinyal bir arada; ama karar kart-seviyesinde ikili (BU/junk). İkisi birden doğru olabiliyor.
