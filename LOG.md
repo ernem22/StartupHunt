@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-10-04 — Oturum 36: TR checkpoint pin testi
+
+- Soru: TR neden ayrı test ediliyor, global EN olmaz mı? Yanıt: router otomatik yönlendiriyor (seçim bizim değil) + FAZ14'te TR gözlem gelecek, önden bilmek zorundaydık.
+- Pin sonucu: EN checkpoint TR sinyali anlıyor (keep ✓) ama TR promoyu da yutuyor (keep ✗). Globally-EN temiz çözüm değil.
+- Yan bulgu: choice confidence bazı girdilerde kalibresiz (RuntimeWarning: invalid temperatures) — "confidence olasılık sayılmaz" kuralı doğrulandı.
+- Hüküm: TR filtreleme FAZ14'e kadar bekler; o gün pin/fine-tune kararı verilir. Bugünü bloklamıyor.
+
 ## 2026-10-04 — Oturum 35: Laya neden böyle davranıyor (kök neden)
 
 - Soru-tipi deneyi (tekil önermeler): `noul` "aracı istiyor mu?" sorusuna tanıtım metni ("try it free!") 0.95 EVET veriyor — **faili-mefhul körlüğü**: aracı SUNMAK ile İSTEMEK ayırt edilemiyor. Tanıtımlar arzu-dili kullandığı için skor şişiyor.
