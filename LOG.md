@@ -7,6 +7,14 @@
 
 ---
 
+## 2026-10-04 — Oturum 39: filtre yapıyı yıkıyor (kontrol deneyli hüküm)
+
+- C-10k: 6.538 keep → **2 cluster, noise %0** (6432'lik mega-blob + job). A-10k (aynı havuz): 62 cluster, %47.
+- Kontrol (rastgele 6.538 alt-örneklem): **42 cluster, %43** — yapı korunuyor. Demek ki çöküş boyut değil, FİLTRE etkisi.
+- Mekanizma: filtre ayırt edici uçları yiyor (niş cluster'lar 25 barajının altına düşüyor, sınır noktaları gidiyor) → UMAP manifoldu düzleşiyor → lapa topaklanıyor. B-2k'de de aynı örüntü vardı (14→4).
+- Hüküm: semantik ön-filtre (bu haliyle) cluster'lamanın ihtiyaç duyduğu varyansı yok ediyor. Filtre "gürültüyü" değil, yapıyı temizliyor. B-10k ertelendi (örüntü 3 kez replike; batching olmadan ~4 saat).
+- `experiment/cluster_filtered.py` repoya eklendi (parametrik: EXP_RUN/EXP_PREFIX).
+
 ## 2026-10-04 — Oturum 38: etiketli set + `laya-evals` (B 0.86 vs C 0.64)
 
 - 36 satırlık etiketli set (`experiment/evals/startup-signal-v1.jsonl`): 24 çekişmeli (insan hükümlü) + 12 net (6/6).

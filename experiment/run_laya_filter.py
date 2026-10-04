@@ -9,7 +9,8 @@ import psycopg
 
 DB_URL = os.environ["DATABASE_URL"]
 MODEL = "laya-router(auto)"
-RUN = "laya-filter-v2"
+RUN = os.environ.get("EXP_RUN", "laya-filter-v2")
+BASE = os.environ.get("EXP_BASE", "baseline-v1")
 LIMIT = int(sys.argv[1]) if len(sys.argv) > 1 else 2000
 
 Q = {"verdict": {"type": "choice",
@@ -27,13 +28,13 @@ def main():
         with conn.cursor() as cur:
             cur.execute(
                 """insert into experiment_runs (name,type,model,config,snapshot,status)
-                   select 'laya-filter-v2','laya-filter','laya-router(auto)',
+                   select %s,'laya-filter','laya-router(auto)',
                      jsonb_build_object('question','choice-keep-reject-v1',
                        'question_sha',%s::text,'laya_version',%s::text),
-                     snapshot,'running' from experiment_runs where name='baseline-v1'
+                     snapshot,'running' from experiment_runs where name=%s
                    on conflict (name) do update set status='running'
                    returning id, (snapshot->>'ids')::jsonb""",
-                (QHASH, __import__("laya").__version__),
+                (RUN, QHASH, __import__("laya").__version__, BASE),
             )
             row = cur.fetchone()
             if row is None:

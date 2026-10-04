@@ -1,5 +1,6 @@
-"""EXP-A: baseline — dondurulmus snapshot'in mevcut vektorleriyle UMAP+HDBSCAN,
-sonuclar yalnizca experiment_* tablolarina. Uretime yazmaz."""
+"""EXP cluster: bir filtre run'inin keep kararli obs'lerini mevcut vektorlerle
+kumele, sonuc experiment tablolarina. Kullanim: EXP_RUN=... python -m experiment.cluster_filtered
+"""
 import json
 import os
 import time
@@ -8,9 +9,8 @@ import numpy as np
 import psycopg
 
 DB_URL = os.environ["DATABASE_URL"]
-SNAP_N = int(os.environ.get("EXP_N", "2000"))
-SEED = int(os.environ.get("EXP_SEED", "123"))
-RUN = os.environ.get("EXP_RUN", "baseline-v1")
+RUN = os.environ["EXP_RUN"]
+PREFIX = os.environ.get("EXP_PREFIX", "f-cluster")
 
 
 def db():
@@ -27,49 +27,25 @@ def db():
 def main():
     with db() as conn:
         with conn.cursor() as cur:
+            cur.execute("select id from experiment_runs where name=%s", (RUN,))
+            row = cur.fetchone()
+            assert row, f"run yok: {RUN}"
+            run_id = row[0]
             cur.execute(
-                "select id from observations where source in ('reddit','hackernews') "
-                "and status in ('embedded','embedded_noise') and embedding is not null "
-                "order by id"
-            )
-            pool = [r[0] for r in cur.fetchall()]
-    print(f"havuz: {len(pool)}", flush=True)
-    rng = np.random.default_rng(SEED)
-    snap = sorted(rng.choice(pool, size=min(SNAP_N, len(pool)), replace=False).tolist())
-    print(f"snapshot: {len(snap)} (seed {SEED})", flush=True)
-
-    with db() as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                """insert into experiment_runs (name, type, model, config, snapshot, status)
-                   values (%s,'baseline',NULL,
-                           '{"umap":{"n_neighbors":15,"n_components":10,"min_dist":0.0,"metric":"cosine","random_state":42},"hdbscan":{"min_cluster_size":25,"min_samples":10,"metric":"euclidean","cluster_selection_method":"eom"}}'::jsonb,
-                           %s::jsonb, 'running')
-                   on conflict (name) do update set status='running', snapshot=excluded.snapshot
-                   returning id""",
-                (RUN, json.dumps({"ids": snap, "seed": SEED,
-                             "frozen_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}),),
-            )
-            run_id = cur.fetchone()[0]
-            cur.execute("delete from experiment_pattern_observations where experiment_id=%s", (run_id,))
-            cur.execute("delete from experiment_patterns where experiment_id=%s", (run_id,))
-        conn.commit()
-    print(f"run_id={run_id}", flush=True)
-
-    with db() as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                """select o.id, coalesce(o.title,'') || E'\n\n' || o.text, o.embedding::text,
-                          o.observed_at
-                   from observations o where o.id = any(%s) order by o.id""",
-                (snap,),
+                """select o.id, coalesce(o.title,'') || E'\n\n' || o.text,
+                          o.embedding::text, o.observed_at
+                   from observations o join preprocessing_results p
+                     on p.observation_id = o.id
+                   where p.experiment_id = %s and p.decision = 'keep'
+                   order by o.id""",
+                (run_id,),
             )
             rows = cur.fetchall()
     ids = [r[0] for r in rows]
     docs = [r[1] for r in rows]
     X = np.array([json.loads(r[2]) for r in rows], dtype=np.float32)
     obs_at = [r[3] for r in rows]
-    print(f"vektor: {X.shape}", flush=True)
+    print(f"keep havuzu ({RUN}): {X.shape}", flush=True)
 
     from hdbscan import HDBSCAN
     from sklearn.feature_extraction.text import CountVectorizer
@@ -80,7 +56,7 @@ def main():
              metric="cosine", random_state=42).fit_transform(X)
     labels = HDBSCAN(min_cluster_size=25, min_samples=10, metric="euclidean",
                      cluster_selection_method="eom").fit_predict(Z)
-    print(f"kümeleme: {time.time() - t0:.0f}sn", flush=True)
+    print(f"kumelenme: {time.time() - t0:.0f}sn", flush=True)
     uniq, counts = np.unique(labels, return_counts=True)
     n_cl = int((uniq != -1).sum())
     n_noise = int((labels == -1).sum())
@@ -89,7 +65,8 @@ def main():
     vec = CountVectorizer(stop_words="english", ngram_range=(1, 2), min_df=1, max_features=20000)
     with db() as conn:
         with conn.cursor() as cur:
-            new_ids = {}  # topic -> exp pattern id
+            cur.execute("delete from experiment_pattern_observations where experiment_id=%s", (run_id,))
+            cur.execute("delete from experiment_patterns where experiment_id=%s", (run_id,))
             for u in uniq:
                 if u == -1:
                     continue
@@ -101,17 +78,16 @@ def main():
                 cent = X[members].mean(axis=0)
                 cent = (cent / (np.linalg.norm(cent) + 1e-10)).tolist()
                 obs_list = [ids[i] for i in members]
-                ats = sorted(a for k, a in zip(members, [obs_at[i] for i in members]) if a)
+                ats = sorted(a for a in (obs_at[i] for i in members) if a)
                 cur.execute(
                     """insert into experiment_patterns
                        (experiment_id, name, centroid, keywords, observation_count,
                         first_seen, last_seen)
                        values (%s,%s,%s::halfvec,%s,%s,%s,%s) returning id""",
-                    (run_id, f"cluster-{u}", json.dumps(cent), top, len(obs_list),
+                    (run_id, f"{PREFIX}-{u}", json.dumps(cent), top, len(obs_list),
                      ats[0] if ats else None, ats[-1] if ats else None),
                 )
                 pid = cur.fetchone()[0]
-                new_ids[u] = pid
                 cur.executemany(
                     """insert into experiment_pattern_observations
                        (experiment_id, pattern_id, observation_id, run_kind)
