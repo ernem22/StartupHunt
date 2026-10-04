@@ -7,6 +7,14 @@
 
 ---
 
+## 2026-10-04 — Oturum 35: Laya neden böyle davranıyor (kök neden)
+
+- Soru-tipi deneyi (tekil önermeler): `noul` "aracı istiyor mu?" sorusuna tanıtım metni ("try it free!") 0.95 EVET veriyor — **faili-mefhul körlüğü**: aracı SUNMAK ile İSTEMEK ayırt edilemiyor. Tanıtımlar arzu-dili kullandığı için skor şişiyor.
+- Gerçek şikayetler düşük (0.03-0.28): nötr soru dili duygu sinyali taşımıyor, head ateşlemiyor.
+- TR checkpoint görev-kör: tüm TR örnekler ~0.00-0.07 (ayırt edicilik yok, kalibrasyon değil).
+- `choice` tipi çalışıyor çünkü kriterler karşıtsal çapa veriyor (eşleştirme, açık hüküm değil).
+- Hüküm: C'de `noul` yasak, `choice` zorunlu. Derin çözüm (fine-tune) ayrı faz. `?` işareti etkisiz.
+
 ## 2026-10-04 — Oturum 34: denetim hükmü + `experiment:compare`
 
 - İnsan denetimi (kullanıcı): B listesinde 5/8/9 kaçmış olabilir; C listesinde 2/8/9 bariz dert (SDS ihtiyacı, başarısız lansman muhasebesi, ucuz stack sorusu). Hüküm: B güvenli, C hem tanıtımı tutuyor hem derdi eliyor.
