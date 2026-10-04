@@ -264,7 +264,17 @@ async function main(): Promise<void> {
           return;
         }
         await applyVerdict(id, v);
-        res.writeHead(303, { location: `/#p-${id}` });
+        // junk kartı arşive taşır — aynı çapaya dönmek sayfayı dibe atar;
+        // onun yerine sıradaki incelenmemiş karta git (akış korunur)
+        let anchor = `/#p-${id}`;
+        if (v === "junk") {
+          const nx = await pool.query<{ id: number }>(
+            `select id from patterns where status = 'active' and review_status = 'unreviewed'
+             order by observation_count desc, id asc limit 1`,
+          );
+          anchor = nx.rows[0] ? `/#p-${nx.rows[0].id}` : "/";
+        }
+        res.writeHead(303, { location: anchor });
         res.end();
         return;
       }
