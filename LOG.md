@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-10-04 — Oturum 30: deney programı çerçevesi + LLM kararı
+
+- Kararlar: deney üretimi bloklamaz (ayrı dal, yeni tablo/dosya dışında temas yok); VRAM toplam 12GB'ye göre değerlendirilir (Laya + LLM sıralı koşar); embedding'ler DB'den yeniden kullanılır; review yükü şimdilik sınırsız.
+- Local LLM: **Qwen2.5-3B-Instruct** (fp16, transformers, temp 0, JSON). Gerekçe: toplam bütçeye sığar (~6GB + TEI 1.5GB), Türkçe dahil 29 dil, ikili görev için yeterli; 7B fp16 sığmaz, quant karmaşası gereksiz.
+- Laya: `laya-multilingual` (`noul` keep/reject + confidence + abstention), 322M, Apache-2.0, pip + torch hazır.
+- Bu adım: plan.md "DENEY PROGRAMI (v3.3)" + 4 deney tablosu (schema.sql) — kod yok, yalnız sözleşme. Sıradaki: snapshot + A koşumu.
+
 ## 2026-10-03 — Oturum 25: review granülarite açığı (kullanıcı bulgusu)
 
 - Sorun: kart altı karışık — aynı cluster'da tanıtım çöpü + gerçek sinyal bir arada; ama karar kart-seviyesinde ikili (BU/junk). İkisi birden doğru olabiliyor.
