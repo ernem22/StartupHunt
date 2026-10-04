@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-10-04 — Oturum 34: denetim hükmü + `experiment:compare`
+
+- İnsan denetimi (kullanıcı): B listesinde 5/8/9 kaçmış olabilir; C listesinde 2/8/9 bariz dert (SDS ihtiyacı, başarısız lansman muhasebesi, ucuz stack sorusu). Hüküm: B güvenli, C hem tanıtımı tutuyor hem derdi eliyor.
+- `pnpm experiment:compare` repoya eklendi (`src/experiment/compare.ts`): run blokları (tutulan/elenen/hata, cluster, noise, ort. üye) + B/C anlaşma + denetim örnekleri. Skor yok. 2 bug yakalanıp düzeltildi (alias'siz `count(*)` → 0 okuma; noise tanımı reject'i katıyordu).
+- Sıradaki: B/C cluster insan değerlendirmesi (experiment_patterns human_verdict) + 50k kararı.
+
 ## 2026-10-04 — Oturum 33: B/C koşumları + ilk karşılaştırma
 
 - B (Qwen2.5-3B, prompt v2): 2.000/2.000, keep 852 (%43), err 0. Cluster: 4 pattern, noise %36.
