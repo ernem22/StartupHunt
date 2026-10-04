@@ -7,6 +7,14 @@
 
 ---
 
+## 2026-10-04 — Oturum 37: Laya önerilen kullanım (staged-adoption + evals)
+
+- Dokümanlar tasarımımızı doğruladı: shadow (üretim yetkili, Laya yalnız kaydedilir), disagreement=sinyal (bizim %48), eşik politikası held-out veriden, soru metni değişimi = yeni deney (bizim v1→v2).
+- Eksikler kapatıldı: `preprocessing_results`'a `elapsed_ms` + `checkpoint_rev` (schema + canlı); soru-hash'i run config'inde.
+- C v2 koşumu (`laya-filter-v2`, aynı soru): 2.000/2.000, keep 1.250 (v1 ile birebir aynı — tekrarlanabilirlik ✓), ort 54ms/obs, %100 revizyonlu.
+- Runner'lar repoya taşındı: `experiment/run_{baseline,llm_filter,laya_filter}.py` (+ `experiment:compare` zaten repodaydı).
+- Sıradaki: etiketli mini set (denetim hükümlerinden) + `laya-evals` ile dilim-bazlı skor (EN/TR).
+
 ## 2026-10-04 — Oturum 36: TR checkpoint pin testi
 
 - Soru: TR neden ayrı test ediliyor, global EN olmaz mı? Yanıt: router otomatik yönlendiriyor (seçim bizim değil) + FAZ14'te TR gözlem gelecek, önden bilmek zorundaydık.

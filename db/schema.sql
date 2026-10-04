@@ -161,6 +161,8 @@ create table if not exists preprocessing_results (
   decision       text not null,  -- keep | reject | processing_error
   confidence     double precision,
   raw_result     jsonb not null default '{}',
+  elapsed_ms     double precision,  -- Laya staged-adoption: shadow kaydinda surec sarti
+  checkpoint_rev text,              -- cevap veren checkpoint revizyonu (run identity)
   created_at     timestamptz not null default now(),
   primary key (experiment_id, observation_id)
 );
