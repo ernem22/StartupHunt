@@ -11,6 +11,7 @@
 
 - Kullanıcı "çok ilkel" buldu; aynı dosya, yeni stylesheet: kart gölgeleri, hap rozetler, keyword çip'leri, kaynak rozetleri (reddit/HN renkli), renkli BU/junk butonları, "yeni" etiketleri, üye-sayısı hapı.
 - Ek düzeltme: ilk denemede `:root` değişkenleri düşmüş (renkler tanımsız) — yakalanıp eklendi, canlı DOM'da doğrulandı (2520 çip, 252 hap).
+- Ek düzeltme: junk oyu sayfayı arşiv dibine atıyordu (taşınan kartın çapası takip ediliyordu) → artık sıradaki incelenmemiş karta dönüyor; arşiv kartında yeniden-junk ile test edildi, veri değişmedi.
 
 ## 2026-10-03 — Oturum 27: review UX (not + atlama + filtre + görsel)
 
