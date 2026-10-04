@@ -7,6 +7,21 @@
 
 ---
 
+## 2026-10-03 — Oturum 28: review görsel makyaj
+
+- Kullanıcı "çok ilkel" buldu; aynı dosya, yeni stylesheet: kart gölgeleri, hap rozetler, keyword çip'leri, kaynak rozetleri (reddit/HN renkli), renkli BU/junk butonları, "yeni" etiketleri, üye-sayısı hapı.
+- Ek düzeltme: ilk denemede `:root` değişkenleri düşmüş (renkler tanımsız) — yakalanıp eklendi, canlı DOM'da doğrulandı (2520 çip, 252 hap).
+- Ek düzeltme: junk oyu sayfayı arşiv dibine atıyordu (taşınan kartın çapası takip ediliyordu) → artık sıradaki incelenmemiş karta dönüyor; arşiv kartında yeniden-junk ile test edildi, veri değişmedi.
+
+## 2026-10-03 — Oturum 27: review UX (not + atlama + filtre + görsel)
+
+- Kullanıcı isteği: kart-notu, sonraki-kart, filtre/sıralama, az ilkel görünüm. Hepsi aynı dosyada, frameworksüz.
+- Kart-notu: `patterns.review_note` kolonu (schema.sql + sunucu açılışında `add column if not exists`); kartta not formu, kaydedince aynı karta dönüş. Karışık kart sorununa (Oturum 25) kısmi çözüm.
+- Atlama: başlıkta ilerleme (1/250 %0) + "sıradaki #id" çapası; oylama/not sonrası aynı karta dönüş (303 → `#p-id`).
+- Filtre (`?f=all|unreviewed|interesting|seen|junk`) + dizme (`?sort=size|id|new`); arşiv bölümü yalnız `f=all`'da.
+- Görsel: kart çerçevesi, yapışkan başlık, not şeridi, büyük butonlar.
+- Doğrulama: typecheck temiz; filtreli sayfa (249 kart + 249 form), not kaydet/temizle arşiv kartında test edilip iz silindi (junk/archived bozulmadı).
+
 ## 2026-10-03 — Oturum 25: review granülarite açığı (kullanıcı bulgusu)
 
 - Sorun: kart altı karışık — aynı cluster'da tanıtım çöpü + gerçek sinyal bir arada; ama karar kart-seviyesinde ikili (BU/junk). İkisi birden doğru olabiliyor.
