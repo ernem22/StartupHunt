@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-10-04 — Oturum 38: etiketli set + `laya-evals` (B 0.86 vs C 0.64)
+
+- 36 satırlık etiketli set (`experiment/evals/startup-signal-v1.jsonl`): 24 çekişmeli (insan hükümlü) + 12 net (6/6).
+- `laya-evals run --slice language --slice tag`: genel choice_accuracy 0.639; agreement dilimi 1.000 (12/12, kendini tekrar — tutarlılık kanıtı); contested dilimi 0.458 (yazı-tura altı).
+- Aynı sette B (LLM): 31/36 = 0.861. Hüküm sayısal: B insanla hizalı, C değil.
+- Karar: C (mevcut soruyla) filtre adayı değil; soru-mühendisliği veya fine-tune olmadan üretime giremez. B teknik pilotu geçti; 50k kararı + B/C cluster insan oyu (human_verdict) sıradaki.
+
 ## 2026-10-04 — Oturum 37: Laya önerilen kullanım (staged-adoption + evals)
 
 - Dokümanlar tasarımımızı doğruladı: shadow (üretim yetkili, Laya yalnız kaydedilir), disagreement=sinyal (bizim %48), eşik politikası held-out veriden, soru metni değişimi = yeni deney (bizim v1→v2).
