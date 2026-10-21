@@ -646,7 +646,9 @@ Makine sürekli açık olmayacak → her adapter **resume/catch-up** tasarlanır
 
 ## Kapsam Dışı
 
-* Scoring, opportunity engine, market analysis
+> 2026-10-21 güncellemesi: #18 "Fırsat motoru v1" ile "opportunity engine" bu yasaktan çıkarıldı; fırsat katmanı v1 kapsam içine alındı. Aşağıdaki diğer maddeler (skor, market analizi, gelir tahmini, fikir üretme) kapsam dışı kalır.
+
+* Scoring, market analysis
 * Startup idea generation, market size, willingness-to-pay, founder-fit
 * Fikir üretme (amaç sinyal bulmak; yorum kullanıcıya kalıyor)
 

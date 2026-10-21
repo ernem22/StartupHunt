@@ -110,6 +110,48 @@ create table if not exists adapter_state (
   counters        jsonb not null default '{}'
 );
 
+-- Fırsat katmanı (fırsat motoru v1)
+create table if not exists opportunities (
+  id              bigserial primary key,
+  opportunity_key text not null unique,
+  actor           text not null,
+  job             text not null,
+  problem         text not null,
+  workaround      text,
+  cost_time       text,
+  cost_money      text,
+  frequency       text,
+  source_count    integer not null default 0,
+  communities     text[] not null default '{}',
+  first_seen      timestamptz,
+  last_seen       timestamptz,
+  created_at      timestamptz not null default now(),
+  updated_at      timestamptz not null default now()
+);
+
+create table if not exists opportunity_evidence (
+  id                bigserial primary key,
+  observation_id    bigint not null references observations(id) on delete cascade,
+  opportunity_key   text not null references opportunities(opportunity_key) on delete cascade,
+  actor             text not null,
+  job               text not null,
+  problem           text not null,
+  workaround        text,
+  cost_time         text,
+  cost_money        text,
+  frequency         text,
+  quote             text not null,
+  source            text not null,
+  source_url        text not null,
+  author            text,
+  observed_at       timestamptz,
+  language          text,
+  extractor         text not null,
+  created_at        timestamptz not null default now(),
+  unique (observation_id, opportunity_key)
+);
+create index if not exists idx_oe_key on opportunity_evidence (opportunity_key);
+
 -- View: pattern kaynakları (kolon değil — plan v3.1 kararı)
 create or replace view v_pattern_sources as
 select po.pattern_id,

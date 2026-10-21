@@ -1,0 +1,30 @@
+{
+  "extractions": {
+    "hackernews:hn-1001": [
+      {
+        "actor": "one-person agency owner",
+        "job": "invoicing",
+        "problem": "invoices are copied from Gmail into a spreadsheet by hand every month",
+        "workaround": "copy invoices from Gmail into a spreadsheet by hand",
+        "costTime": "4 hours/month",
+        "costMoney": null,
+        "frequency": "monthly",
+        "quote": "every month I copy invoices from Gmail into a spreadsheet by hand",
+        "language": "en"
+      }
+    ],
+    "stackexchange:se-2002": [
+      {
+        "actor": "one-person agency owner",
+        "job": "invoicing",
+        "problem": "invoices are copied from Gmail into a spreadsheet by hand every month",
+        "workaround": "export invoices from Gmail to a spreadsheet manually",
+        "costTime": "half a day/month",
+        "costMoney": null,
+        "frequency": "monthly",
+        "quote": "I still export invoices from Gmail to a spreadsheet manually",
+        "language": "en"
+      }
+    ]
+  }
+}
