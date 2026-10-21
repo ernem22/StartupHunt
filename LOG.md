@@ -431,3 +431,23 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 1. **3060'da:** Docker kurulumu → compose up → KURULUM.md akışını uçtan uca çalıştır (collect 50k → clean → embed → recluster) → LOG'a sonuçları yaz
 2. GITHUB_TOKEN al (backfill hızını 10/dk → 5000/saat'e çıkarır)
 3. İlk veri gelince: TR/EN çift pilot testi (plan FAZ 6, Açık Soru 3) + outlier oranı ölçümü (Açık Soru 7)
+
+
+---
+
+## 2026-10-21 — Oturum 27: opportunity test seam (#19)
+
+### Ne yapıldı
+- Test altyapısı: `pnpm test` (`node:test` + `tsx`), canlı ağ/LLM yok. Fixture extractor quote'u observation metninin birebir alt dizisi olarak doğruluyor.
+- DB smoke testi: `TEST_DATABASE_URL` varsa rastgele şema açar, `db/schema.sql` uygular, fixture observation'ları seed eder, `pnpm opportunities build --fixture ...` + `digest --format json` çalıştırır, çıktıyı ve DB satırlarını doğrular, şemayı düşürür. `TEST_DATABASE_URL` yoksa gerekçeli `SKIP`.
+- Seam: `src/opportunities/{types,key,build,digest,cli}.ts` + `extractors/fixture.ts`; şemaya `opportunities` ve `opportunity_evidence` tabloları eklendi. Komutlar: `pnpm opportunities build --fixture <path>`, `pnpm opportunities digest --format json`. Markdown çıktısı #22'ye bırakıldı.
+- Hata mesajları `build seam` / `digest seam` etiketiyle hangi adımda koptuğunu söylüyor. İkinci `build` duplicate üretmiyor (idempotent upsert).
+- `tsconfig.test.json` testleri de kapsıyor; `pnpm typecheck` temiz.
+
+### Doğrulama
+- `pnpm typecheck` PASS.
+- `pnpm test` PASS: fixture extractor testi koştu; DB smoke testi bu laptopta `TEST_DATABASE_URL` yok diye SKIP.
+- **3060'a bekleme:** `TEST_DATABASE_URL` verilerek tam DB smoke koşumu yapılmalı (pgvector şart). Bu laptopta DB/Docker yok.
+
+### Sonraki adım
+- #20 opportunity tracer bullet: sıkı kapı (aktör, iş, workaround/harcama, bağımsızlık, quote+link+tarih), `noise_reason` ile signal arşivi ve tek kartlık digest bu seam üzerine yazılacak.
