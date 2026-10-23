@@ -3,9 +3,12 @@
 > Kural: her anlamlı adım buraya yazılır — tarih, ne yapıldı, sonuç, sonraki adım.
 
 ---
----
 
----
+## 2026-10-20 — Oturum 26: veri kaynakları araştırması (fikir-avı kaynak envanteri)
+
+- `research_notes/Startup fikri yakalama teknikleri/data_kaynaklari.md` üretildi: Reddit(Arctic Shift dump+incremental API canlı, 2005→2025-12 dump ~3.8TB), HN(Algolia+Firebase API canlı teyit), SE dump(login'li CC BY-SA), ekşi sözlük(robots.txt çekildi: normal crawl Allow/, AI-botlar disallow + Content-Signal ai-train=no), Play/Apple review API sınırları, Trustpilot 2025 ToS scrape-yasağı, Apify/Firecrawl fiyat benchmarkları.
+- Kod değişikliği yok; kaynak-seçim kararı için bilgisal çıktı.
+- Sonraki adım: ekşi sözlük TR/EN split testi (FAZ14 kuralı) + arctic-shift API dry-run adapter değerlendirmesi.
 
 ## 2026-10-03 — Oturum 25: review granülarite açığı (kullanıcı bulgusu)
 
@@ -451,3 +454,35 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 
 ### Sonraki adım
 - #20 opportunity tracer bullet: sıkı kapı (aktör, iş, workaround/harcama, bağımsızlık, quote+link+tarih), `noise_reason` ile signal arşivi ve tek kartlık digest bu seam üzerine yazılacak.
+
+---
+
+## 2026-10-20 — Araştırma oturumu: "Startup fikri tespiti / topluluk metni madenciliği" uygulamaları
+
+### Ne yapıldı
+- Deep-research koşumu (15 araç çağrısı limiti; 2 sorgu 429 hatasıyla boşa gitti): startup fikri tespit pazarının 2026 envanteri.
+- Çıktı: `research_notes/Startup fikri yakalama teknikleri/uygulamalar.md` (K1-K5, kaynak linkli; temiz Türkçe)
+- Bu oturum boyunca üç defa tam-dosya yazım denemesi mojibake/karışık-alfabebozuk Türkçe üretti; çözüm: dosyayı bölüm-bölüm kısa parçalarla Write + Edit ile yazıp her parça Read ile doğrulandı. (Konsol çıktısı codepage yüzünden bozuk görünüyor; Read aracı UTF-8 doğru gösteriyor; dosya UTF-8 sağlam.)
+
+### Ana bulgular (StartupHunt açısından)
+- Platform riski pazarın #1 ölüm nedeni: GummySearch (35K MRR, 135-140K kullanıcı, kârlı) Reddit ticari API lisans anlaşmazlığıyla kapanıyor (1 Aralık 2026 tam silme). "Scraper/proxy yok + multi-source + resmi API" mimarisi pazarın kanıtlanmış en büyük riskine cevap.
+- Kanıt standardı 2026'da permalink + upvote + verbatim; LLM skorları kanıt değil (IdeaBrowser kendi FAQ'ında "assumption" uyarısı).
+- GitHub issue madenciliği (ghscout, DemandRadar) 2026'da hâlâ açık kaynak aşamasında → ticari boşluk.
+- Verdict dilleri (BUILD/SKIP/WATCH; BUILD/PIVOT/PASS) pazarın ortak UI diline girdi; insan-onay (BU) modeliyle uyumlu.
+
+### Sonraki adım
+- Araştırma serisinin kalan dosyaları (teknikler.md, pipeline_teknikleri.md, data_kaynaklari.md mevcut) ile plan.md v3.2'ye "öncelik/hipotez" güncellemesi getirilebilir (öneri: GitHub kaynak adaptör önceliği tartışılmalı). Bu oturumda plan değişikliği YAPILMADI — yalnızca araştırma notu.
+
+---
+
+## 2026-10-23 — Oturum 28: CI guardrail + agent workflow docs
+
+### Ne yapıldı
+- `chore/ci-guardrails`: `.github/workflows/ci.yml` — PR/push'ta `pnpm typecheck` + `pgvector/pgvector:pg16` service üzerinde `db/schema.sql` apply + `TEST_DATABASE_URL` ile `pnpm test`. Test adımı `package.json`'da test script'i yokken gerekçeli skip eder; #19 merge edilince otomatik etkinleşir. PR #34.
+- `chore/agent-workflow`: `AGENTS.md`'ye clean-tree + branch sırası + `package.json` komut pointer'ı + plan/CI/scratch/Docker notları; `docs/agents/issue-tracker.md`'ye PowerShell-safe `gh` reçeteleri ve `gh pr edit` REST fallback'i; `CODING_STANDARDS.md` (3 judgement-call kuralı). PR #35; #33 superseded.
+- Ürün kodu değişikliği yok.
+
+### Sonraki adım
+- CI PR'ı landikten sonra #19 branch'ini main'e göre güncelle/CI'ı çalıştır; DB smoke artık 3060'a bağımlı değil.
+
+
