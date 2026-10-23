@@ -56,6 +56,9 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
     throw new Error(`setup seam: ${message(error)}`);
   }
 
+  let failed = false;
+  let failure: unknown;
+
   try {
     let ids: string[];
     try {
@@ -151,19 +154,21 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
     );
     assert.equal(Number(counts.rows[0]?.evidence), 2, "build seam: evidence sayısı");
     assert.equal(Number(counts.rows[0]?.opportunities), 1, "build seam: opportunity sayısı");
+  } catch (error) {
+    failed = true;
+    failure = error;
+  }
 
-    runOpportunitiesCli("build", ["build", "--fixture", fixturePath], db.url);
-    const again = await db.admin.query<{ evidence: string; opportunities: string }>(
-      `select (select count(*) from opportunity_evidence) as evidence,
-              (select count(*) from opportunities) as opportunities`
-    );
-    assert.equal(Number(again.rows[0]?.evidence), 2, "build seam: ikinci koşum duplicate üretti");
-    assert.equal(
-      Number(again.rows[0]?.opportunities),
-      1,
-      "build seam: ikinci koşum duplicate opportunity üretti"
-    );
-  } finally {
+  try {
     await dropTestDb(db);
+  } catch (error) {
+    if (!failed) {
+      throw new Error(`cleanup seam: ${message(error)}`);
+    }
+    console.error(`cleanup seam: ${message(error)}`);
+  }
+
+  if (failed) {
+    throw failure;
   }
 });

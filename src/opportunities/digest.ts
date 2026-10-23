@@ -2,7 +2,6 @@ import { withDb } from "../db.js";
 
 export interface OpportunityCard {
   id: string;
-  title: string;
   actor: string;
   job: string;
   problem: string;
@@ -73,7 +72,6 @@ export async function runDigest(): Promise<Digest> {
 
     const cards = result.rows.map((row) => ({
       id: row.opportunity_key,
-      title: row.problem,
       actor: row.actor,
       job: row.job,
       problem: row.problem,
