@@ -304,8 +304,8 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
       `select (select count(*) from opportunity_evidence) as evidence,
               (select count(*) from opportunities) as opportunities`
     );
-    assert.equal(Number(counts.rows[0]?.evidence), 3, "build seam: evidence sayısı");
-    assert.equal(Number(counts.rows[0]?.opportunities), 2, "build seam: opportunity sayısı");
+    assert.equal(Number(counts.rows[0]?.evidence), 5, "build seam: evidence sayısı");
+    assert.equal(Number(counts.rows[0]?.opportunities), 3, "build seam: opportunity sayısı");
   } catch (error) {
     failed = true;
     failure = error;
