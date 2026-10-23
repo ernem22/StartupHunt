@@ -32,3 +32,17 @@
 
 ## Dosya haritası
 - `plan.md` v3.2 (tek karar kaynağı) · `LOG.md` (geliştirme günlüğü) · `db/schema.sql` · `docker-compose.yml` · `cluster/{recluster,assign}.py` · `src/adapters/*` (collect kontratı: types.ts) · `src/pipeline/{clean,embed}.ts` · `src/config.ts` (SUBREDDITS 10, BACKFILL_SINCE=18 ay)
+
+## Agent skills
+
+### Issue tracker
+
+Issue'lar GitHub Issues'ta tutulur (`ernem22/StartupHunt`, `gh` CLI). Ayrıntı: `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Varsayılan beş triage etiketi kullanılır: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. Ayrıntı: `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: kökte `CONTEXT.md`, kararlar `docs/adr/` altında. Ayrıntı: `docs/agents/domain.md`.
