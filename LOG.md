@@ -502,4 +502,21 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 ### Sonraki adım
 - CI yeşilse merge + #20 kapat; sırada #21 (independence/dedupe/signal archive derinleştirme).
 
+---
+
+## 2026-10-24 — Oturum 30: independence, dedupe ve signal archive (#21)
+
+### Ne yapıldı
+- Bağımsız kaynak sayısı deterministik: aynı normalize metin, aynı thread (`metadata.thread_url`; yoksa `source_url`) ve aynı yazar tek kaynak sayılıyor (union-find). `sourceCount` artık bu bağımsız kaynak sayısı.
+- Varsayılan 2 bağımsız kaynak; tek kaynak yalnızca `nextStepMinutes <= 15` istisnasıyla geçiyor. Aynı thread'in çok yorumu tek kaynak ve `same_thread` gerekçesiyle signal.
+- Yakın-duplicate metinler tek fırsatta birleşiyor (tek kart).
+- `opportunity_signals` tablosuna `source_count` eklendi; reddedilen adaylar silinmiyor, gerekçe + kaynak sayısı + draft ile sorgulanabilir kalıyor.
+- Smoke test: tek kaynak, aynı thread çifti, iki bağımsız kaynak, yakın-duplicate çifti, aktörsüz aday; ikinci build idempotency ve stabil JSON.
+
+### Doğrulama
+- `pnpm typecheck` PASS; `pnpm test` lokal 1 PASS + 1 SKIP (DB yok). DB smoke CI'da koşacak.
+
+### Sonraki adım
+- CI yeşilse merge + #21 kapat; sırada #22 (worth-it gate + kotasız digest).
+
 
