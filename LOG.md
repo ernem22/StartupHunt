@@ -453,3 +453,15 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 ### Sonraki adım
 - Araştırma serisinin kalan dosyaları (teknikler.md, pipeline_teknikleri.md, data_kaynaklari.md mevcut) ile plan.md v3.2'ye "öncelik/hipotez" güncellemesi getirilebilir (öneri: GitHub kaynak adaptör önceliği tartışılmalı). Bu oturumda plan değişikliği YAPILMADI — yalnızca araştırma notu.
 
+---
+
+## 2026-10-23 — Oturum 28: CI guardrail + agent workflow docs
+
+### Ne yapıldı
+- `chore/ci-guardrails`: `.github/workflows/ci.yml` — PR/push'ta `pnpm typecheck` + `pgvector/pgvector:pg16` service üzerinde `db/schema.sql` apply + `TEST_DATABASE_URL` ile `pnpm test`. Test adımı `package.json`'da test script'i yokken gerekçeli skip eder; #19 merge edilince otomatik etkinleşir. PR #34.
+- `chore/agent-workflow`: `AGENTS.md`'ye clean-tree + branch sırası + `package.json` komut pointer'ı + plan/CI/scratch/Docker notları; `docs/agents/issue-tracker.md`'ye PowerShell-safe `gh` reçeteleri ve `gh pr edit` REST fallback'i; `CODING_STANDARDS.md` (3 judgement-call kuralı). #33 bu PR'a taşındı.
+- Ürün kodu değişikliği yok.
+
+### Sonraki adım
+- CI PR'ı landikten sonra #19 branch'ini main'e göre güncelle/CI'ı çalıştır; DB smoke artık 3060'a bağımlı değil.
+

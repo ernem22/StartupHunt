@@ -13,6 +13,13 @@ Issues and PRDs for this repo live as GitHub issues in `ernem22/StartupHunt`. Us
 
 Branch workflow for this repo is defined in `AGENTS.md`: every change gets a `feat/<konu>` or `fix/<konu>` branch and a PR against `main`.
 
+## Windows PowerShell 5.1
+
+- Basit, tek satır filtrelerde `--jq '...'` güvenli.
+- İç içe tırnak/backtick gereken filtrelerde JSON'u PowerShell'e bırak: `gh issue list --json number,title,labels | ConvertFrom-Json`.
+- Alternatif: `gh issue list --template '{{range .}}{{.number}} {{.title}}{{"\n"}}{{end}}'`.
+- `gh pr edit` "Projects (classic)" GraphQL hatası verirse body'yi REST ile güncelle: `gh api --method PATCH repos/<owner>/<repo>/pulls/<n> --input body.json` (JSON: `{"body":"..."}`).
+
 ## Pull requests as a triage surface
 
 **PRs as a request surface: no.** _(Set to `yes` if this repo treats external PRs as feature requests; `/triage` reads this flag.)_
