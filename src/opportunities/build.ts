@@ -15,11 +15,66 @@ interface ObservationRow {
   language: string | null;
 }
 
+export type RejectReason =
+  | "missing_actor"
+  | "missing_job"
+  | "missing_problem"
+  | "missing_workaround_or_spend"
+  | "missing_quote"
+  | "missing_link"
+  | "missing_date"
+  | "same_thread"
+  | "missing_next_step";
+
 export interface BuildStats {
   observations: number;
   evidence: number;
   opportunities: number;
+  signals: number;
   skipped: number;
+}
+
+interface DraftEntry {
+  observation: ObservationForExtraction;
+  draft: EvidenceDraft;
+}
+
+interface DraftGroup {
+  key: string;
+  entries: DraftEntry[];
+}
+
+function isBlank(value: string | null | undefined): boolean {
+  return !value || value.trim().length === 0;
+}
+
+function nextStepOf(entries: DraftEntry[]): string | null {
+  for (const { draft } of entries) {
+    if (!isBlank(draft.nextStep)) return draft.nextStep!.trim();
+  }
+  return null;
+}
+
+function rejectReason(entries: DraftEntry[]): RejectReason | null {
+  for (const { draft } of entries) {
+    if (isBlank(draft.actor)) return "missing_actor";
+    if (isBlank(draft.job)) return "missing_job";
+    if (isBlank(draft.problem)) return "missing_problem";
+  }
+  const hasWork = entries.some(
+    ({ draft }) =>
+      !isBlank(draft.workaround) || !isBlank(draft.costTime) || !isBlank(draft.costMoney)
+  );
+  if (!hasWork) return "missing_workaround_or_spend";
+  if (entries.some(({ draft }) => isBlank(draft.quote))) return "missing_quote";
+  if (entries.some(({ observation }) => isBlank(observation.sourceUrl))) return "missing_link";
+  if (entries.some(({ observation }) => !observation.observedAt)) return "missing_date";
+
+  const urls = new Set(entries.map(({ observation }) => observation.sourceUrl));
+  if (entries.length > 1 && urls.size < entries.length) return "same_thread";
+
+  if (!nextStepOf(entries)) return "missing_next_step";
+  return null;
 }
 
 export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats> {
@@ -31,8 +86,8 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
            from observations
           order by id`
       );
-      const touched = new Set<string>();
-      let evidence = 0;
+
+      const groups = new Map<string, DraftEntry[]>();
       let withEvidence = 0;
 
       for (const row of result.rows) {
@@ -52,11 +107,38 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
         withEvidence++;
         for (const draft of drafts) {
           const key = opportunityKey(draft);
-          await upsertOpportunity(client, key, draft);
-          await upsertEvidence(client, key, observation, draft, extractor.name);
-          touched.add(key);
+          const entries = groups.get(key) ?? [];
+          entries.push({ observation, draft });
+          groups.set(key, entries);
+        }
+      }
+
+      let evidence = 0;
+      let signals = 0;
+      const touched = new Set<string>();
+
+      for (const [key, entries] of groups) {
+        const reason = rejectReason(entries);
+        if (reason) {
+          for (const entry of entries) {
+            await upsertSignal(client, key, entry, reason);
+            signals++;
+          }
+          await client.query("delete from opportunities where opportunity_key = $1", [key]);
+          continue;
+        }
+
+        const nextStep = nextStepOf(entries);
+        for (const entry of entries) {
+          await upsertOpportunity(client, key, entry.draft, nextStep);
+          await upsertEvidence(client, key, entry, nextStep, extractor.name);
           evidence++;
         }
+        await client.query(
+          "delete from opportunity_signals where observation_id = any($1::bigint[])",
+          [entries.map(({ observation }) => observation.id)]
+        );
+        touched.add(key);
       }
 
       if (touched.size > 0) {
@@ -87,6 +169,7 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
         observations: result.rows.length,
         evidence,
         opportunities: touched.size,
+        signals,
         skipped: result.rows.length - withEvidence,
       };
     } catch (error) {
@@ -99,12 +182,13 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
 async function upsertOpportunity(
   client: pg.PoolClient,
   key: string,
-  draft: EvidenceDraft
+  draft: EvidenceDraft,
+  nextStep: string | null
 ): Promise<void> {
   await client.query(
     `insert into opportunities
-       (opportunity_key, actor, job, problem, workaround, cost_time, cost_money, frequency)
-     values ($1, $2, $3, $4, $5, $6, $7, $8)
+       (opportunity_key, actor, job, problem, workaround, cost_time, cost_money, frequency, next_step)
+     values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
      on conflict (opportunity_key) do update
        set actor = excluded.actor,
            job = excluded.job,
@@ -113,6 +197,7 @@ async function upsertOpportunity(
            cost_time = coalesce(opportunities.cost_time, excluded.cost_time),
            cost_money = coalesce(opportunities.cost_money, excluded.cost_money),
            frequency = coalesce(opportunities.frequency, excluded.frequency),
+           next_step = coalesce(opportunities.next_step, excluded.next_step),
            updated_at = now()`,
     [
       key,
@@ -123,6 +208,7 @@ async function upsertOpportunity(
       draft.costTime,
       draft.costMoney,
       draft.frequency,
+      nextStep,
     ]
   );
 }
@@ -130,16 +216,17 @@ async function upsertOpportunity(
 async function upsertEvidence(
   client: pg.PoolClient,
   key: string,
-  observation: ObservationForExtraction,
-  draft: EvidenceDraft,
+  entry: DraftEntry,
+  nextStep: string | null,
   extractor: string
 ): Promise<void> {
+  const { observation, draft } = entry;
   await client.query(
     `insert into opportunity_evidence
        (observation_id, opportunity_key, actor, job, problem, workaround,
-        cost_time, cost_money, frequency, quote, source, source_url, author,
+        cost_time, cost_money, frequency, next_step, quote, source, source_url, author,
         observed_at, language, extractor)
-     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
      on conflict (observation_id, opportunity_key) do update
        set actor = excluded.actor,
            job = excluded.job,
@@ -148,6 +235,7 @@ async function upsertEvidence(
            cost_time = excluded.cost_time,
            cost_money = excluded.cost_money,
            frequency = excluded.frequency,
+           next_step = excluded.next_step,
            quote = excluded.quote,
            source = excluded.source,
            source_url = excluded.source_url,
@@ -165,6 +253,7 @@ async function upsertEvidence(
       draft.costTime,
       draft.costMoney,
       draft.frequency,
+      nextStep,
       draft.quote,
       observation.source,
       observation.sourceUrl,
@@ -173,5 +262,22 @@ async function upsertEvidence(
       draft.language ?? observation.language,
       extractor,
     ]
+  );
+}
+
+async function upsertSignal(
+  client: pg.PoolClient,
+  key: string,
+  entry: DraftEntry,
+  reason: RejectReason
+): Promise<void> {
+  await client.query(
+    `insert into opportunity_signals (observation_id, opportunity_key, reason, draft)
+     values ($1, $2, $3, $4)
+     on conflict (observation_id, opportunity_key) do update
+       set reason = excluded.reason,
+           draft = excluded.draft,
+           created_at = now()`,
+    [entry.observation.id, key, reason, JSON.stringify(entry.draft)]
   );
 }

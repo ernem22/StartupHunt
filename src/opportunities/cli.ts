@@ -24,7 +24,7 @@ async function main(): Promise<void> {
     }
     const stats = await runBuild(new FixtureEvidenceExtractor(fixture));
     console.log(
-      `build: observations=${stats.observations} evidence=${stats.evidence} opportunities=${stats.opportunities} skipped=${stats.skipped}`
+      `build: observations=${stats.observations} evidence=${stats.evidence} opportunities=${stats.opportunities} signals=${stats.signals} skipped=${stats.skipped}`
     );
     return;
   }

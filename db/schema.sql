@@ -121,6 +121,7 @@ create table if not exists opportunities (
   cost_time       text,
   cost_money      text,
   frequency       text,
+  next_step       text,
   source_count    integer not null default 0,
   communities     text[] not null default '{}',
   first_seen      timestamptz,
@@ -140,6 +141,7 @@ create table if not exists opportunity_evidence (
   cost_time         text,
   cost_money        text,
   frequency         text,
+  next_step         text,
   quote             text not null,
   source            text not null,
   source_url        text not null,
@@ -151,6 +153,20 @@ create table if not exists opportunity_evidence (
   unique (observation_id, opportunity_key)
 );
 create index if not exists idx_oe_key on opportunity_evidence (opportunity_key);
+
+alter table opportunities add column if not exists next_step text;
+alter table opportunity_evidence add column if not exists next_step text;
+
+create table if not exists opportunity_signals (
+  id              bigserial primary key,
+  observation_id  bigint not null references observations(id) on delete cascade,
+  opportunity_key text not null,
+  reason          text not null,
+  draft           jsonb not null,
+  created_at      timestamptz not null default now(),
+  unique (observation_id, opportunity_key)
+);
+create index if not exists idx_os_key on opportunity_signals (opportunity_key);
 
 -- View: pattern kaynakları (kolon değil — plan v3.1 kararı)
 create or replace view v_pattern_sources as
