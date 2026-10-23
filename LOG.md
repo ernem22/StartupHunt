@@ -438,7 +438,7 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 ## 2026-10-21 — Oturum 27: opportunity test seam (#19)
 
 ### Ne yapıldı
-- Test altyapısı: `pnpm test` (`node:test` + `tsx`), canlı ağ/LLM yok. Fixture extractor quote'u observation metninin birebir alt dizisi olarak doğruluyor.
+- Test altyapısı: `pnpm test` (`node:test` + `tsx`), canlı ağ/LLM yok. Fixture extractor quote'u observation metninin birebir alt dizisi olarak doğruluyor. `TEST_DATABASE_URL` `.env`'den de okunur (dotenv; shell env öncelikli).
 - DB smoke testi: `TEST_DATABASE_URL` varsa rastgele şema açar, `db/schema.sql` uygular, fixture observation'ları seed eder, `pnpm opportunities build --fixture ...` + `digest --format json` çalıştırır, çıktıyı ve DB satırlarını doğrular, şemayı düşürür. `TEST_DATABASE_URL` yoksa gerekçeli `SKIP`.
 - Seam: `src/opportunities/{types,key,build,digest,cli}.ts` + `extractors/fixture.ts`; şemaya `opportunities` ve `opportunity_evidence` tabloları eklendi. Komutlar: `pnpm opportunities build --fixture <path>`, `pnpm opportunities digest --format json`. Markdown çıktısı #22'ye bırakıldı.
 - Hata mesajları `build seam` / `digest seam` etiketiyle hangi adımda koptuğunu söylüyor. Idempotency assert'i #20'ye bırakıldı.
