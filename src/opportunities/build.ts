@@ -13,6 +13,7 @@ interface ObservationRow {
   author: string | null;
   observed_at: Date | null;
   language: string | null;
+  thread_url: string | null;
 }
 
 export type RejectReason =
@@ -37,6 +38,7 @@ export interface BuildStats {
 interface DraftEntry {
   observation: ObservationForExtraction;
   draft: EvidenceDraft;
+  threadUrl: string;
 }
 
 interface DraftGroup {
@@ -70,7 +72,7 @@ function rejectReason(entries: DraftEntry[]): RejectReason | null {
   if (entries.some(({ observation }) => isBlank(observation.sourceUrl))) return "missing_link";
   if (entries.some(({ observation }) => !observation.observedAt)) return "missing_date";
 
-  const urls = new Set(entries.map(({ observation }) => observation.sourceUrl));
+  const urls = new Set(entries.map(({ threadUrl }) => threadUrl));
   if (entries.length > 1 && urls.size < entries.length) return "same_thread";
 
   if (!nextStepOf(entries)) return "missing_next_step";
@@ -82,7 +84,8 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
     await client.query("begin");
     try {
       const result = await client.query<ObservationRow>(
-        `select id, source, source_id, source_url, title, text, author, observed_at, language
+        `select id, source, source_id, source_url, title, text, author, observed_at, language,
+                metadata->>'thread_url' as thread_url
            from observations
           order by id`
       );
@@ -108,7 +111,11 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
         for (const draft of drafts) {
           const key = opportunityKey(draft);
           const entries = groups.get(key) ?? [];
-          entries.push({ observation, draft });
+          entries.push({
+            observation,
+            draft,
+            threadUrl: row.thread_url ?? row.source_url,
+          });
           groups.set(key, entries);
         }
       }

@@ -490,7 +490,7 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 ## 2026-10-24 — Oturum 29: opportunity tracer bullet (#20)
 
 ### Ne yapıldı
-- Sıkı kapı `src/opportunities/build.ts` içinde deterministik: isimlendirilmiş aktör, spesifik iş/problem, workaround veya harcama, quote/link/tarih, next_step ve bağımsız kaynak. Aynı thread (aynı source_url) birden çok yorumla temsil edilirse reddedilir; tek kaynak yalnızca somut next_step ile geçer.
+- Sıkı kapı `src/opportunities/build.ts` içinde deterministik: isimlendirilmiş aktör, spesifik iş/problem, workaround veya harcama, quote/link/tarih, next_step ve bağımsız kaynak. Aynı thread (`metadata.thread_url`; yoksa `source_url`) birden çok yorumla temsil edilirse reddedilir; tek kaynak yalnızca somut next_step ile geçer.
 - Reddedilen adaylar `opportunity_signals` (observation_id + opportunity_key + reason + draft JSONB) tablosunda saklanır; geçen adayların eski sinyalleri silinir, düşen adayların opportunity kaydı kaldırılır.
 - `opportunities`/`opportunity_evidence` tablolarına `next_step` eklendi; digest kartı `nextStep` alanını taşıyor. `build` özeti `signals=` sayacı veriyor.
 - Smoke test: 7 observation (2 kaynaklı geçen, tek kaynak istisnası, aynı thread çifti, aktörsüz aday, extraction'sız), ikinci build idempotency ve JSON kart stabilitesi doğrulanıyor.
