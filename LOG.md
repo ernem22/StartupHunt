@@ -459,7 +459,7 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 
 ### Ne yapıldı
 - `chore/ci-guardrails`: `.github/workflows/ci.yml` — PR/push'ta `pnpm typecheck` + `pgvector/pgvector:pg16` service üzerinde `db/schema.sql` apply + `TEST_DATABASE_URL` ile `pnpm test`. Test adımı `package.json`'da test script'i yokken gerekçeli skip eder; #19 merge edilince otomatik etkinleşir. PR #34.
-- `chore/agent-workflow`: `AGENTS.md`'ye clean-tree + branch sırası + `package.json` komut pointer'ı + plan/CI/scratch/Docker notları; `docs/agents/issue-tracker.md`'ye PowerShell-safe `gh` reçeteleri ve `gh pr edit` REST fallback'i; `CODING_STANDARDS.md` (3 judgement-call kuralı). #33 bu PR'a taşındı.
+- `chore/agent-workflow`: `AGENTS.md`'ye clean-tree + branch sırası + `package.json` komut pointer'ı + plan/CI/scratch/Docker notları; `docs/agents/issue-tracker.md`'ye PowerShell-safe `gh` reçeteleri ve `gh pr edit` REST fallback'i; `CODING_STANDARDS.md` (3 judgement-call kuralı). PR #35; #33 superseded.
 - Ürün kodu değişikliği yok.
 
 ### Sonraki adım
