@@ -136,11 +136,21 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
           observedAt: new Date("2026-08-04T00:00:00.000Z"),
           language: "en",
         },
+        {
+          source: "stackexchange",
+          sourceId: "se-9009",
+          sourceUrl: "https://stackoverflow.com/q/9009",
+          title: "Receipts",
+          text: "I am an indie hacker and I file receipts by hand every month.",
+          author: "heidi",
+          observedAt: new Date("2026-08-05T00:00:00.000Z"),
+          language: "en",
+        },
       ]);
     } catch (error) {
       throw new Error(`seed seam: ${message(error)}`);
     }
-    assert.equal(ids.length, 7, "seed seam: yedi fixture observation seed edilemedi");
+    assert.equal(ids.length, 8, "seed seam: sekiz fixture observation seed edilemedi");
 
     const buildOut = runOpportunitiesCli(
       "build",
@@ -149,7 +159,7 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
     );
     assert.match(
       buildOut,
-      /build: observations=7 evidence=3 opportunities=2 signals=3 skipped=1/,
+      /build: observations=8 evidence=3 opportunities=2 signals=4 skipped=1/,
       "build seam: özet satırı beklenen sayıları vermedi"
     );
 
@@ -203,15 +213,15 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
     );
     assert.match(
       secondBuildOut,
-      /build: observations=7 evidence=3 opportunities=2 signals=3 skipped=1/,
+      /build: observations=8 evidence=3 opportunities=2 signals=4 skipped=1/,
       "build seam: ikinci koşum aynı sayıları vermedi"
     );
     const secondDigest = JSON.parse(
       runOpportunitiesCli("digest", ["digest", "--format", "json"], db.url)
     ) as Digest;
     assert.deepEqual(
-      secondDigest.cards,
-      digest.cards,
+      secondDigest,
+      digest,
       "digest seam: JSON çıktı stabil değil"
     );
 
@@ -236,8 +246,21 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
       [
         ["missing_actor", 1],
         ["same_thread", 2],
+        ["single_source_without_next_step", 1],
       ],
       "build seam: reddedilen adaylar gerekçesiyle saklanmadı"
+    );
+
+    const archived = await db.admin.query<{ quote: string }>(
+      `select draft->>'quote' as quote
+         from opportunity_signals s
+         join observations o on o.id = s.observation_id
+        where o.source_id = 'se-9009'`
+    );
+    assert.equal(
+      archived.rows[0]?.quote,
+      "I file receipts by hand every month",
+      "build seam: sinyal draft'ı saklanmadı"
     );
 
     const counts = await db.admin.query<{ evidence: string; opportunities: string }>(

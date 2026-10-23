@@ -24,7 +24,6 @@ export interface OpportunityCard {
 }
 
 export interface Digest {
-  generatedAt: string;
   cardCount: number;
   cards: OpportunityCard[];
 }
@@ -69,6 +68,7 @@ export async function runDigest(): Promise<Digest> {
             order by observed_at desc nulls last, id desc
             limit 1
          ) e on true
+        where o.source_count > 0
         order by o.opportunity_key`
     );
 
@@ -96,7 +96,6 @@ export async function runDigest(): Promise<Digest> {
     }));
 
     return {
-      generatedAt: new Date().toISOString(),
       cardCount: cards.length,
       cards,
     };

@@ -25,6 +25,7 @@ export type RejectReason =
   | "missing_link"
   | "missing_date"
   | "same_thread"
+  | "single_source_without_next_step"
   | "missing_next_step";
 
 export interface BuildStats {
@@ -39,11 +40,6 @@ interface DraftEntry {
   observation: ObservationForExtraction;
   draft: EvidenceDraft;
   threadUrl: string;
-}
-
-interface DraftGroup {
-  key: string;
-  entries: DraftEntry[];
 }
 
 function isBlank(value: string | null | undefined): boolean {
@@ -72,8 +68,12 @@ function rejectReason(entries: DraftEntry[]): RejectReason | null {
   if (entries.some(({ observation }) => isBlank(observation.sourceUrl))) return "missing_link";
   if (entries.some(({ observation }) => !observation.observedAt)) return "missing_date";
 
-  const urls = new Set(entries.map(({ threadUrl }) => threadUrl));
-  if (entries.length > 1 && urls.size < entries.length) return "same_thread";
+  const threadUrls = new Set(entries.map(({ threadUrl }) => threadUrl));
+  if (threadUrls.size === 1 && entries.length > 1) return "same_thread";
+  if (threadUrls.size === 1) {
+    const minutes = entries[0]?.draft.nextStepMinutes;
+    if (minutes == null || minutes > 15) return "single_source_without_next_step";
+  }
 
   if (!nextStepOf(entries)) return "missing_next_step";
   return null;
@@ -91,7 +91,7 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
       );
 
       const groups = new Map<string, DraftEntry[]>();
-      let withEvidence = 0;
+      let observationsWithDrafts = 0;
 
       for (const row of result.rows) {
         const observation: ObservationForExtraction = {
@@ -107,7 +107,7 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
         };
         const drafts = extractor.extract(observation);
         if (drafts.length === 0) continue;
-        withEvidence++;
+        observationsWithDrafts++;
         for (const draft of drafts) {
           const key = opportunityKey(draft);
           const entries = groups.get(key) ?? [];
@@ -131,19 +131,28 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
             await upsertSignal(client, key, entry, reason);
             signals++;
           }
-          await client.query("delete from opportunities where opportunity_key = $1", [key]);
+          await client.query(
+            `update opportunities
+                set source_count = 0,
+                    communities = '{}',
+                    updated_at = now()
+              where opportunity_key = $1`,
+            [key]
+          );
           continue;
         }
 
         const nextStep = nextStepOf(entries);
         for (const entry of entries) {
           await upsertOpportunity(client, key, entry.draft, nextStep);
-          await upsertEvidence(client, key, entry, nextStep, extractor.name);
+          await upsertEvidence(client, key, entry, extractor.name);
           evidence++;
         }
         await client.query(
-          "delete from opportunity_signals where observation_id = any($1::bigint[])",
-          [entries.map(({ observation }) => observation.id)]
+          `delete from opportunity_signals
+            where opportunity_key = $1
+              and observation_id = any($2::bigint[])`,
+          [key, entries.map(({ observation }) => observation.id)]
         );
         touched.add(key);
       }
@@ -158,7 +167,7 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
                   updated_at = now()
              from (
                select opportunity_key,
-                      count(distinct source_url)::int as source_count,
+                      count(distinct thread_url)::int as source_count,
                       array_agg(distinct source order by source) as communities,
                       min(observed_at) as first_seen,
                       max(observed_at) as last_seen
@@ -177,7 +186,7 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
         evidence,
         opportunities: touched.size,
         signals,
-        skipped: result.rows.length - withEvidence,
+        skipped: result.rows.length - observationsWithDrafts,
       };
     } catch (error) {
       await client.query("rollback");
@@ -204,7 +213,7 @@ async function upsertOpportunity(
            cost_time = coalesce(opportunities.cost_time, excluded.cost_time),
            cost_money = coalesce(opportunities.cost_money, excluded.cost_money),
            frequency = coalesce(opportunities.frequency, excluded.frequency),
-           next_step = coalesce(opportunities.next_step, excluded.next_step),
+           next_step = coalesce(excluded.next_step, opportunities.next_step),
            updated_at = now()`,
     [
       key,
@@ -224,14 +233,13 @@ async function upsertEvidence(
   client: pg.PoolClient,
   key: string,
   entry: DraftEntry,
-  nextStep: string | null,
   extractor: string
 ): Promise<void> {
   const { observation, draft } = entry;
   await client.query(
     `insert into opportunity_evidence
        (observation_id, opportunity_key, actor, job, problem, workaround,
-        cost_time, cost_money, frequency, next_step, quote, source, source_url, author,
+        cost_time, cost_money, frequency, quote, source, source_url, thread_url, author,
         observed_at, language, extractor)
      values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
      on conflict (observation_id, opportunity_key) do update
@@ -242,10 +250,10 @@ async function upsertEvidence(
            cost_time = excluded.cost_time,
            cost_money = excluded.cost_money,
            frequency = excluded.frequency,
-           next_step = excluded.next_step,
            quote = excluded.quote,
            source = excluded.source,
            source_url = excluded.source_url,
+           thread_url = excluded.thread_url,
            author = excluded.author,
            observed_at = excluded.observed_at,
            language = excluded.language,
@@ -260,10 +268,10 @@ async function upsertEvidence(
       draft.costTime,
       draft.costMoney,
       draft.frequency,
-      nextStep,
       draft.quote,
       observation.source,
       observation.sourceUrl,
+      entry.threadUrl,
       observation.author,
       observation.observedAt,
       draft.language ?? observation.language,

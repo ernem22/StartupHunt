@@ -141,10 +141,10 @@ create table if not exists opportunity_evidence (
   cost_time         text,
   cost_money        text,
   frequency         text,
-  next_step         text,
   quote             text not null,
   source            text not null,
   source_url        text not null,
+  thread_url        text not null,
   author            text,
   observed_at       timestamptz,
   language          text,
@@ -155,7 +155,7 @@ create table if not exists opportunity_evidence (
 create index if not exists idx_oe_key on opportunity_evidence (opportunity_key);
 
 alter table opportunities add column if not exists next_step text;
-alter table opportunity_evidence add column if not exists next_step text;
+alter table opportunity_evidence add column if not exists thread_url text;
 
 create table if not exists opportunity_signals (
   id              bigserial primary key,

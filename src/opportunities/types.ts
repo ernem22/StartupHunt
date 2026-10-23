@@ -19,6 +19,7 @@ export interface EvidenceDraft {
   costMoney: string | null;
   frequency: string | null;
   nextStep: string | null;
+  nextStepMinutes: number | null;
   quote: string;
   language: string | null;
 }

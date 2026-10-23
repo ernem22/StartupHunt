@@ -10,6 +10,7 @@
         "costMoney": null,
         "frequency": "monthly",
         "nextStep": "Spend 15 minutes checking whether a saved Gmail search plus CSV export removes the manual copy",
+        "nextStepMinutes": 15,
         "quote": "every month I copy invoices from Gmail into a spreadsheet by hand",
         "language": "en"
       }
@@ -24,6 +25,7 @@
         "costMoney": null,
         "frequency": "monthly",
         "nextStep": "Test one Gmail filter that labels invoice mail and exports it to CSV",
+        "nextStepMinutes": 15,
         "quote": "I still export invoices from Gmail to a spreadsheet manually",
         "language": "en"
       }
@@ -38,6 +40,7 @@
         "costMoney": null,
         "frequency": "quarterly",
         "nextStep": "Spend 15 minutes checking whether the tax portal accepts a CSV upload",
+        "nextStepMinutes": 15,
         "quote": "I retype quarterly tax forms by hand",
         "language": "en"
       }
@@ -52,6 +55,7 @@
         "costMoney": null,
         "frequency": "quarterly",
         "nextStep": "Spend 15 minutes checking whether the tax portal accepts a CSV upload",
+        "nextStepMinutes": 15,
         "quote": "I retype quarterly tax forms by hand every quarter",
         "language": "en"
       }
@@ -66,6 +70,7 @@
         "costMoney": null,
         "frequency": "monthly",
         "nextStep": "List the payroll steps that could be exported",
+        "nextStepMinutes": 15,
         "quote": "payroll takes me a full day",
         "language": "en"
       }
@@ -80,7 +85,23 @@
         "costMoney": null,
         "frequency": "weekly",
         "nextStep": "Spend 15 minutes checking if a report template removes the manual copy",
+        "nextStepMinutes": 15,
         "quote": "I copy metrics into slides by hand every week",
+        "language": "en"
+      }
+    ],
+    "stackexchange:se-9009": [
+      {
+        "actor": "indie hacker",
+        "job": "expense tracking",
+        "problem": "receipts are filed by hand",
+        "workaround": "file receipts by hand",
+        "costTime": "2 hours/month",
+        "costMoney": null,
+        "frequency": "monthly",
+        "nextStep": "Check if the bank exports a CSV",
+        "nextStepMinutes": null,
+        "quote": "I file receipts by hand every month",
         "language": "en"
       }
     ]
