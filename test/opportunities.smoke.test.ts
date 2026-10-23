@@ -94,11 +94,63 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
           observedAt: new Date("2026-07-01T00:00:00.000Z"),
           language: "en",
         },
+        {
+          source: "hackernews",
+          sourceId: "hn-5005",
+          sourceUrl: "https://news.ycombinator.com/item?id=5005",
+          title: "Tax forms",
+          text: "As a solo founder I retype quarterly tax forms by hand; it takes two hours per quarter.",
+          author: "dave",
+          observedAt: new Date("2026-08-01T00:00:00.000Z"),
+          language: "en",
+          metadata: { thread_url: "https://news.ycombinator.com/item?id=5005" },
+        },
+        {
+          source: "hackernews",
+          sourceId: "hn-5006",
+          sourceUrl: "https://news.ycombinator.com/item?id=5006",
+          title: "Tax forms again",
+          text: "I am a solo founder and I retype quarterly tax forms by hand every quarter.",
+          author: "erin",
+          observedAt: new Date("2026-08-02T00:00:00.000Z"),
+          language: "en",
+          metadata: { thread_url: "https://news.ycombinator.com/item?id=5005" },
+        },
+        {
+          source: "hackernews",
+          sourceId: "hn-7007",
+          sourceUrl: "https://news.ycombinator.com/item?id=7007",
+          title: "Payroll",
+          text: "I run a small shop; payroll takes me a full day every month because I run payroll manually.",
+          author: "frank",
+          observedAt: new Date("2026-08-03T00:00:00.000Z"),
+          language: "en",
+        },
+        {
+          source: "stackexchange",
+          sourceId: "se-8008",
+          sourceUrl: "https://stackoverflow.com/q/8008",
+          title: "Client reports",
+          text: "I copy metrics into slides by hand every week for client reporting.",
+          author: "grace",
+          observedAt: new Date("2026-08-04T00:00:00.000Z"),
+          language: "en",
+        },
+        {
+          source: "stackexchange",
+          sourceId: "se-9009",
+          sourceUrl: "https://stackoverflow.com/q/9009",
+          title: "Receipts",
+          text: "I am an indie hacker and I file receipts by hand every month.",
+          author: "heidi",
+          observedAt: new Date("2026-08-05T00:00:00.000Z"),
+          language: "en",
+        },
       ]);
     } catch (error) {
       throw new Error(`seed seam: ${message(error)}`);
     }
-    assert.equal(ids.length, 3, "seed seam: üç fixture observation seed edilemedi");
+    assert.equal(ids.length, 8, "seed seam: sekiz fixture observation seed edilemedi");
 
     const buildOut = runOpportunitiesCli(
       "build",
@@ -107,7 +159,7 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
     );
     assert.match(
       buildOut,
-      /build: observations=3 evidence=2 opportunities=1 skipped=1/,
+      /build: observations=8 evidence=3 opportunities=2 signals=4 skipped=1/,
       "build seam: özet satırı beklenen sayıları vermedi"
     );
 
@@ -121,9 +173,9 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
       );
     }
 
-    assert.equal(digest.cardCount, 1, "digest seam: kart sayısı");
-    assert.equal(digest.cards.length, 1, "digest seam: kart listesi");
-    const card = digest.cards[0]!;
+    assert.equal(digest.cardCount, 2, "digest seam: kart sayısı");
+    assert.equal(digest.cards.length, 2, "digest seam: kart listesi");
+    const card = digest.cards.find((candidate) => candidate.job === "invoicing")!;
     assert.equal(card.actor, "one-person agency owner", "digest seam: aktör");
     assert.equal(card.job, "invoicing", "digest seam: iş");
     assert.equal(
@@ -132,6 +184,11 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
       "digest seam: workaround"
     );
     assert.equal(card.sourceCount, 2, "digest seam: bağımsız kaynak sayısı");
+    assert.equal(
+      card.nextStep,
+      "Spend 15 minutes checking whether a saved Gmail search plus CSV export removes the manual copy",
+      "digest seam: next step"
+    );
     assert.deepEqual(
       card.communities,
       ["hackernews", "stackexchange"],
@@ -149,12 +206,69 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
     );
     assert.equal(card.observedAt, "2026-09-01T00:00:00.000Z", "digest seam: tarih");
 
+    const secondBuildOut = runOpportunitiesCli(
+      "build",
+      ["build", "--fixture", fixturePath],
+      db.url
+    );
+    assert.match(
+      secondBuildOut,
+      /build: observations=8 evidence=3 opportunities=2 signals=4 skipped=1/,
+      "build seam: ikinci koşum aynı sayıları vermedi"
+    );
+    const secondDigest = JSON.parse(
+      runOpportunitiesCli("digest", ["digest", "--format", "json"], db.url)
+    ) as Digest;
+    assert.deepEqual(
+      secondDigest,
+      digest,
+      "digest seam: JSON çıktı stabil değil"
+    );
+
+    const singleSourceCard = digest.cards.find(
+      (candidate) => candidate.job === "client reporting"
+    )!;
+    assert.equal(singleSourceCard.sourceCount, 1, "digest seam: tek kaynak istisnası");
+    assert.equal(
+      singleSourceCard.nextStep,
+      "Spend 15 minutes checking if a report template removes the manual copy",
+      "digest seam: tek kaynak next step"
+    );
+
+    const signals = await db.admin.query<{ reason: string; count: string }>(
+      `select reason, count(*) as count
+         from opportunity_signals
+        group by reason
+        order by reason`
+    );
+    assert.deepEqual(
+      signals.rows.map((row) => [row.reason, Number(row.count)]),
+      [
+        ["missing_actor", 1],
+        ["same_thread", 2],
+        ["single_source_without_next_step", 1],
+      ],
+      "build seam: reddedilen adaylar gerekçesiyle saklanmadı"
+    );
+
+    const archived = await db.admin.query<{ quote: string }>(
+      `select draft->>'quote' as quote
+         from opportunity_signals s
+         join observations o on o.id = s.observation_id
+        where o.source_id = 'se-9009'`
+    );
+    assert.equal(
+      archived.rows[0]?.quote,
+      "I file receipts by hand every month",
+      "build seam: sinyal draft'ı saklanmadı"
+    );
+
     const counts = await db.admin.query<{ evidence: string; opportunities: string }>(
       `select (select count(*) from opportunity_evidence) as evidence,
               (select count(*) from opportunities) as opportunities`
     );
-    assert.equal(Number(counts.rows[0]?.evidence), 2, "build seam: evidence sayısı");
-    assert.equal(Number(counts.rows[0]?.opportunities), 1, "build seam: opportunity sayısı");
+    assert.equal(Number(counts.rows[0]?.evidence), 3, "build seam: evidence sayısı");
+    assert.equal(Number(counts.rows[0]?.opportunities), 2, "build seam: opportunity sayısı");
   } catch (error) {
     failed = true;
     failure = error;

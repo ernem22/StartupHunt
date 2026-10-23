@@ -10,7 +10,9 @@ export interface TestDb {
   url: string;
 }
 
-export type SeedObservation = Omit<ObservationForExtraction, "id">;
+export type SeedObservation = Omit<ObservationForExtraction, "id"> & {
+  metadata?: Record<string, unknown>;
+};
 
 const repoRoot = path.resolve(import.meta.dirname, "..", "..");
 const schemaPath = path.join(repoRoot, "db", "schema.sql");
@@ -72,7 +74,7 @@ export async function seedObservations(
     const result = await db.admin.query<{ id: string }>(
       `insert into observations
          (source, source_id, source_url, title, text, author, observed_at, language, metadata, status)
-       values ($1, $2, $3, $4, $5, $6, $7, $8, '{}'::jsonb, 'new')
+       values ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb, 'new')
        returning id`,
       [
         observation.source,
@@ -83,6 +85,7 @@ export async function seedObservations(
         observation.author,
         observation.observedAt,
         observation.language,
+        JSON.stringify(observation.metadata ?? {}),
       ]
     );
     const row = result.rows[0];

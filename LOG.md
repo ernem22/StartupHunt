@@ -485,4 +485,21 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 ### Sonraki adım
 - CI PR'ı landikten sonra #19 branch'ini main'e göre güncelle/CI'ı çalıştır; DB smoke artık 3060'a bağımlı değil.
 
+---
+
+## 2026-10-24 — Oturum 29: opportunity tracer bullet (#20)
+
+### Ne yapıldı
+- Sıkı kapı `src/opportunities/build.ts` içinde deterministik: isimlendirilmiş aktör, spesifik iş/problem, workaround veya harcama, quote/link/tarih, next_step ve bağımsız kaynak. Aynı thread (`metadata.thread_url`; yoksa `source_url`) birden çok yorumla temsil edilirse reddedilir; tek kaynak yalnızca `nextStepMinutes <= 15` olan somut next_step ile geçer. `sourceCount` bağımsız thread sayısıdır.
+- Reddedilen adaylar `opportunity_signals` (observation_id + opportunity_key + reason + draft JSONB) tablosunda saklanır; geçen adayların aynı key'e ait eski sinyalleri silinir, düşen adayın opportunity kaydı `source_count = 0` ile arşivlenir (silinmez) ve digest bunları göstermez.
+- `opportunities`/`opportunity_evidence` tablolarına `next_step` (opportunities) ve `thread_url` (evidence) eklendi; digest kartı `nextStep` alanını taşıyor. `build` özeti `signals=` sayacı veriyor.
+- `digest --format json` yalnızca `cardCount` + `cards` döner (zaman damgası yok); iki ardışık koşum birebir aynı JSON'u verir.
+- Smoke test: 8 observation (2 kaynaklı geçen, tek kaynak istisnası, aynı thread çifti, aktörsüz aday, nextStepMinutes'sız tek kaynak, extraction'sız), ikinci build idempotency ve JSON kart stabilitesi doğrulanıyor.
+
+### Doğrulama
+- `pnpm typecheck` PASS; `pnpm test` lokal 1 PASS + 1 SKIP (DB yok). DB smoke CI'da `TEST_DATABASE_URL` ile koşacak.
+
+### Sonraki adım
+- CI yeşilse merge + #20 kapat; sırada #21 (independence/dedupe/signal archive derinleştirme).
+
 

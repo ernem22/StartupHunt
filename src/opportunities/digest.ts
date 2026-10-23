@@ -11,6 +11,7 @@ export interface OpportunityCard {
     money: string | null;
   };
   frequency: string | null;
+  nextStep: string | null;
   sourceCount: number;
   communities: string[];
   firstSeen: string | null;
@@ -23,7 +24,6 @@ export interface OpportunityCard {
 }
 
 export interface Digest {
-  generatedAt: string;
   cardCount: number;
   cards: OpportunityCard[];
 }
@@ -37,6 +37,7 @@ interface CardRow {
   cost_time: string | null;
   cost_money: string | null;
   frequency: string | null;
+  next_step: string | null;
   source_count: number;
   communities: string[];
   first_seen: Date | null;
@@ -56,7 +57,7 @@ export async function runDigest(): Promise<Digest> {
   return withDb(async (client) => {
     const result = await client.query<CardRow>(
       `select o.opportunity_key, o.actor, o.job, o.problem, o.workaround,
-              o.cost_time, o.cost_money, o.frequency, o.source_count, o.communities,
+              o.cost_time, o.cost_money, o.frequency, o.next_step, o.source_count, o.communities,
               o.first_seen, o.last_seen,
               e.quote, e.source, e.source_url, e.author, e.observed_at
          from opportunities o
@@ -67,6 +68,7 @@ export async function runDigest(): Promise<Digest> {
             order by observed_at desc nulls last, id desc
             limit 1
          ) e on true
+        where o.source_count > 0
         order by o.opportunity_key`
     );
 
@@ -81,6 +83,7 @@ export async function runDigest(): Promise<Digest> {
         money: row.cost_money,
       },
       frequency: row.frequency,
+      nextStep: row.next_step,
       sourceCount: row.source_count,
       communities: row.communities,
       firstSeen: iso(row.first_seen),
@@ -93,7 +96,6 @@ export async function runDigest(): Promise<Digest> {
     }));
 
     return {
-      generatedAt: new Date().toISOString(),
       cardCount: cards.length,
       cards,
     };

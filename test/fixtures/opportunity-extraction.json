@@ -9,6 +9,8 @@
         "costTime": "4 hours/month",
         "costMoney": null,
         "frequency": "monthly",
+        "nextStep": "Spend 15 minutes checking whether a saved Gmail search plus CSV export removes the manual copy",
+        "nextStepMinutes": 15,
         "quote": "every month I copy invoices from Gmail into a spreadsheet by hand",
         "language": "en"
       }
@@ -22,7 +24,84 @@
         "costTime": "half a day/month",
         "costMoney": null,
         "frequency": "monthly",
+        "nextStep": "Test one Gmail filter that labels invoice mail and exports it to CSV",
+        "nextStepMinutes": 15,
         "quote": "I still export invoices from Gmail to a spreadsheet manually",
+        "language": "en"
+      }
+    ],
+    "hackernews:hn-5005": [
+      {
+        "actor": "solo founder",
+        "job": "tax filing",
+        "problem": "quarterly tax forms are retyped by hand",
+        "workaround": "retype quarterly tax forms by hand",
+        "costTime": "2 hours/quarter",
+        "costMoney": null,
+        "frequency": "quarterly",
+        "nextStep": "Spend 15 minutes checking whether the tax portal accepts a CSV upload",
+        "nextStepMinutes": 15,
+        "quote": "I retype quarterly tax forms by hand",
+        "language": "en"
+      }
+    ],
+    "hackernews:hn-5006": [
+      {
+        "actor": "solo founder",
+        "job": "tax filing",
+        "problem": "quarterly tax forms are retyped by hand",
+        "workaround": "retype quarterly tax forms by hand",
+        "costTime": "2 hours/quarter",
+        "costMoney": null,
+        "frequency": "quarterly",
+        "nextStep": "Spend 15 minutes checking whether the tax portal accepts a CSV upload",
+        "nextStepMinutes": 15,
+        "quote": "I retype quarterly tax forms by hand every quarter",
+        "language": "en"
+      }
+    ],
+    "hackernews:hn-7007": [
+      {
+        "actor": "",
+        "job": "payroll",
+        "problem": "payroll runs are manual",
+        "workaround": "run payroll manually",
+        "costTime": "1 day/month",
+        "costMoney": null,
+        "frequency": "monthly",
+        "nextStep": "List the payroll steps that could be exported",
+        "nextStepMinutes": 15,
+        "quote": "payroll takes me a full day",
+        "language": "en"
+      }
+    ],
+    "stackexchange:se-8008": [
+      {
+        "actor": "freelance designer",
+        "job": "client reporting",
+        "problem": "weekly client reports are assembled by hand",
+        "workaround": "copy metrics into slides by hand",
+        "costTime": "3 hours/week",
+        "costMoney": null,
+        "frequency": "weekly",
+        "nextStep": "Spend 15 minutes checking if a report template removes the manual copy",
+        "nextStepMinutes": 15,
+        "quote": "I copy metrics into slides by hand every week",
+        "language": "en"
+      }
+    ],
+    "stackexchange:se-9009": [
+      {
+        "actor": "indie hacker",
+        "job": "expense tracking",
+        "problem": "receipts are filed by hand",
+        "workaround": "file receipts by hand",
+        "costTime": "2 hours/month",
+        "costMoney": null,
+        "frequency": "monthly",
+        "nextStep": "Check if the bank exports a CSV",
+        "nextStepMinutes": null,
+        "quote": "I file receipts by hand every month",
         "language": "en"
       }
     ]
