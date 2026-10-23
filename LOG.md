@@ -435,6 +435,26 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 2. GITHUB_TOKEN al (backfill hızını 10/dk → 5000/saat'e çıkarır)
 3. İlk veri gelince: TR/EN çift pilot testi (plan FAZ 6, Açık Soru 3) + outlier oranı ölçümü (Açık Soru 7)
 
+
+---
+
+## 2026-10-21 — Oturum 27: opportunity test seam (#19)
+
+### Ne yapıldı
+- Test altyapısı: `pnpm test` (`node:test` + `tsx`), canlı ağ/LLM yok. Fixture extractor quote'u observation metninin birebir alt dizisi olarak doğruluyor. `TEST_DATABASE_URL` `.env`'den de okunur (dotenv; shell env öncelikli).
+- DB smoke testi: `TEST_DATABASE_URL` varsa rastgele şema açar, `db/schema.sql` uygular, fixture observation'ları seed eder, `pnpm opportunities build --fixture ...` + `digest --format json` çalıştırır, çıktıyı ve DB satırlarını doğrular, şemayı düşürür. `TEST_DATABASE_URL` yoksa gerekçeli `SKIP`.
+- Seam: `src/opportunities/{types,key,build,digest,cli}.ts` + `extractors/fixture.ts`; şemaya `opportunities` ve `opportunity_evidence` tabloları eklendi. Komutlar: `pnpm opportunities build --fixture <path>`, `pnpm opportunities digest --format json`. Markdown çıktısı #22'ye bırakıldı.
+- Hata mesajları `build seam` / `digest seam` etiketiyle hangi adımda koptuğunu söylüyor. Idempotency assert'i #20'ye bırakıldı.
+- `tsconfig.test.json` testleri de kapsıyor; `pnpm typecheck` temiz.
+
+### Doğrulama
+- `pnpm typecheck` PASS.
+- `pnpm test` PASS: fixture extractor testi koştu; DB smoke testi bu laptopta `TEST_DATABASE_URL` yok diye SKIP.
+- **3060'a bekleme:** `TEST_DATABASE_URL` verilerek tam DB smoke koşumu yapılmalı (pgvector şart). Bu laptopta DB/Docker yok.
+
+### Sonraki adım
+- #20 opportunity tracer bullet: sıkı kapı (aktör, iş, workaround/harcama, bağımsızlık, quote+link+tarih), `noise_reason` ile signal arşivi ve tek kartlık digest bu seam üzerine yazılacak.
+
 ---
 
 ## 2026-10-20 — Araştırma oturumu: "Startup fikri tespiti / topluluk metni madenciliği" uygulamaları
@@ -464,4 +484,5 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 
 ### Sonraki adım
 - CI PR'ı landikten sonra #19 branch'ini main'e göre güncelle/CI'ı çalıştır; DB smoke artık 3060'a bağımlı değil.
+
 

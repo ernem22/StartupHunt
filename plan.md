@@ -646,9 +646,18 @@ Makine sürekli açık olmayacak → her adapter **resume/catch-up** tasarlanır
 
 ## Kapsam Dışı
 
-* Scoring, opportunity engine, market analysis
+> 2026-10-21 güncellemesi: #18 "Fırsat motoru v1" ile "opportunity engine" bu yasaktan çıkarıldı; fırsat katmanı v1 kapsam içine alındı. Aşağıdaki diğer maddeler (skor, market analizi, gelir tahmini, fikir üretme) kapsam dışı kalır.
+
+* Scoring, market analysis
 * Startup idea generation, market size, willingness-to-pay, founder-fit
 * Fikir üretme (amaç sinyal bulmak; yorum kullanıcıya kalıyor)
+
+## Fırsat Katmanı v1 (2026-10-21 — #18/#19 kararı)
+
+* **Tablolar:** `opportunities` (kalıcı fırsat: `opportunity_key` unique, aktör/iş/problem/workaround, maliyet, sıklık, kaynak sayısı/topluluklar, ilk/son görülme) ve `opportunity_evidence` (observation'a bağlı kanıt: quote, kaynak/URL/yazar/tarih, dil, extractor; `unique(observation_id, opportunity_key)`).
+* **Anahtar:** `opportunity_key = sha256(normalize(actor) + normalize(job) + normalize(problem))` ilk 16 hex; normalizasyon NFKC + küçük harf + boşluk sadeleştirme. Aynı anahtar koşumlar arasında birleşir.
+* **Quote kuralı:** her kanıt quote'u kaynak observation metninin **birebir alt dizisi** olmalı; değilse çıkarım reddedilir. Fixture extractor bu kuralı test eder; LLM extractor da aynı kurala uyacak.
+* **Kapsam:** bu v1'de skor/confidence, sinyal arşivi ve Markdown çıktısı yok; bunlar sırasıyla #20/#22 kapsamında eklenecek.
 
 ## v3.1'de Değişenler (v3'e göre — araştırma sonuçları)
 
