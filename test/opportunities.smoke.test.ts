@@ -103,7 +103,7 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
           author: "dave",
           observedAt: new Date("2026-08-01T00:00:00.000Z"),
           language: "en",
-          metadata: { thread_url: "https://news.ycombinator.com/item?id=5005" },
+          metadata: { parent_story_id: "5005" },
         },
         {
           source: "hackernews",
@@ -114,7 +114,7 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
           author: "erin",
           observedAt: new Date("2026-08-02T00:00:00.000Z"),
           language: "en",
-          metadata: { thread_url: "https://news.ycombinator.com/item?id=5005" },
+          metadata: { parent_story_id: "5005" },
         },
         {
           source: "hackernews",
@@ -161,7 +161,7 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
           sourceId: "se-6007",
           sourceUrl: "https://stackoverflow.com/q/6007",
           title: "Dashboards copy",
-          text: "As a solo consultant I rebuild weekly dashboards by hand, which takes three hours every week.",
+          text: "As a solo consultant I rebuild my weekly dashboards by hand, which takes three hours every week.",
           author: "judy",
           observedAt: new Date("2026-08-07T00:00:00.000Z"),
           language: "en",

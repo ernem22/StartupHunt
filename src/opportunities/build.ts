@@ -57,6 +57,19 @@ function normalizeText(text: string): string {
   return text.normalize("NFKC").toLowerCase().replace(/\s+/g, " ").trim();
 }
 
+function tokenSet(text: string): Set<string> {
+  return new Set(normalizeText(text).split(/[^\p{L}\p{N}]+/u).filter(Boolean));
+}
+
+function jaccard(a: Set<string>, b: Set<string>): number {
+  let shared = 0;
+  for (const token of a) {
+    if (b.has(token)) shared++;
+  }
+  const total = a.size + b.size - shared;
+  return total === 0 ? 1 : shared / total;
+}
+
 function independentSourceCount(entries: DraftEntry[]): number {
   const parent = entries.map((_, index) => index);
   const find = (index: number): number => {
@@ -86,22 +99,26 @@ function independentSourceCount(entries: DraftEntry[]): number {
   };
 
   entries.forEach((entry, index) => {
-    link(`text:${normalizeText(entry.observation.text)}`, index);
     link(`thread:${entry.threadUrl}`, index);
     const author = entry.observation.author?.trim().toLowerCase();
     if (author) link(`author:${author}`, index);
   });
 
+  const tokens = entries.map((entry) => tokenSet(entry.observation.text));
+  for (let left = 0; left < entries.length; left++) {
+    for (let right = left + 1; right < entries.length; right++) {
+      if (jaccard(tokens[left]!, tokens[right]!) >= 0.9) union(left, right);
+    }
+  }
+
   return new Set(entries.map((_, index) => find(index))).size;
 }
 
-function singleSourceMinutes(entries: DraftEntry[]): number | null {
-  let best: number | null = null;
+function nextStepMinutesOf(entries: DraftEntry[]): number | null {
   for (const { draft } of entries) {
-    if (draft.nextStepMinutes == null) continue;
-    if (best === null || draft.nextStepMinutes < best) best = draft.nextStepMinutes;
+    if (!isBlank(draft.nextStep)) return draft.nextStepMinutes;
   }
-  return best;
+  return null;
 }
 
 function rejectReason(entries: DraftEntry[], sources: number): RejectReason | null {
@@ -123,7 +140,7 @@ function rejectReason(entries: DraftEntry[], sources: number): RejectReason | nu
     const threadUrls = new Set(entries.map(({ threadUrl }) => threadUrl));
     if (threadUrls.size === 1 && entries.length > 1) return "same_thread";
 
-    const minutes = singleSourceMinutes(entries);
+    const minutes = nextStepMinutesOf(entries);
     if (minutes == null || minutes > 15) return "single_source_without_next_step";
   }
 
@@ -137,7 +154,14 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
     try {
       const result = await client.query<ObservationRow>(
         `select id, source, source_id, source_url, title, text, author, observed_at, language,
-                metadata->>'thread_url' as thread_url
+                coalesce(
+                  metadata->>'thread_url',
+                  case when metadata ? 'parent_story_id'
+                       then source || ':story:' || (metadata->>'parent_story_id') end,
+                  case when metadata ? 'video_id'
+                       then source || ':video:' || (metadata->>'video_id') end,
+                  source_url
+                ) as thread_url
            from observations
           order by id`
       );

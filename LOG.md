@@ -507,7 +507,7 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 ## 2026-10-24 — Oturum 30: independence, dedupe ve signal archive (#21)
 
 ### Ne yapıldı
-- Bağımsız kaynak sayısı deterministik: aynı normalize metin, aynı thread (`metadata.thread_url`; yoksa `source_url`) ve aynı yazar tek kaynak sayılıyor (union-find). `sourceCount` artık bu bağımsız kaynak sayısı.
+- Bağımsız kaynak sayısı deterministik: aynı/yakın metin (Jaccard ≥ 0.9), aynı thread (`metadata.thread_url` → `parent_story_id` → `video_id` → `source_url`) ve aynı yazar tek kaynak sayılıyor (union-find). `sourceCount` artık bu bağımsız kaynak sayısı.
 - Varsayılan 2 bağımsız kaynak; tek kaynak yalnızca `nextStepMinutes <= 15` istisnasıyla geçiyor. Aynı thread'in çok yorumu tek kaynak ve `same_thread` gerekçesiyle signal.
 - Yakın-duplicate metinler tek fırsatta birleşiyor (tek kart).
 - `opportunity_signals` tablosuna `source_count` eklendi; reddedilen adaylar silinmiyor, gerekçe + kaynak sayısı + draft ile sorgulanabilir kalıyor.

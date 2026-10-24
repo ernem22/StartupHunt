@@ -131,7 +131,7 @@
         "frequency": "weekly",
         "nextStep": "Spend 15 minutes checking if the dashboard tool has a scheduled export",
         "nextStepMinutes": 15,
-        "quote": "I rebuild weekly dashboards by hand",
+        "quote": "I rebuild my weekly dashboards by hand",
         "language": "en"
       }
     ]
