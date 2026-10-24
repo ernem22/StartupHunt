@@ -163,10 +163,12 @@ create table if not exists opportunity_signals (
   opportunity_key text not null,
   reason          text not null,
   draft           jsonb not null,
+  source_count    integer not null default 0,
   created_at      timestamptz not null default now(),
   unique (observation_id, opportunity_key)
 );
 create index if not exists idx_os_key on opportunity_signals (opportunity_key);
+alter table opportunity_signals add column if not exists source_count integer not null default 0;
 
 -- View: pattern kaynakları (kolon değil — plan v3.1 kararı)
 create or replace view v_pattern_sources as

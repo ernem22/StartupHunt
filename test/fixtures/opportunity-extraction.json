@@ -104,6 +104,36 @@
         "quote": "I file receipts by hand every month",
         "language": "en"
       }
+    ],
+    "hackernews:hn-6006": [
+      {
+        "actor": "solo consultant",
+        "job": "dashboards",
+        "problem": "weekly dashboards are rebuilt by hand",
+        "workaround": "rebuild dashboards by hand",
+        "costTime": "3 hours/week",
+        "costMoney": null,
+        "frequency": "weekly",
+        "nextStep": "Spend 15 minutes checking if the dashboard tool has a scheduled export",
+        "nextStepMinutes": 15,
+        "quote": "I rebuild weekly dashboards by hand",
+        "language": "en"
+      }
+    ],
+    "stackexchange:se-6007": [
+      {
+        "actor": "solo consultant",
+        "job": "dashboards",
+        "problem": "weekly dashboards are rebuilt by hand",
+        "workaround": "rebuild dashboards by hand",
+        "costTime": "3 hours/week",
+        "costMoney": null,
+        "frequency": "weekly",
+        "nextStep": "Spend 15 minutes checking if the dashboard tool has a scheduled export",
+        "nextStepMinutes": 15,
+        "quote": "I rebuild my weekly dashboards by hand",
+        "language": "en"
+      }
     ]
   }
 }

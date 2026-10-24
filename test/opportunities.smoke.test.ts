@@ -103,7 +103,7 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
           author: "dave",
           observedAt: new Date("2026-08-01T00:00:00.000Z"),
           language: "en",
-          metadata: { thread_url: "https://news.ycombinator.com/item?id=5005" },
+          metadata: { parent_story_id: "5005" },
         },
         {
           source: "hackernews",
@@ -114,7 +114,7 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
           author: "erin",
           observedAt: new Date("2026-08-02T00:00:00.000Z"),
           language: "en",
-          metadata: { thread_url: "https://news.ycombinator.com/item?id=5005" },
+          metadata: { parent_story_id: "5005" },
         },
         {
           source: "hackernews",
@@ -146,11 +146,31 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
           observedAt: new Date("2026-08-05T00:00:00.000Z"),
           language: "en",
         },
+        {
+          source: "hackernews",
+          sourceId: "hn-6006",
+          sourceUrl: "https://news.ycombinator.com/item?id=6006",
+          title: "Dashboards",
+          text: "As a solo consultant I rebuild weekly dashboards by hand, which takes three hours every week.",
+          author: "ivan",
+          observedAt: new Date("2026-08-06T00:00:00.000Z"),
+          language: "en",
+        },
+        {
+          source: "stackexchange",
+          sourceId: "se-6007",
+          sourceUrl: "https://stackoverflow.com/q/6007",
+          title: "Dashboards copy",
+          text: "As a solo consultant I rebuild my weekly dashboards by hand, which takes three hours every week.",
+          author: "judy",
+          observedAt: new Date("2026-08-07T00:00:00.000Z"),
+          language: "en",
+        },
       ]);
     } catch (error) {
       throw new Error(`seed seam: ${message(error)}`);
     }
-    assert.equal(ids.length, 8, "seed seam: sekiz fixture observation seed edilemedi");
+    assert.equal(ids.length, 10, "seed seam: on fixture observation seed edilemedi");
 
     const buildOut = runOpportunitiesCli(
       "build",
@@ -159,7 +179,7 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
     );
     assert.match(
       buildOut,
-      /build: observations=8 evidence=3 opportunities=2 signals=4 skipped=1/,
+      /build: observations=10 evidence=5 opportunities=3 signals=4 skipped=1/,
       "build seam: özet satırı beklenen sayıları vermedi"
     );
 
@@ -173,8 +193,8 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
       );
     }
 
-    assert.equal(digest.cardCount, 2, "digest seam: kart sayısı");
-    assert.equal(digest.cards.length, 2, "digest seam: kart listesi");
+    assert.equal(digest.cardCount, 3, "digest seam: kart sayısı");
+    assert.equal(digest.cards.length, 3, "digest seam: kart listesi");
     const card = digest.cards.find((candidate) => candidate.job === "invoicing")!;
     assert.equal(card.actor, "one-person agency owner", "digest seam: aktör");
     assert.equal(card.job, "invoicing", "digest seam: iş");
@@ -213,7 +233,7 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
     );
     assert.match(
       secondBuildOut,
-      /build: observations=8 evidence=3 opportunities=2 signals=4 skipped=1/,
+      /build: observations=10 evidence=5 opportunities=3 signals=4 skipped=1/,
       "build seam: ikinci koşum aynı sayıları vermedi"
     );
     const secondDigest = JSON.parse(
@@ -233,6 +253,14 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
       singleSourceCard.nextStep,
       "Spend 15 minutes checking if a report template removes the manual copy",
       "digest seam: tek kaynak next step"
+    );
+
+    const dashboardCards = digest.cards.filter((candidate) => candidate.job === "dashboards");
+    assert.equal(dashboardCards.length, 1, "digest seam: yakın-duplicate tek fırsat üretmedi");
+    assert.equal(
+      dashboardCards[0]?.sourceCount,
+      1,
+      "digest seam: yakın-duplicate bağımsız kaynak sayısı"
     );
 
     const signals = await db.admin.query<{ reason: string; count: string }>(
@@ -263,12 +291,21 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
       "build seam: sinyal draft'ı saklanmadı"
     );
 
+    const signalSources = await db.admin.query<{ source_count: number }>(
+      `select distinct source_count from opportunity_signals order by source_count`
+    );
+    assert.deepEqual(
+      signalSources.rows.map((row) => Number(row.source_count)),
+      [1],
+      "build seam: sinyal kaynak sayısı saklanmadı"
+    );
+
     const counts = await db.admin.query<{ evidence: string; opportunities: string }>(
       `select (select count(*) from opportunity_evidence) as evidence,
               (select count(*) from opportunities) as opportunities`
     );
-    assert.equal(Number(counts.rows[0]?.evidence), 3, "build seam: evidence sayısı");
-    assert.equal(Number(counts.rows[0]?.opportunities), 2, "build seam: opportunity sayısı");
+    assert.equal(Number(counts.rows[0]?.evidence), 5, "build seam: evidence sayısı");
+    assert.equal(Number(counts.rows[0]?.opportunities), 3, "build seam: opportunity sayısı");
   } catch (error) {
     failed = true;
     failure = error;
