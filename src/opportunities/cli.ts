@@ -1,6 +1,6 @@
 import { closeDb } from "../db.js";
 import { runBuild } from "./build.js";
-import { runDigest } from "./digest.js";
+import { renderDigestMarkdown, runDigest } from "./digest.js";
 import { FixtureEvidenceExtractor } from "./extractors/fixture.js";
 
 function flagValue(args: string[], name: string): string | undefined {
@@ -11,7 +11,7 @@ function flagValue(args: string[], name: string): string | undefined {
 function usage(): void {
   console.log("kullanım:");
   console.log("  pnpm opportunities build --fixture <path>");
-  console.log("  pnpm opportunities digest --format json");
+  console.log("  pnpm opportunities digest --format json|md");
 }
 
 async function main(): Promise<void> {
@@ -31,11 +31,15 @@ async function main(): Promise<void> {
 
   if (command === "digest") {
     const format = flagValue(args, "--format") ?? "json";
-    if (format !== "json") {
-      throw new Error(`bilinmeyen format: ${format} (şu an yalnızca json)`);
+    if (format !== "json" && format !== "md") {
+      throw new Error(`bilinmeyen format: ${format} (json veya md)`);
     }
     const digest = await runDigest();
-    process.stdout.write(JSON.stringify(digest, null, 2) + "\n");
+    if (format === "json") {
+      process.stdout.write(JSON.stringify(digest, null, 2) + "\n");
+    } else {
+      process.stdout.write(renderDigestMarkdown(digest));
+    }
     return;
   }
 

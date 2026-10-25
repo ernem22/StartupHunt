@@ -1,7 +1,12 @@
 import type pg from "pg";
 import { withDb } from "../db.js";
 import { opportunityKey } from "./key.js";
-import type { EvidenceDraft, EvidenceExtractor, ObservationForExtraction } from "./types.js";
+import type {
+  CounterArgumentStrength,
+  EvidenceDraft,
+  EvidenceExtractor,
+  ObservationForExtraction,
+} from "./types.js";
 
 interface ObservationRow {
   id: string;
@@ -21,6 +26,11 @@ export type RejectReason =
   | "missing_job"
   | "missing_problem"
   | "missing_workaround_or_spend"
+  | "missing_existing_solution"
+  | "missing_existing_solution_gap"
+  | "missing_counter_argument"
+  | "missing_counter_argument_strength"
+  | "counter_argument_strong"
   | "missing_quote"
   | "missing_link"
   | "missing_date"
@@ -121,6 +131,39 @@ function nextStepMinutesOf(entries: DraftEntry[]): number | null {
   return null;
 }
 
+function isCounterStrength(value: unknown): value is CounterArgumentStrength {
+  return value === "weak" || value === "moderate" || value === "strong";
+}
+
+interface WorthItRationale {
+  existingSolution: string;
+  existingSolutionGap: string;
+  counterArgument: string;
+  counterArgumentStrength: CounterArgumentStrength;
+}
+
+function worthItRationaleOf(entries: DraftEntry[]): WorthItRationale | null {
+  const existingSolution = entries.find(({ draft }) => !isBlank(draft.existingSolution))
+    ?.draft.existingSolution;
+  const existingSolutionGap = entries.find(({ draft }) => !isBlank(draft.existingSolutionGap))
+    ?.draft.existingSolutionGap;
+  const counterArgument = entries.find(({ draft }) => !isBlank(draft.counterArgument))?.draft
+    .counterArgument;
+  const counterArgumentStrength = entries.find(
+    ({ draft }) =>
+      draft.counterArgumentStrength === "weak" || draft.counterArgumentStrength === "moderate"
+  )?.draft.counterArgumentStrength;
+  if (!existingSolution || !existingSolutionGap || !counterArgument || !counterArgumentStrength) {
+    return null;
+  }
+  return {
+    existingSolution: existingSolution.trim(),
+    existingSolutionGap: existingSolutionGap.trim(),
+    counterArgument: counterArgument.trim(),
+    counterArgumentStrength,
+  };
+}
+
 function rejectReason(entries: DraftEntry[], sources: number): RejectReason | null {
   for (const { draft } of entries) {
     if (isBlank(draft.actor)) return "missing_actor";
@@ -132,6 +175,21 @@ function rejectReason(entries: DraftEntry[], sources: number): RejectReason | nu
       !isBlank(draft.workaround) || !isBlank(draft.costTime) || !isBlank(draft.costMoney)
   );
   if (!hasWork) return "missing_workaround_or_spend";
+  if (entries.some(({ draft }) => draft.counterArgumentStrength === "strong")) {
+    return "counter_argument_strong";
+  }
+  if (!entries.some(({ draft }) => !isBlank(draft.existingSolution))) {
+    return "missing_existing_solution";
+  }
+  if (!entries.some(({ draft }) => !isBlank(draft.existingSolutionGap))) {
+    return "missing_existing_solution_gap";
+  }
+  if (!entries.some(({ draft }) => !isBlank(draft.counterArgument))) {
+    return "missing_counter_argument";
+  }
+  if (!entries.some(({ draft }) => isCounterStrength(draft.counterArgumentStrength))) {
+    return "missing_counter_argument_strength";
+  }
   if (entries.some(({ draft }) => isBlank(draft.quote))) return "missing_quote";
   if (entries.some(({ observation }) => isBlank(observation.sourceUrl))) return "missing_link";
   if (entries.some(({ observation }) => !observation.observedAt)) return "missing_date";
@@ -220,8 +278,10 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
         }
 
         const nextStep = nextStepOf(entries);
+        const rationale = worthItRationaleOf(entries);
+        if (!rationale) throw new Error(`kapı tutarsız: ${key}`);
         for (const entry of entries) {
-          await upsertOpportunity(client, key, entry.draft, nextStep, sources);
+          await upsertOpportunity(client, key, entry.draft, nextStep, sources, rationale);
           await upsertEvidence(client, key, entry, extractor.name);
           evidence++;
         }
@@ -275,13 +335,15 @@ async function upsertOpportunity(
   key: string,
   draft: EvidenceDraft,
   nextStep: string | null,
-  sourceCount: number
+  sourceCount: number,
+  rationale: WorthItRationale
 ): Promise<void> {
   await client.query(
     `insert into opportunities
        (opportunity_key, actor, job, problem, workaround, cost_time, cost_money, frequency,
+        existing_solution, existing_solution_gap, counter_argument, counter_argument_strength,
         next_step, source_count)
-     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
      on conflict (opportunity_key) do update
        set actor = excluded.actor,
            job = excluded.job,
@@ -290,6 +352,10 @@ async function upsertOpportunity(
            cost_time = coalesce(opportunities.cost_time, excluded.cost_time),
            cost_money = coalesce(opportunities.cost_money, excluded.cost_money),
            frequency = coalesce(opportunities.frequency, excluded.frequency),
+           existing_solution = excluded.existing_solution,
+           existing_solution_gap = excluded.existing_solution_gap,
+           counter_argument = excluded.counter_argument,
+           counter_argument_strength = excluded.counter_argument_strength,
            next_step = coalesce(excluded.next_step, opportunities.next_step),
            source_count = excluded.source_count,
            updated_at = now()`,
@@ -302,6 +368,10 @@ async function upsertOpportunity(
       draft.costTime,
       draft.costMoney,
       draft.frequency,
+      rationale.existingSolution,
+      rationale.existingSolutionGap,
+      rationale.counterArgument,
+      rationale.counterArgumentStrength,
       nextStep,
       sourceCount,
     ]
