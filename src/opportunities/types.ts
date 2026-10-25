@@ -10,6 +10,8 @@ export interface ObservationForExtraction {
   language: string | null;
 }
 
+export type CounterArgumentStrength = "weak" | "moderate" | "strong";
+
 export interface EvidenceDraft {
   actor: string;
   job: string;
@@ -18,6 +20,10 @@ export interface EvidenceDraft {
   costTime: string | null;
   costMoney: string | null;
   frequency: string | null;
+  existingSolution: string | null;
+  existingSolutionGap: string | null;
+  counterArgument: string | null;
+  counterArgumentStrength: CounterArgumentStrength | null;
   nextStep: string | null;
   nextStepMinutes: number | null;
   quote: string;

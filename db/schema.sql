@@ -121,6 +121,10 @@ create table if not exists opportunities (
   cost_time       text,
   cost_money      text,
   frequency       text,
+  existing_solution       text,
+  existing_solution_gap   text,
+  counter_argument        text,
+  counter_argument_strength text,
   next_step       text,
   source_count    integer not null default 0,
   communities     text[] not null default '{}',
@@ -155,6 +159,10 @@ create table if not exists opportunity_evidence (
 create index if not exists idx_oe_key on opportunity_evidence (opportunity_key);
 
 alter table opportunities add column if not exists next_step text;
+alter table opportunities add column if not exists existing_solution text;
+alter table opportunities add column if not exists existing_solution_gap text;
+alter table opportunities add column if not exists counter_argument text;
+alter table opportunities add column if not exists counter_argument_strength text;
 alter table opportunity_evidence add column if not exists thread_url text;
 
 create table if not exists opportunity_signals (

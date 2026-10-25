@@ -10,6 +10,7 @@ import {
   dropTestDb,
   runOpportunitiesCli,
   seedObservations,
+  type SeedObservation,
   type TestDb,
 } from "./helpers/test-db.js";
 
@@ -31,6 +32,29 @@ const observation: ObservationForExtraction = {
   observedAt: new Date("2026-09-01T00:00:00.000Z"),
   language: "en",
 };
+
+const bankReconciliationObservations: SeedObservation[] = [
+  {
+    source: "hackernews",
+    sourceId: "hn-8010",
+    sourceUrl: "https://news.ycombinator.com/item?id=8010",
+    title: "Bank reconciliation",
+    text: "I am a solo bookkeeper and I match bank transactions to invoices by hand every day. It takes an hour each day.",
+    author: "oscar",
+    observedAt: new Date("2026-08-09T00:00:00.000Z"),
+    language: "en",
+  },
+  {
+    source: "stackexchange",
+    sourceId: "se-8011",
+    sourceUrl: "https://stackoverflow.com/q/8011",
+    title: "Bank reconciliation again",
+    text: "As a solo bookkeeper I still match bank transactions to invoices manually every day; it costs me about an hour a day.",
+    author: "peggy",
+    observedAt: new Date("2026-08-10T00:00:00.000Z"),
+    language: "en",
+  },
+];
 
 test("fixture extractor quote'u metnin birebir alt dizisi olarak doğrular", () => {
   const extractor = new FixtureEvidenceExtractor(fixturePath);
@@ -166,11 +190,22 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
           observedAt: new Date("2026-08-07T00:00:00.000Z"),
           language: "en",
         },
+        {
+          source: "hackernews",
+          sourceId: "hn-8008",
+          sourceUrl: "https://news.ycombinator.com/item?id=8008",
+          title: "Insurance claims",
+          text: "I own a two-chair dental clinic and every Friday I reconcile insurance claims against payments by hand. It takes about six hours every week.",
+          author: "mallory",
+          observedAt: new Date("2026-08-08T00:00:00.000Z"),
+          language: "en",
+        },
+        ...bankReconciliationObservations,
       ]);
     } catch (error) {
       throw new Error(`seed seam: ${message(error)}`);
     }
-    assert.equal(ids.length, 10, "seed seam: on fixture observation seed edilemedi");
+    assert.equal(ids.length, 13, "seed seam: on fixture observation seed edilemedi");
 
     const buildOut = runOpportunitiesCli(
       "build",
@@ -179,7 +214,7 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
     );
     assert.match(
       buildOut,
-      /build: observations=10 evidence=5 opportunities=3 signals=4 skipped=1/,
+      /build: observations=13 evidence=5 opportunities=3 signals=7 skipped=1/,
       "build seam: özet satırı beklenen sayıları vermedi"
     );
 
@@ -195,6 +230,20 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
 
     assert.equal(digest.cardCount, 3, "digest seam: kart sayısı");
     assert.equal(digest.cards.length, 3, "digest seam: kart listesi");
+    assert.equal(digest.eligibleCount, 3, "digest seam: uygun aday sayısı");
+    assert.equal(digest.maxCards, 10, "digest seam: haftalık kart sınırı");
+    assert.equal(digest.message, null, "digest seam: aday varken mesaj olmamalı");
+    assert.deepEqual(
+      digest.dropped,
+      [
+        { reason: "counter_argument_strong", count: 1 },
+        { reason: "missing_actor", count: 1 },
+        { reason: "missing_next_step", count: 1 },
+        { reason: "same_thread", count: 1 },
+        { reason: "single_source_without_next_step", count: 1 },
+      ],
+      "digest seam: düşme gerekçeleri sayılmadı"
+    );
     const card = digest.cards.find((candidate) => candidate.job === "invoicing")!;
     assert.equal(card.actor, "one-person agency owner", "digest seam: aktör");
     assert.equal(card.job, "invoicing", "digest seam: iş");
@@ -202,6 +251,27 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
       card.workaround,
       "copy invoices from Gmail into a spreadsheet by hand",
       "digest seam: workaround"
+    );
+    assert.equal(
+      card.existingSolution,
+      "Gmail saved search plus CSV export",
+      "digest seam: bilinen çözüm"
+    );
+    assert.equal(
+      card.existingSolutionGap,
+      "still requires copying each invoice into the spreadsheet by hand",
+      "digest seam: bilinen çözüm gerekçesi"
+    );
+    assert.equal(
+      card.counterArgument,
+      "agencies are small and may tolerate four hours a month",
+      "digest seam: karşı görüş"
+    );
+    assert.equal(card.counterArgumentStrength, "weak", "digest seam: karşı görüş gücü");
+    assert.match(
+      card.falsificationNote,
+      /^Yanlışlama: "Spend 15 minutes checking whether a saved Gmail search plus CSV export removes the manual copy" adımı sorunu çözüyorsa bu fırsat düşer\.$/,
+      "digest seam: yanlışlama notu"
     );
     assert.equal(card.sourceCount, 2, "digest seam: bağımsız kaynak sayısı");
     assert.equal(
@@ -233,7 +303,7 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
     );
     assert.match(
       secondBuildOut,
-      /build: observations=10 evidence=5 opportunities=3 signals=4 skipped=1/,
+      /build: observations=13 evidence=5 opportunities=3 signals=7 skipped=1/,
       "build seam: ikinci koşum aynı sayıları vermedi"
     );
     const secondDigest = JSON.parse(
@@ -243,6 +313,28 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
       secondDigest,
       digest,
       "digest seam: JSON çıktı stabil değil"
+    );
+
+    const markdown = runOpportunitiesCli("digest", ["digest", "--format", "md"], db.url);
+    assert.equal(
+      (markdown.match(/^## /gm) ?? []).length,
+      digest.cardCount,
+      "digest seam: markdown kart sayısı JSON ile aynı değil"
+    );
+    assert.equal(
+      (markdown.match(/\*\*Yanlışlama notu:\*\*/g) ?? []).length,
+      digest.cardCount,
+      "digest seam: markdown yanlışlama notu eksik"
+    );
+    for (const cardEntry of digest.cards) {
+      assert.ok(markdown.includes(cardEntry.id), "digest seam: markdown kart kimliği eksik");
+      assert.ok(markdown.includes(cardEntry.sourceUrl), "digest seam: markdown kaynak linki eksik");
+      assert.ok(markdown.includes(cardEntry.quote), "digest seam: markdown quote eksik");
+      assert.ok(markdown.includes(cardEntry.observedAt!), "digest seam: markdown tarih eksik");
+    }
+    assert.ok(
+      !markdown.includes("https://news.ycombinator.com/item?id=8008"),
+      "digest seam: güçlü karşı görüşlü aday markdown'a sızdı"
     );
 
     const singleSourceCard = digest.cards.find(
@@ -272,7 +364,9 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
     assert.deepEqual(
       signals.rows.map((row) => [row.reason, Number(row.count)]),
       [
+        ["counter_argument_strong", 1],
         ["missing_actor", 1],
+        ["missing_next_step", 2],
         ["same_thread", 2],
         ["single_source_without_next_step", 1],
       ],
@@ -296,8 +390,20 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
     );
     assert.deepEqual(
       signalSources.rows.map((row) => Number(row.source_count)),
-      [1],
+      [1, 2],
       "build seam: sinyal kaynak sayısı saklanmadı"
+    );
+
+    const strongCounter = await db.admin.query<{ reason: string; strength: string }>(
+      `select reason, draft->>'counterArgumentStrength' as strength
+         from opportunity_signals s
+         join observations o on o.id = s.observation_id
+        where o.source_id = 'hn-8008'`
+    );
+    assert.deepEqual(
+      strongCounter.rows.map((row) => [row.reason, row.strength]),
+      [["counter_argument_strong", "strong"]],
+      "build seam: güçlü karşı görüş gerekçesiyle arşivlenmedi"
     );
 
     const counts = await db.admin.query<{ evidence: string; opportunities: string }>(
@@ -306,6 +412,81 @@ test("opportunity smoke: build -> digest", { skip: skipReason }, async () => {
     );
     assert.equal(Number(counts.rows[0]?.evidence), 5, "build seam: evidence sayısı");
     assert.equal(Number(counts.rows[0]?.opportunities), 3, "build seam: opportunity sayısı");
+  } catch (error) {
+    failed = true;
+    failure = error;
+  }
+
+  try {
+    await dropTestDb(db);
+  } catch (error) {
+    if (!failed) {
+      throw new Error(`cleanup seam: ${message(error)}`);
+    }
+    console.error(`cleanup seam: ${message(error)}`);
+  }
+
+  if (failed) {
+    throw failure;
+  }
+});
+
+test("opportunity smoke: 0 uygun aday -> dolgusuz digest", { skip: skipReason }, async () => {
+  let db: TestDb;
+  try {
+    db = await createTestDb(testDatabaseUrl!);
+  } catch (error) {
+    throw new Error(`setup seam: ${message(error)}`);
+  }
+
+  let failed = false;
+  let failure: unknown;
+
+  try {
+    try {
+      await seedObservations(db, bankReconciliationObservations);
+    } catch (error) {
+      throw new Error(`seed seam: ${message(error)}`);
+    }
+
+    const buildOut = runOpportunitiesCli(
+      "build",
+      ["build", "--fixture", fixturePath],
+      db.url
+    );
+    assert.match(
+      buildOut,
+      /build: observations=2 evidence=0 opportunities=0 signals=2 skipped=0/,
+      "build seam: kapıyı geçmeyen aday fırsata dönüştü"
+    );
+
+    const digest = JSON.parse(
+      runOpportunitiesCli("digest", ["digest", "--format", "json"], db.url)
+    ) as Digest;
+    assert.equal(digest.cardCount, 0, "digest seam: dolgu kartı üretildi");
+    assert.equal(digest.eligibleCount, 0, "digest seam: uygun aday sayısı");
+    assert.deepEqual(digest.cards, [], "digest seam: kart listesi boş değil");
+    assert.equal(
+      digest.message,
+      "Bu hafta araştırmaya değer bir şey yok.",
+      "digest seam: aday yok mesajı"
+    );
+    assert.deepEqual(
+      digest.dropped,
+      [{ reason: "missing_next_step", count: 1 }],
+      "digest seam: düşme gerekçesi sayılmadı"
+    );
+
+    const markdown = runOpportunitiesCli("digest", ["digest", "--format", "md"], db.url);
+    assert.ok(
+      markdown.includes("Bu hafta araştırmaya değer bir şey yok."),
+      "digest seam: markdown aday yok mesajı eksik"
+    );
+    assert.ok(
+      markdown.includes("missing_next_step: 1"),
+      "digest seam: markdown düşme gerekçesi eksik"
+    );
+    assert.doesNotMatch(markdown, /^## /m, "digest seam: markdown dolgu kartı üretti");
   } catch (error) {
     failed = true;
     failure = error;

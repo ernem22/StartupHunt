@@ -519,4 +519,21 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 ### Sonraki adım
 - CI yeşilse merge + #21 kapat; sırada #22 (worth-it gate + kotasız digest).
 
+---
 
+## 2026-10-25 — Oturum 31: worth-it kapısı + kotasız digest (#22)
+
+### Ne yapıldı
+- Kapıya iki yeni koşul eklendi: bilinen ürün çözümü + neden yetmediği gerekçesi; LLM'in yazdığı karşı görüş (`weak|moderate|strong`). Karşı görüş `strong` ise aday kart olmaz, `counter_argument_strong` gerekçesiyle sinyal arşivine düşer.
+- Eksik alanlar ayrı gerekçelerle arşivleniyor: `missing_existing_solution`, `missing_existing_solution_gap`, `missing_counter_argument`, `missing_counter_argument_strength`, `missing_next_step`.
+- `opportunities` ve `opportunity_evidence` tablolarına `existing_solution`, `existing_solution_gap`, `counter_argument`, `counter_argument_strength` kolonları eklendi (idempotent `add column if not exists`).
+- Digest kotasız: en fazla 10 kart, 0 kart geçerli, C/rising/D dolgusu yok. `message` yalnızca 0 adayda "Bu hafta araştırmaya değer bir şey yok."; `dropped` alanı `opportunity_signals` içindeki düşme gerekçelerini aday bazında sayıyor.
+- Her kartta bilinen çözüm, neden yetmediği, sonraki adım, karşı görüş, yanlışlama notu (next_step'ten türetilir), quote/link/tarih ve yan data var.
+- `digest --format md` eklendi; JSON ve Markdown aynı kart setinden üretiliyor.
+- Smoke test: güçlü karşı görüşlü aday + next step'siz iki kaynaklı aday reddediliyor; 3 nitelikli aday 3 kart veriyor; ikinci koşum stabil; Markdown/JSON kart seti aynı. Ayrı test 0 adayda dolgusuz digest ve gerekçe sayımını doğruluyor.
+
+### Doğrulama
+- `pnpm typecheck` PASS; yerel `test/digest.render.test.ts` 3 PASS; DB smoke testleri `TEST_DATABASE_URL` yokluğunda gerekçeli SKIP — CI'da/3060'ta koşacak.
+
+### Sonraki adım
+- CI yeşilse merge + #22 kapat; sırada #23 (known-profile ve geri bildirim).
