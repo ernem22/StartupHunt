@@ -603,10 +603,12 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 - `docs/agents/issue-tracker.md` güncel seed ile hizalandı: sub-issue ve blocking için `gh` 2.23 uyumlu REST fallback'leri, açık blocker sayımı, comment-sonra-close kuralı, başka repoya issue açmama notu, PR triage sorgusu (`authorAssociation` bu sürümde yok).
 - `AGENTS.md`'deki Node/pnpm/Python sürümleri config'e taşındı (`.nvmrc`, `engines`, yeni `.python-version`); tekrar eden sürüm bilgisi kaldırıldı.
 - `CODING_STANDARDS.md` kural 2'den mekanik dosya-konumu cümlesi çıkarıldı; yalnız yargı kararı kaldı.
-- `README.md` kontrol kapsamı netleştirildi (TS lint/format/typecheck, tüm repo encoding/test, Python sözdizimi) ve Husky kurulumu eklendi.
+- `README.md` kontrol kapsamı netleştirildi ve Husky kurulumu eklendi.
+- Python guardrail eklendi: `ruff check`, `ruff format --check` ve `mypy` (`pyproject.toml`, `requirements-dev.txt`); 18 ruff ve 4 mypy bulgusu düzeltildi. `check:python` artık yalnız sözdizimi değil, gerçek lint/format/typecheck çalıştırıyor.
 
 ### Doğrulama
-- `pnpm check` PASS; temiz klondan `pnpm install --frozen-lockfile` + `pnpm check` doğrulanacak.
+- `pnpm check` PASS (17 test; yerel DB testleri gerekçeli SKIP).
+- Temiz klondan `pnpm install --frozen-lockfile` + `pnpm check` doğrulandı.
 
 ### Sonraki adım
 - PR merge; sırada #24 (live LLM extractor) veya #25 (source registry).

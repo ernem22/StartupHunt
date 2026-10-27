@@ -18,9 +18,12 @@
     "typecheck": "tsc -p tsconfig.test.json",
     "check:encoding": "node scripts/check-encoding.mjs",
     "lint": "eslint .",
+    "lint:python": "ruff check cluster collectors main.py config.py db.py embedding.py",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"scripts/**/*.mjs\" \"*.json\" \".github/workflows/*.yml\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\" \"scripts/**/*.mjs\" \"*.json\" \".github/workflows/*.yml\"",
-    "check:python": "node scripts/check-python.mjs",
+    "format:python": "ruff format --check cluster collectors main.py config.py db.py embedding.py",
+    "typecheck:python": "mypy",
+    "check:python": "pnpm lint:python && pnpm format:python && pnpm typecheck:python",
     "check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm check:encoding && pnpm test && pnpm check:python",
     "prepare": "husky"
   },

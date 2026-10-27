@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from datetime import datetime
 
+import requests
+
 from collectors.http import create_session
 from collectors.models import RawItem
 
@@ -70,8 +72,8 @@ def collect(
     return items
 
 
-def _get_client_token(session: object, client_id: str, client_secret: str) -> str:
-    response = session.post(  # type: ignore[union-attr]
+def _get_client_token(session: requests.Session, client_id: str, client_secret: str) -> str:
+    response = session.post(
         "https://api.producthunt.com/v2/oauth/token",
         json={
             "client_id": client_id,

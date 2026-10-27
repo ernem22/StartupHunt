@@ -12,6 +12,7 @@ Topluluk metinlerinden kişisel kullanım için "araştırmaya değer fırsat" k
 
 ```bash
 pnpm install --frozen-lockfile
+python -m pip install -r requirements-dev.txt
 ```
 
 `prepare` adımı Husky pre-commit hook'unu kurar; her commit `pnpm check` çalıştırır.
@@ -22,7 +23,7 @@ pnpm install --frozen-lockfile
 pnpm check
 ```
 
-TypeScript için lint, format kontrolü ve typecheck; tüm repo için encoding ve testler; Python için sözdizimi kontrolü çalıştırır. DB testleri `TEST_DATABASE_URL` yoksa gerekçeli atlanır; CI'da pgvector service ile koşar.
+TypeScript için lint, format kontrolü ve typecheck; Python için ruff lint/format ve mypy; tüm repo için encoding ve testler. DB testleri `TEST_DATABASE_URL` yoksa gerekçeli atlanır; CI'da pgvector service ile koşar.
 
 ## Dokümanlar
 

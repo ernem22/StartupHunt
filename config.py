@@ -18,14 +18,16 @@ EMBEDDING_BATCH_SIZE = int(os.environ.get("EMBEDDING_BATCH_SIZE", "64"))
 REDDIT_SUBREDDITS = tuple(
     value.strip()
     for value in os.environ.get(
-        "REDDIT_SUBREDDITS", "startups,SaaS,Entrepreneur,smallbusiness",
+        "REDDIT_SUBREDDITS",
+        "startups,SaaS,Entrepreneur,smallbusiness",
     ).split(",")
     if value.strip()
 )
 STACKEXCHANGE_SITES = tuple(
     value.strip()
     for value in os.environ.get(
-        "STACKEXCHANGE_SITES", "stackoverflow,softwareengineering,webapps",
+        "STACKEXCHANGE_SITES",
+        "stackoverflow,softwareengineering,webapps",
     ).split(",")
     if value.strip()
 )
