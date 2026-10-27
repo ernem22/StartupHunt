@@ -50,6 +50,7 @@ create table if not exists patterns (
   observation_count integer not null default 0,
   status            text not null default 'active', -- active | merged (recluster üstlenilmesi) | archived (insan junk kararı)
   review_status     text not null default 'unreviewed', -- unreviewed|seen|interesting|junk
+  review_note       text not null default '', -- insan notu (karışık kartta hangi cümle değerli)
   created_at        timestamptz not null default now(),
   updated_at        timestamptz not null default now()
 );
