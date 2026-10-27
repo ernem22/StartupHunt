@@ -5,7 +5,7 @@
 - Bu cihazda yapılabilecek: kod yazımı, `pnpm typecheck`, dry-run eden adapter'lar (BD'siz mod), offline işler.
 - Docker gerektiren her şey (postgres/pgvector, TEI, SearXNG, BERTopic) 3060 PC'de koşar — orada test edilmedikçe "çalışıyor" SAYILMAZ; kod + LOG'a "3060'a bekleme" işareti.
 - CI: `.github/workflows/ci.yml` — her PR'da typecheck + pgvector service üzerinde DB testi.
-- Türkçe içerikli dosyalara PowerShell string manipülasyonu YASAK (mojibake) — sadece edit aracı.
+- Türkçe içerikli dosyalar edit/Write araçlarıyla yazılır; encoding `pnpm check:encoding` ile CI'da doğrulanır. Konsol Türkçe çıktısını mojibake gösterebilir; dosya içeriğini Read ile doğrula. `rg` bu makinede olmayabilir — Grep/Read kullan.
 - Scratch dosyaları workspace içinde tutulur ve bitince silinir; `%TEMP%` kullanılmaz.
 
 ## İş akışı (zorunlu)
@@ -15,7 +15,7 @@
 - base = `main`; PR body'sinde ne yapıldı + doğrulanamayan kısımlar listelenir.
 - Her anlamlı adım `LOG.md`'ye (tarih, ne, sonuç, sonraki adım) yazılır — merge öncesi dahil edilir.
 - Plan değişimi gerektiren karar çıkarsa önce plan.md güncellenir sonra kod.
-- `pnpm typecheck` her PR'da temiz olmalı; review'da mekanik kontroller CI'ya, judgement-call için `CODING_STANDARDS.md`'ye bakılır.
+- `pnpm typecheck` her PR'da temiz olmalı; review'da mekanik kontroller CI'ya, judgement-call için `CODING_STANDARDS.md`'ye bakılır. Yeni kolon/alan eklerken `CODING_STANDARDS.md` kural 3'ü uygula (tüketicisi olmayan alan yok).
 - Commit: sadece kendi işini; secrets (token/key) asla.
 
 ## Komutlar
@@ -34,6 +34,7 @@
 
 ## Dosya haritası
 - `plan.md` v3.2 (tek karar kaynağı) · `LOG.md` (geliştirme günlüğü) · `db/schema.sql` · `docker-compose.yml` · `cluster/{recluster,assign}.py` · `src/adapters/*` (collect kontratı: types.ts) · `src/pipeline/{clean,embed}.ts` · `src/config.ts` (SUBREDDITS 10, BACKFILL_SINCE=18 ay)
+- `src/opportunities/*` (build/digest/profile/feedback/cli) · `test/**/*.test.ts` · `test/helpers/test-db.ts` · `test/fixtures/*`
 
 ## Agent skills
 

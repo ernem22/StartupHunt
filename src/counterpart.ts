@@ -23,11 +23,6 @@ interface SearResult {
   publishedDate?: string | null;
 }
 
-interface SearResponse {
-  results: SearResult[];
-  query: string;
-}
-
 /** Kurallı TR sorgu üretimi (deterministik): pattern adı + top keywords, EN terimleri bırakılır.
  *  LLM TR çevirisi YALNIZ yorum katmanı kuralından bağımsızdır — v0.1 kurallı yeter (FAZ 14). */
 function buildQueries(name: string | null, keywords: string[]): string[] {

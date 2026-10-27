@@ -147,7 +147,6 @@ export class RedditBackfillAdapter implements Adapter {
     for (const sub of subs) {
       const saved = cursor.subs[sub];
       let after: string | null = saved ?? start.toISOString();
-      let requestedPageSize: number;
       let fetchedThisSub = 0;
       console.log(`▶ r/${sub} — başlangıç: ${after}${saved ? " (state'ten devam)" : ""}`);
 

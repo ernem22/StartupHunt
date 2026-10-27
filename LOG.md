@@ -537,3 +537,20 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 
 ### Sonraki adım
 - CI yeşilse merge + #22 kapat; sırada #23 (known-profile ve geri bildirim).
+
+---
+
+## 2026-10-25 — Oturum 31: retro guardrails
+
+### Ne yapıldı
+- `docs/agents/issue-tracker.md`: issue okuma `--json number,title,body,labels,comments`; Projects (classic) hatasında `gh api` fallback. PowerShell bölümüne `rg` yokluğu + mojibake notu.
+- `AGENTS.md`: dosya haritasına `src/opportunities/*` + test seam satırı; yeni alan eklerken `CODING_STANDARDS.md` kural 3 pointer'ı; Türkçe kuralı `pnpm check:encoding`e bağlandı.
+- `tsconfig.json`: `noUnusedLocals` + `noUnusedParameters` açıldı; 6 mevcut kullanılmayan sembol temizlendi.
+- `scripts/check-encoding.mjs` + `pnpm check:encoding`: izlenen `.md/.sql/.ts/.json` dosyalarında U+FFFD aranıyor; CI'ya eklendi.
+- Prettier/ESLint bilinçli olarak eklenmedi: mevcut stil sapması yok; ikinci mekanik kural çıkınca eklenecek.
+
+### Doğrulama
+- `pnpm typecheck` PASS; `pnpm check:encoding` 55 dosya temiz; `pnpm test` 4 PASS + 2 SKIP (DB yok).
+
+### Sonraki adım
+- Merge sonrası #23 (known-profile + geri bildirim).

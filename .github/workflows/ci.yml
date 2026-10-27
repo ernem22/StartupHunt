@@ -45,6 +45,7 @@ jobs:
       - name: Apply schema
         run: PGPASSWORD=startuphunt psql -h 127.0.0.1 -U startuphunt -d startuphunt -v ON_ERROR_STOP=1 -f db/schema.sql
       - run: pnpm typecheck
+      - run: pnpm check:encoding
       - name: Test
         shell: bash
         run: |
