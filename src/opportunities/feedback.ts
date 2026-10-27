@@ -48,14 +48,14 @@ export function dropWeeks(): number {
 export async function recordFeedback(
   opportunityKey: string,
   verdict: FeedbackVerdict,
-  note: string | null
+  note: string | null,
 ): Promise<{ id: string; createdAt: Date }> {
   return withDb(async (client) => {
     const result = await client.query<{ id: string; created_at: Date }>(
       `insert into opportunity_feedback (opportunity_key, verdict, note)
        values ($1, $2, $3)
        returning id, created_at`,
-      [opportunityKey, verdict, note]
+      [opportunityKey, verdict, note],
     );
     const row = result.rows[0];
     if (!row) throw new Error("feedback kaydı dönmedi");
@@ -66,7 +66,7 @@ export async function recordFeedback(
 export async function loadRecentDrops(
   client: pg.PoolClient,
   now: Date,
-  weeks: number = dropWeeks()
+  weeks: number = dropWeeks(),
 ): Promise<DropEvent[]> {
   const result = await client.query<DropRow>(
     `select f.opportunity_key, o.actor, o.job, o.problem
@@ -75,7 +75,7 @@ export async function loadRecentDrops(
       where f.verdict = 'drop'
         and f.created_at >= $1::timestamptz - ($2::int * interval '1 week')
       order by f.created_at desc, f.id desc`,
-    [now, weeks]
+    [now, weeks],
   );
   return result.rows.map((row) => ({
     opportunityKey: row.opportunity_key,
@@ -102,7 +102,7 @@ function jaccard(a: Set<string>, b: Set<string>): number {
 export function isSuppressed(
   opportunityKey: string,
   card: FeedbackCard,
-  drops: DropEvent[]
+  drops: DropEvent[],
 ): boolean {
   const cardActorJob = normalizedActorJob(card.actor, card.job);
   const cardProblem = tokenSet(card.problem);

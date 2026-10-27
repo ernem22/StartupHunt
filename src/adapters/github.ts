@@ -2,7 +2,13 @@
 // CodeRabbit düzeltmeleri: sorgu başına / topic başına bağımsız created imleci
 // (ortak imleç diğer sorgu/topic'in ilerlemesini eziyordu → sessiz veri kaybı).
 import type { Adapter, CollectOptions, NormalizedObservation } from "../types.js";
-import { upsertRaw, upsertNormalized, contentHash, loadAdapterState, saveAdapterState } from "../db.js";
+import {
+  upsertRaw,
+  upsertNormalized,
+  contentHash,
+  loadAdapterState,
+  saveAdapterState,
+} from "../db.js";
 import { BACKFILL_SINCE } from "../config.js";
 
 interface SearchIssue {
@@ -62,7 +68,10 @@ interface GhCursor {
   repoSince: Record<string, string>; // topic → created_cursor
 }
 
-function defaultCursors(): { issueSince: Record<string, string>; repoSince: Record<string, string> } {
+function defaultCursors(): {
+  issueSince: Record<string, string>;
+  repoSince: Record<string, string>;
+} {
   const base = BACKFILL_SINCE.toISOString().slice(0, 10);
   return {
     issueSince: Object.fromEntries(ISSUE_QUERIES.map((q) => [q, base])),
@@ -106,7 +115,11 @@ async function ghFetch<T>(path: string): Promise<T | null> {
       if (res.status === 403 || res.status === 429) {
         const ra = res.headers.get("retry-after");
         const reset = res.headers.get("x-ratelimit-reset");
-        const waitSec = ra ? Number(ra) : reset ? Math.max(Number(reset) - Date.now() / 1000, 5) : 30;
+        const waitSec = ra
+          ? Number(ra)
+          : reset
+            ? Math.max(Number(reset) - Date.now() / 1000, 5)
+            : 30;
         console.warn(`  [rate] ${Math.round(waitSec)}s bekleniyor`);
         await sleep(waitSec * 1000);
         continue;

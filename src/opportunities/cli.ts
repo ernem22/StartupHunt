@@ -13,7 +13,9 @@ function usage(): void {
   console.log("kullanım:");
   console.log("  pnpm opportunities build --fixture <path>");
   console.log("  pnpm opportunities digest --format json|md [--now <ISO>]");
-  console.log("  pnpm opportunities feedback --id <opportunity_key> --verdict open|investigate|drop|knew [--note \"...\"]");
+  console.log(
+    '  pnpm opportunities feedback --id <opportunity_key> --verdict open|investigate|drop|knew [--note "..."]',
+  );
 }
 
 async function main(): Promise<void> {
@@ -26,7 +28,7 @@ async function main(): Promise<void> {
     }
     const stats = await runBuild(new FixtureEvidenceExtractor(fixture));
     console.log(
-      `build: observations=${stats.observations} evidence=${stats.evidence} opportunities=${stats.opportunities} signals=${stats.signals} skipped=${stats.skipped}`
+      `build: observations=${stats.observations} evidence=${stats.evidence} opportunities=${stats.opportunities} signals=${stats.signals} skipped=${stats.skipped}`,
     );
     return;
   }
@@ -57,15 +59,11 @@ async function main(): Promise<void> {
       throw new Error("feedback için --id <opportunity_key> gerekli");
     }
     if (!verdict || !isFeedbackVerdict(verdict)) {
-      throw new Error(
-        `geçersiz verdict: ${verdict ?? "yok"} (open, investigate, drop veya knew)`
-      );
+      throw new Error(`geçersiz verdict: ${verdict ?? "yok"} (open, investigate, drop veya knew)`);
     }
     const note = flagValue(args, "--note") ?? null;
     const event = await recordFeedback(id, verdict, note);
-    console.log(
-      `feedback: key=${id} verdict=${verdict} at=${event.createdAt.toISOString()}`
-    );
+    console.log(`feedback: key=${id} verdict=${verdict} at=${event.createdAt.toISOString()}`);
     return;
   }
 

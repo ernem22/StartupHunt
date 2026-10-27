@@ -29,7 +29,7 @@ export async function runCleaning(batchSize = 1000): Promise<CleaningStats> {
          where status = 'new'
          order by id
          limit $1`,
-        [batchSize]
+        [batchSize],
       );
       if (rows.rows.length === 0) break;
 
@@ -55,7 +55,9 @@ export async function runCleaning(batchSize = 1000): Promise<CleaningStats> {
 
       // discard'lar
       if (discardedIds.length > 0) {
-        await c.query(`update observations set status = 'discarded' where id = any($1)`, [discardedIds]);
+        await c.query(`update observations set status = 'discarded' where id = any($1)`, [
+          discardedIds,
+        ]);
         stats.discarded += discardedIds.length;
       }
 

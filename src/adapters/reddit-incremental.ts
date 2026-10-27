@@ -22,7 +22,7 @@ interface ScraperPostRow {
   num_crossposts: string;
   selftext: string;
   post_type: string; // text|image|video|gallery|link
-  is_nsfw: string;   // True/False
+  is_nsfw: string; // True/False
   is_spoiler: string;
   flair: string;
   total_awards: string;
@@ -134,6 +134,8 @@ export class RedditIncrementalAdapter implements Adapter {
     }
 
     if (!opts.dryRun) saveState(state);
-    console.log(`✔ incremental oturumu bitti. processed=${processed}${opts.dryRun ? " (dry-run)" : ""}`);
+    console.log(
+      `✔ incremental oturumu bitti. processed=${processed}${opts.dryRun ? " (dry-run)" : ""}`,
+    );
   }
 }

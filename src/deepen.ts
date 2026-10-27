@@ -24,7 +24,13 @@ interface SearchResponse {
   data: ArcticPost[];
 }
 
-async function fetchSearch(sub: string, q: string, afterIso: string, untilIso: string, limit: number): Promise<ArcticPost[]> {
+async function fetchSearch(
+  sub: string,
+  q: string,
+  afterIso: string,
+  untilIso: string,
+  limit: number,
+): Promise<ArcticPost[]> {
   const params = new URLSearchParams({
     subreddit: sub,
     title: q, // Arctic Shift: title/selftext araması yalnız subreddit/author filtresiyle çalışır (plan FAZ 1)
@@ -158,7 +164,7 @@ async function main(): Promise<void> {
           }
         }
         const lastIso = batch[batch.length - 1]?.created_utc
-          ? new Date((batch[batch.length - 1]!.created_utc! * 1000)).toISOString()
+          ? new Date(batch[batch.length - 1]!.created_utc! * 1000).toISOString()
           : untilIso;
         if (batch.length < 100 || lastIso >= untilIso || obs >= MAX_OBS) break;
         cursorIso = lastIso;
@@ -194,9 +200,7 @@ async function prune(): Promise<void> {
        )
        select (select count(*) from dd) as del_obs, (select count(*) from dr) as del_raw`,
     );
-    console.log(
-      `✔ prune: obs=${r.rows[0]?.del_obs} silindi, raw=${r.rows[0]?.del_raw} silindi`,
-    );
+    console.log(`✔ prune: obs=${r.rows[0]?.del_obs} silindi, raw=${r.rows[0]?.del_raw} silindi`);
   } finally {
     await pool.end().catch(() => {});
   }

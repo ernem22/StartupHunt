@@ -1,3 +1,5 @@
+> Arşiv. Geçerli kararlar ticket, spec, ADR ve GLOSSARY.md'de.
+
 # StartupHunt kaynakları: API ve ücretsiz erişim raporu
 
 > Araştırma tarihi: **3 Eylül 2026**. Yalnızca birincil (platformun kendi) dokümantasyon ve fiyatlandırma kaynakları kullanıldı. “Ücretsiz” bir API anahtarının parasız olmasıdır; veri kullanım izni, ticari kullanım ve kota bundan ayrı değerlendirilir.

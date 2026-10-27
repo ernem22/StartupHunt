@@ -107,7 +107,7 @@ export class StackExchangeAdapter implements Adapter {
         }
         const res = await seFetch(
           `/search/advanced?order=desc&sort=activity&q=${encodeURIComponent(q)}&page=${page}&pagesize=50`,
-          site
+          site,
         );
         if (!res || !res.items || res.items.length === 0) break;
 
@@ -115,7 +115,11 @@ export class StackExchangeAdapter implements Adapter {
           const norm = toNormalized(site, question);
           if (!norm) continue;
           if (!opts.dryRun) {
-            await upsertRaw({ source: "stackexchange", sourceId: norm.sourceId, rawData: question });
+            await upsertRaw({
+              source: "stackexchange",
+              sourceId: norm.sourceId,
+              rawData: question,
+            });
             try {
               await upsertNormalized({ ...norm, contentHash: contentHash(norm) });
             } catch (err) {
@@ -136,7 +140,9 @@ export class StackExchangeAdapter implements Adapter {
       console.log(`  ${site} "${q}" tamam.`);
     }
 
-    console.log(`✔ StackExchange oturumu bitti. processed=${processed}${opts.dryRun ? " (dry-run)" : ""}`);
+    console.log(
+      `✔ StackExchange oturumu bitti. processed=${processed}${opts.dryRun ? " (dry-run)" : ""}`,
+    );
   }
 }
 

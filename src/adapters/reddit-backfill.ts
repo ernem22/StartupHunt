@@ -4,7 +4,13 @@
 // boyutu karşılaştırması istenen size üzerinden yapılır (remaining < 100'de erken bitüş taşınırdı)
 import type { Adapter, CollectOptions, NormalizedObservation } from "../types.js";
 import { config, SUBREDDITS, BACKFILL_SINCE } from "../config.js";
-import { upsertRaw, upsertNormalized, contentHash, loadAdapterState, saveAdapterState } from "../db.js";
+import {
+  upsertRaw,
+  upsertNormalized,
+  contentHash,
+  loadAdapterState,
+  saveAdapterState,
+} from "../db.js";
 
 interface SubCursor {
   subs: Record<string, string>; // subreddit → after ISO
@@ -53,7 +59,11 @@ interface SearchResponse {
 
 const BASE = config.arcticShiftBaseUrl;
 
-async function fetchPage(subreddit: string, after: string | null, limit: number): Promise<SearchResponse | null> {
+async function fetchPage(
+  subreddit: string,
+  after: string | null,
+  limit: number,
+): Promise<SearchResponse | null> {
   const params = new URLSearchParams({
     subreddit,
     sort: "asc",
@@ -153,7 +163,9 @@ export class RedditBackfillAdapter implements Adapter {
       while (true) {
         const remaining = opts.limit ? opts.limit - processed : undefined;
         if (remaining !== undefined && remaining <= 0) {
-          console.log(`  oturum limiti doldu (${opts.limit}); kalan subredditler sonraki çalıştırmada.`);
+          console.log(
+            `  oturum limiti doldu (${opts.limit}); kalan subredditler sonraki çalıştırmada.`,
+          );
           await store.save(cursor);
           return;
         }
@@ -205,6 +217,8 @@ export class RedditBackfillAdapter implements Adapter {
       }
     }
     await store.save(cursor);
-    console.log(`✔ backfill oturumu bitti. processed=${processed}${opts.dryRun ? " (dry-run)" : ""}`);
+    console.log(
+      `✔ backfill oturumu bitti. processed=${processed}${opts.dryRun ? " (dry-run)" : ""}`,
+    );
   }
 }

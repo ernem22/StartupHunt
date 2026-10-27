@@ -573,3 +573,24 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 
 ### Sonraki adım
 - CI yeşilse merge + #23 kapat; #18 body'sine dokunulmadı.
+
+---
+
+## 2026-10-27 — Oturum 32: repo baseline
+
+### Ne yapıldı
+- `AGENTS.md` yalnız Başlangıç + Ortam + Agent skills'e indirildi; branch/PR/LOG/plan kuralları `docs/agents/issue-tracker.md`'ye taşındı.
+- 3 tarihsel rapor `docs/archive/*-2026-09.md` altına taşındı, başına arşiv notu eklendi.
+- `CONTEXT.md` → `GLOSSARY.md` adlandırması (`docs/agents/domain.md`); `GLOSSARY.md` oluşturuldu.
+- `docs/adr/0001-opportunity-gate.md` + `0002-known-profile-feedback.md` eklendi.
+- `CODING_STANDARDS.md` 7 yargı kuralına genişletildi.
+- Tek kontrol: `pnpm check` (eslint, prettier --check, typecheck, encoding, test, python compile); Husky + lint-staged pre-commit; CI aynı komutu çalıştırıyor.
+- `.gitattributes` (LF), `.nvmrc` 22.23.2, `engines`, `README.md` eklendi.
+- ESLint `preserve-caught-error` bulguları testlerde `cause` eklenerek düzeltildi.
+
+### Doğrulama
+- `pnpm check` PASS (14 pass, 3 DB skip). DB smoke CI'da koşacak.
+- Pre-commit hook commit sırasında çalıştı.
+
+### Sonraki adım
+- Baseline PR merge; #24 (live LLM extractor) veya #25 (source registry) paralel başlayabilir.

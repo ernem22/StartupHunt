@@ -101,10 +101,7 @@ function compareCards(a: OpportunityCard, b: OpportunityCard): number {
   return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
 }
 
-export function composeDigest(
-  cards: OpportunityCard[],
-  dropped: DigestDropReason[]
-): Digest {
+export function composeDigest(cards: OpportunityCard[], dropped: DigestDropReason[]): Digest {
   const ordered = [...cards].sort(compareCards);
   const limited = ordered.slice(0, MAX_DIGEST_CARDS);
   return {
@@ -149,27 +146,23 @@ export function renderDigestMarkdown(digest: Digest): string {
     lines.push(`- **Bilinen profil:** ${card.likelyKnown} — ${card.knownReason}`);
     lines.push(`- **Problem:** ${card.problem}`);
     lines.push(`- **Workaround:** ${display(card.workaround)}`);
-    lines.push(
-      `- **Maliyet:** zaman ${display(card.cost.time)}; para ${display(card.cost.money)}`
-    );
+    lines.push(`- **Maliyet:** zaman ${display(card.cost.time)}; para ${display(card.cost.money)}`);
     lines.push(`- **Sıklık:** ${display(card.frequency)}`);
     lines.push(
-      `- **Bağımsız kaynak:** ${card.sourceCount} (${display(card.communities.join(", "))})`
+      `- **Bağımsız kaynak:** ${card.sourceCount} (${display(card.communities.join(", "))})`,
     );
-    lines.push(
-      `- **İlk/son görülme:** ${display(card.firstSeen)} / ${display(card.lastSeen)}`
-    );
+    lines.push(`- **İlk/son görülme:** ${display(card.firstSeen)} / ${display(card.lastSeen)}`);
     lines.push(`- **Bilinen çözüm:** ${display(card.existingSolution)}`);
     lines.push(`- **Neden yetmiyor:** ${display(card.existingSolutionGap)}`);
     lines.push(`- **Sonraki adım:** ${display(card.nextStep)}`);
     lines.push(
-      `- **Karşı görüş (${display(card.counterArgumentStrength)}):** ${display(card.counterArgument)}`
+      `- **Karşı görüş (${display(card.counterArgumentStrength)}):** ${display(card.counterArgument)}`,
     );
     lines.push(`- **Yanlışlama notu:** ${card.falsificationNote}`);
     lines.push(`- **Alıntı:** "${card.quote}"`);
     lines.push(
       `- **Kaynak:** ${card.sourceUrl} — ${display(card.observedAt)} (${display(card.author)})`,
-      ""
+      "",
     );
   });
 
@@ -208,7 +201,7 @@ export async function runDigest(options: DigestOptions = {}): Promise<Digest> {
           and o.counter_argument_strength in ('weak', 'moderate')
           and o.next_step is not null
           and e.observed_at is not null
-        order by o.opportunity_key`
+        order by o.opportunity_key`,
     );
 
     const drops = await loadRecentDrops(client, now);
@@ -263,7 +256,7 @@ export async function runDigest(options: DigestOptions = {}): Promise<Digest> {
                    and o.source_count > 0
               )
         group by s.reason
-        order by s.reason`
+        order by s.reason`,
     );
 
     return composeDigest(
@@ -271,7 +264,7 @@ export async function runDigest(options: DigestOptions = {}): Promise<Digest> {
       droppedResult.rows.map((row) => ({
         reason: row.reason,
         count: Number(row.count),
-      }))
+      })),
     );
   });
 }

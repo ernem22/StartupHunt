@@ -1,3 +1,5 @@
+> Arşiv. Geçerli kararlar ticket, spec, ADR ve GLOSSARY.md'de.
+
 # Free plan toplama kapasitesi: teorik aylık/günlük tahmin
 
 > Hesap tarihi: **3 Eylül 2026**. Bu bir kapasite bütçesidir, garanti değil. Hedef sitenin rate limit'i, robots/ToS, CAPTCHA, başarısız tekrarlar ve çıkarılabilir gerçek içerik sayısı sonuçları düşürür. Günlük sütunlar 30 güne eşit yayılmış aylık bütçedir; aynı anda çalıştırılabilecek iş sayısı değildir.

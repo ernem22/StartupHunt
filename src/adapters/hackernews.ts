@@ -3,7 +3,13 @@
 // imleç** — relevance-sorted result üzerinden ortak imleç ilerlemek sayfa atlatabilir
 // (CodeRabbit review düzeltmesi). Catch-up: created_at_i mantığı korunur.
 import type { Adapter, CollectOptions, NormalizedObservation } from "../types.js";
-import { upsertRaw, upsertNormalized, contentHash, loadAdapterState, saveAdapterState } from "../db.js";
+import {
+  upsertRaw,
+  upsertNormalized,
+  contentHash,
+  loadAdapterState,
+  saveAdapterState,
+} from "../db.js";
 import { BACKFILL_SINCE } from "../config.js";
 
 /** Dry-run'da DB yok — bellek içi state (test amacıyla yeterli). */
@@ -76,7 +82,7 @@ function toNormalized(h: AlgoliaHit): NormalizedObservation | null {
   const story = isStory(h);
   const storyId = h.story_id ?? null;
   const title = story ? (h.title ?? null) : (h.story_title ?? null);
-  const text = story ? null : h.comment_text ?? null;
+  const text = story ? null : (h.comment_text ?? null);
   const itemUrl = `https://news.ycombinator.com/item?id=${h.objectID}`;
 
   if (!title && !text) return null; // içeriksiz
@@ -106,7 +112,9 @@ export class HackerNewsAdapter implements Adapter {
 
   async collect(_since: Date | null, opts: CollectOptions): Promise<void> {
     const initial = () => ({
-      lastByTerm: Object.fromEntries(QUERY_TERMS.map((t) => [t, Math.floor(BACKFILL_SINCE.getTime() / 1000)])),
+      lastByTerm: Object.fromEntries(
+        QUERY_TERMS.map((t) => [t, Math.floor(BACKFILL_SINCE.getTime() / 1000)]),
+      ),
       doneBackfill: false,
     });
     const store = makeStateStore<HnCursor>(opts.dryRun, initial);

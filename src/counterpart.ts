@@ -113,7 +113,9 @@ async function runForPattern(pool: pg.Pool, patternId: number, dryRun: boolean):
   }
 
   if (dryRun) {
-    console.log(`  (dry-run) sorgu kaydı ve obs yazımI yapılmaz — q=${searched}, obs=${collected.length}`);
+    console.log(
+      `  (dry-run) sorgu kaydı ve obs yazımI yapılmaz — q=${searched}, obs=${collected.length}`,
+    );
     return;
   }
 
@@ -133,9 +135,7 @@ async function runForPattern(pool: pg.Pool, patternId: number, dryRun: boolean):
       [patternId, s.q, s.resultCount, s.status],
     );
   }
-  console.log(
-    `✔ pattern #${pat.id}: sorgu=${searched}; obs=${collected.length}`,
-  );
+  console.log(`✔ pattern #${pat.id}: sorgu=${searched}; obs=${collected.length}`);
 }
 
 function shaUrl(url: string): string {

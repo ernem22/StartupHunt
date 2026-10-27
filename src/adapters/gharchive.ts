@@ -7,7 +7,13 @@ import { createGunzip } from "node:zlib";
 import { Readable } from "node:stream";
 import { createInterface } from "node:readline";
 import type { Adapter, CollectOptions, NormalizedObservation } from "../types.js";
-import { upsertRaw, upsertNormalized, contentHash, loadAdapterState, saveAdapterState } from "../db.js";
+import {
+  upsertRaw,
+  upsertNormalized,
+  contentHash,
+  loadAdapterState,
+  saveAdapterState,
+} from "../db.js";
 import { BACKFILL_SINCE } from "../config.js";
 
 /** Dry-run'da DB yok — bellek içi state (aynı desen: hackernews). */
@@ -185,14 +191,18 @@ export class GhArchiveAdapter implements Adapter {
         }
         rl.close();
         nodeStream.destroy();
-        console.log(`  ${lineCount} satır okundu${limitHit ? " — limit doldu, dosya terk edildi" : ""}`);
+        console.log(
+          `  ${lineCount} satır okundu${limitHit ? " — limit doldu, dosya terk edildi" : ""}`,
+        );
       } catch (e) {
         console.warn(`  [hata] ${path} atlandı: ${(e as Error).message}`);
         // imleç kaydırmadan geç — sonraki koşumda tekrar dener (catch-up)
       }
 
       if (limitHit) {
-        console.log(`dosya ortasında limit — imleç ${cursor.lastHour}'de kaldı (kalan: sonraki koşum)`);
+        console.log(
+          `dosya ortasında limit — imleç ${cursor.lastHour}'de kaldı (kalan: sonraki koşum)`,
+        );
         await store.save(cursor);
         return;
       }
