@@ -1,0 +1,61 @@
+{
+  "extractions": {
+    "hackernews:hn-f1": [
+      {
+        "actor": "solo bookkeeper",
+        "job": "bank reconciliation",
+        "problem": "bank transactions are matched to invoices by hand every day",
+        "workaround": "match bank transactions to invoices by hand",
+        "costTime": "1 hour/day",
+        "costMoney": null,
+        "frequency": "daily",
+        "existingSolution": "accounting software bank feed",
+        "existingSolutionGap": "the feed still needs manual matching to invoices",
+        "counterArgument": "the accounting software may already auto-match most invoices",
+        "counterArgumentStrength": "weak",
+        "nextStep": "Spend 10 minutes checking the bank CSV export",
+        "nextStepMinutes": 10,
+        "quote": "I match bank transactions to invoices by hand every day",
+        "language": "en"
+      }
+    ],
+    "stackexchange:se-f2": [
+      {
+        "actor": "solo bookkeeper",
+        "job": "bank reconciliation",
+        "problem": "payments are reconciled to invoices manually each morning",
+        "workaround": "reconcile payments to invoices manually",
+        "costTime": "1 hour/day",
+        "costMoney": null,
+        "frequency": "daily",
+        "existingSolution": "accounting software bank feed",
+        "existingSolutionGap": "the feed still needs manual reconciliation to payments",
+        "counterArgument": "the accounting software may already reconcile most payments",
+        "counterArgumentStrength": "weak",
+        "nextStep": "Spend 10 minutes checking whether the bank feed can reconcile payments",
+        "nextStepMinutes": 10,
+        "quote": "I reconcile payments to invoices manually every morning",
+        "language": "en"
+      }
+    ],
+    "hackernews:hn-f3": [
+      {
+        "actor": "dental clinic owner",
+        "job": "payroll",
+        "problem": "payroll runs take a full day every month",
+        "workaround": "run payroll manually",
+        "costTime": "1 day/month",
+        "costMoney": null,
+        "frequency": "monthly",
+        "existingSolution": "payroll provider export",
+        "existingSolutionGap": "the export still needs manual entry into the bank portal",
+        "counterArgument": "the provider may add direct submission",
+        "counterArgumentStrength": "weak",
+        "nextStep": "Spend 10 minutes listing the payroll steps that could be exported",
+        "nextStepMinutes": 10,
+        "quote": "payroll takes me a full day every month",
+        "language": "en"
+      }
+    ]
+  }
+}

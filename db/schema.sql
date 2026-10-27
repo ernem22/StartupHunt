@@ -178,6 +178,15 @@ create table if not exists opportunity_signals (
 create index if not exists idx_os_key on opportunity_signals (opportunity_key);
 alter table opportunity_signals add column if not exists source_count integer not null default 0;
 
+create table if not exists opportunity_feedback (
+  id              bigserial primary key,
+  opportunity_key text not null,
+  verdict         text not null check (verdict in ('open', 'investigate', 'drop', 'knew')),
+  note            text,
+  created_at      timestamptz not null default now()
+);
+create index if not exists idx_of_key_created on opportunity_feedback (opportunity_key, created_at);
+
 -- View: pattern kaynakları (kolon değil — plan v3.1 kararı)
 create or replace view v_pattern_sources as
 select po.pattern_id,
