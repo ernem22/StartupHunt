@@ -594,3 +594,19 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 
 ### Sonraki adım
 - Baseline PR merge; #24 (live LLM extractor) veya #25 (source registry) paralel başlayabilir.
+
+---
+
+## 2026-10-27 — Oturum 33: baseline'ı Matt skill'lerine göre yeniden denetleme
+
+### Ne yapıldı
+- `docs/agents/issue-tracker.md` güncel seed ile hizalandı: sub-issue ve blocking için `gh` 2.23 uyumlu REST fallback'leri, açık blocker sayımı, comment-sonra-close kuralı, başka repoya issue açmama notu, PR triage sorgusu (`authorAssociation` bu sürümde yok).
+- `AGENTS.md`'deki Node/pnpm/Python sürümleri config'e taşındı (`.nvmrc`, `engines`, yeni `.python-version`); tekrar eden sürüm bilgisi kaldırıldı.
+- `CODING_STANDARDS.md` kural 2'den mekanik dosya-konumu cümlesi çıkarıldı; yalnız yargı kararı kaldı.
+- `README.md` kontrol kapsamı netleştirildi (TS lint/format/typecheck, tüm repo encoding/test, Python sözdizimi) ve Husky kurulumu eklendi.
+
+### Doğrulama
+- `pnpm check` PASS; temiz klondan `pnpm install --frozen-lockfile` + `pnpm check` doğrulanacak.
+
+### Sonraki adım
+- PR merge; sırada #24 (live LLM extractor) veya #25 (source registry).

@@ -6,7 +6,7 @@
 
 ## Ortam
 
-- Windows (win32), PowerShell 5.1. Node v22.23.2, pnpm 12.11.2, Python 3.12.10.
+- Windows (win32), PowerShell 5.1. Runtime sürümleri sabit: `.nvmrc` (Node), `engines` (pnpm), `.python-version` (Python).
 - Docker CLI v29.8.0 kurulu ama daemon çalışmıyor (`docker info` başarısız). Postgres/pgvector, TEI, SearXNG ve BERTopic bu makinede yok; DB/embed/cluster doğrulaması 3060 PC'de yapılır — orada koşulmadan "çalışıyor" sayılmaz.
 - `make` ve `rg` yok; dosya arama için Grep/Read kullan. Konsol Türkçe çıktısını mojibake gösterebilir; dosya içeriğini Read ile doğrula.
 - Scratch dosyaları workspace içinde tutulur ve bitince silinir; `%TEMP%` kullanılmaz.
