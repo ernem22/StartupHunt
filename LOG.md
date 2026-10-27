@@ -581,7 +581,7 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 ### Ne yapıldı
 - `AGENTS.md` yalnız Başlangıç + Ortam + Agent skills'e indirildi; branch/PR/LOG/plan kuralları `docs/agents/issue-tracker.md`'ye taşındı.
 - 3 tarihsel rapor `docs/archive/*-2026-09.md` altına taşındı, başına arşiv notu eklendi.
-- `CONTEXT.md` → `GLOSSARY.md` adlandırması (`docs/agents/domain.md`); `GLOSSARY.md` oluşturuldu.
+- Eski sözlük dosya adı `GLOSSARY.md` olarak güncellendi (`docs/agents/domain.md`); sözlük oluşturuldu.
 - `docs/adr/0001-opportunity-gate.md` + `0002-known-profile-feedback.md` eklendi.
 - `CODING_STANDARDS.md` 7 yargı kuralına genişletildi.
 - Tek kontrol: `pnpm check` (eslint, prettier --check, typecheck, encoding, test, python compile); Husky + lint-staged pre-commit; CI aynı komutu çalıştırıyor.
