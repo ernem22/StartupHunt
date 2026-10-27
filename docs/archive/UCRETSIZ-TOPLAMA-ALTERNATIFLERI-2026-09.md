@@ -1,3 +1,5 @@
+> Arşiv. Geçerli kararlar ticket, spec, ADR ve GLOSSARY.md'de.
+
 # Apify ve Firecrawl için ücretsiz alternatifler
 
 > Araştırma tarihi: **3 Eylül 2026**. “Ücretsiz”, yazılım/lisans ya da hosted free kota için kullanılır; sunucu, proxy, CAPTCHA çözümü ve bakım maliyeti yine size aittir. Başarı dereceleri ürünün ilanı değil, StartupHunt hedeflerine göre teknik uygunluk değerlendirmesidir.

@@ -57,7 +57,10 @@ async function step(name: string, cmd: string, args: string[]): Promise<boolean>
 async function infrastructure(): Promise<boolean> {
   console.log(`\n══ [${ts()}] compose up`);
   try {
-    await runcmd("docker", ["compose", "up", "-d"], { timeout: 180_000, shell: process.platform === "win32" });
+    await runcmd("docker", ["compose", "up", "-d"], {
+      timeout: 180_000,
+      shell: process.platform === "win32",
+    });
   } catch (e) {
     console.warn(`compose hata (zaten çalışıyor olabilir): ${(e as Error).message}`);
   }
@@ -73,7 +76,9 @@ async function infrastructure(): Promise<boolean> {
         await new Promise((r) => setTimeout(r, 1000));
       }
     }
-    console.warn("pg ayağa kalkamadı — collect adımları yine de dener (DB olmayan çağrılar hata verir)");
+    console.warn(
+      "pg ayağa kalkamadı — collect adımları yine de dener (DB olmayan çağrılar hata verir)",
+    );
     logFile("WARN pg hazır değil");
     return false;
   } finally {

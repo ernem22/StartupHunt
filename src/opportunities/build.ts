@@ -68,7 +68,11 @@ function normalizeText(text: string): string {
 }
 
 function tokenSet(text: string): Set<string> {
-  return new Set(normalizeText(text).split(/[^\p{L}\p{N}]+/u).filter(Boolean));
+  return new Set(
+    normalizeText(text)
+      .split(/[^\p{L}\p{N}]+/u)
+      .filter(Boolean),
+  );
 }
 
 function jaccard(a: Set<string>, b: Set<string>): number {
@@ -143,15 +147,15 @@ interface WorthItRationale {
 }
 
 function worthItRationaleOf(entries: DraftEntry[]): WorthItRationale | null {
-  const existingSolution = entries.find(({ draft }) => !isBlank(draft.existingSolution))
-    ?.draft.existingSolution;
+  const existingSolution = entries.find(({ draft }) => !isBlank(draft.existingSolution))?.draft
+    .existingSolution;
   const existingSolutionGap = entries.find(({ draft }) => !isBlank(draft.existingSolutionGap))
     ?.draft.existingSolutionGap;
   const counterArgument = entries.find(({ draft }) => !isBlank(draft.counterArgument))?.draft
     .counterArgument;
   const counterArgumentStrength = entries.find(
     ({ draft }) =>
-      draft.counterArgumentStrength === "weak" || draft.counterArgumentStrength === "moderate"
+      draft.counterArgumentStrength === "weak" || draft.counterArgumentStrength === "moderate",
   )?.draft.counterArgumentStrength;
   if (!existingSolution || !existingSolutionGap || !counterArgument || !counterArgumentStrength) {
     return null;
@@ -172,7 +176,7 @@ function rejectReason(entries: DraftEntry[], sources: number): RejectReason | nu
   }
   const hasWork = entries.some(
     ({ draft }) =>
-      !isBlank(draft.workaround) || !isBlank(draft.costTime) || !isBlank(draft.costMoney)
+      !isBlank(draft.workaround) || !isBlank(draft.costTime) || !isBlank(draft.costMoney),
   );
   if (!hasWork) return "missing_workaround_or_spend";
   if (entries.some(({ draft }) => draft.counterArgumentStrength === "strong")) {
@@ -221,7 +225,7 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
                   source_url
                 ) as thread_url
            from observations
-          order by id`
+          order by id`,
       );
 
       const groups = new Map<string, DraftEntry[]>();
@@ -272,7 +276,7 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
                     communities = '{}',
                     updated_at = now()
               where opportunity_key = $1`,
-            [key]
+            [key],
           );
           continue;
         }
@@ -289,7 +293,7 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
           `delete from opportunity_signals
             where opportunity_key = $1
               and observation_id = any($2::bigint[])`,
-          [key, entries.map(({ observation }) => observation.id)]
+          [key, entries.map(({ observation }) => observation.id)],
         );
         touched.add(key);
       }
@@ -311,7 +315,7 @@ export async function runBuild(extractor: EvidenceExtractor): Promise<BuildStats
                 group by opportunity_key
              ) s
             where s.opportunity_key = o.opportunity_key`,
-          [[...touched]]
+          [[...touched]],
         );
       }
 
@@ -336,7 +340,7 @@ async function upsertOpportunity(
   draft: EvidenceDraft,
   nextStep: string | null,
   sourceCount: number,
-  rationale: WorthItRationale
+  rationale: WorthItRationale,
 ): Promise<void> {
   await client.query(
     `insert into opportunities
@@ -374,7 +378,7 @@ async function upsertOpportunity(
       rationale.counterArgumentStrength,
       nextStep,
       sourceCount,
-    ]
+    ],
   );
 }
 
@@ -382,7 +386,7 @@ async function upsertEvidence(
   client: pg.PoolClient,
   key: string,
   entry: DraftEntry,
-  extractor: string
+  extractor: string,
 ): Promise<void> {
   const { observation, draft } = entry;
   await client.query(
@@ -425,7 +429,7 @@ async function upsertEvidence(
       observation.observedAt,
       draft.language ?? observation.language,
       extractor,
-    ]
+    ],
   );
 }
 
@@ -434,7 +438,7 @@ async function upsertSignal(
   key: string,
   entry: DraftEntry,
   reason: RejectReason,
-  sourceCount: number
+  sourceCount: number,
 ): Promise<void> {
   await client.query(
     `insert into opportunity_signals (observation_id, opportunity_key, reason, draft, source_count)
@@ -444,6 +448,6 @@ async function upsertSignal(
            draft = excluded.draft,
            source_count = excluded.source_count,
            created_at = now()`,
-    [entry.observation.id, key, reason, JSON.stringify(entry.draft), sourceCount]
+    [entry.observation.id, key, reason, JSON.stringify(entry.draft), sourceCount],
   );
 }

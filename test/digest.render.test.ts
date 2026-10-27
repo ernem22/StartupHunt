@@ -41,7 +41,7 @@ function card(index: number): OpportunityCard {
 test("digest en fazla 10 kart verir, dolgu üretmez", () => {
   const digest = composeDigest(
     Array.from({ length: 12 }, (_, index) => card(index)),
-    [{ reason: "missing_actor", count: 2 }]
+    [{ reason: "missing_actor", count: 2 }],
   );
 
   assert.equal(digest.maxCards, 10);
@@ -56,7 +56,7 @@ test("0 adayda mesaj ve düşme gerekçeleri markdown'a yazılır", () => {
     [
       { reason: "counter_argument_strong", count: 2 },
       { reason: "missing_next_step", count: 1 },
-    ]
+    ],
   );
 
   assert.equal(digest.cardCount, 0);
@@ -96,6 +96,6 @@ test("kartlar known-profile prior'ına göre sıralanır", () => {
 
   assert.deepEqual(
     digest.cards.map((entry) => entry.id),
-    ["opp-0", "opp-3", "opp-2", "opp-1"]
+    ["opp-0", "opp-3", "opp-2", "opp-1"],
   );
 });

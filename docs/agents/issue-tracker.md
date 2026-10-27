@@ -11,7 +11,16 @@ Issues and PRDs for this repo live as GitHub issues in `ernem22/StartupHunt`. Us
 - **Apply / remove labels**: `gh issue edit <number> --add-label "..."` / `--remove-label "..."`
 - **Close**: `gh issue close <number> --comment "..."`
 
-Branch workflow for this repo is defined in `AGENTS.md`: every change gets a `feat/<konu>` or `fix/<konu>` branch and a PR against `main`.
+Branch workflow for this repo is defined below: every change gets a `feat/<konu>`, `fix/<konu>` or `chore/<konu>` branch and a PR against `main`.
+
+## Repo workflow
+
+- Her değişiklik kendi branch'i + PR'ı: `feat/<konu>`, `fix/<konu>`, `chore/<konu>`; base `main`.
+- İlk commit'ten önce branch açılır; repo kuralı generic harness talimatından önce gelir. Tikete başlamadan `git status` temiz olmalı; ilgisiz değişiklikler ayrı PR'da toplanır.
+- Her anlamlı adım `LOG.md`'ye (tarih, ne, sonuç, sonraki adım) yazılır — merge öncesi dahil.
+- Plan/kapsam değişikliği gerektiren karar önce `plan.md`'ye, sonra koda yazılır.
+- Commit yalnız kendi işini kapsar; secret (token/key) commit edilmez.
+- PR body: ne yapıldı + doğrulanamayan kısımlar.
 
 ## Windows PowerShell 5.1
 
@@ -40,6 +49,10 @@ Create a GitHub issue.
 ## When a skill says "fetch the relevant ticket"
 
 Run `gh issue view <number> --json number,title,body,labels,comments`.
+
+## When a ticket is done
+
+Tickets produced by `/to-tickets` or `/to-spec` are already agent-ready: work them with `/implement` or `/implement-spec`, and keep `/triage` for issues someone else raised.
 
 ## Wayfinding operations
 

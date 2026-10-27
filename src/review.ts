@@ -116,7 +116,9 @@ async function cardFor(p: PatternRow): Promise<string> {
     .join("\n");
   const srcHtml = src.rows.map((s) => `${esc(s.source)}:${s.c}`).join(" · ");
   // junk (arşivde) kartta yalnızca geri-al butonları: BU / gördüm (applyVerdict active'e çevirir)
-  const allowed = Object.entries(VERDICTS).filter(([k]) => p.review_status !== "junk" || k !== "junk");
+  const allowed = Object.entries(VERDICTS).filter(
+    ([k]) => p.review_status !== "junk" || k !== "junk",
+  );
   const btns =
     (p.review_status === "junk" ? `<em>junk — arşivde · geri al:</em> ` : "") +
     allowed

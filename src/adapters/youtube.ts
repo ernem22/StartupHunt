@@ -57,11 +57,15 @@ let unitSpent = 0;
 async function ytFetch<T>(path: string, params: URLSearchParams, cost: number): Promise<T | null> {
   const key = apiKey();
   if (!key) {
-    console.warn("  [pas] YOUTUBE_API_KEY yok — adapter atlandı (FAZ 1: key alınıp .env'e konacak)");
+    console.warn(
+      "  [pas] YOUTUBE_API_KEY yok — adapter atlandı (FAZ 1: key alınıp .env'e konacak)",
+    );
     return null;
   }
   if (unitSpent + cost > MAX_DAILY_UNITS) {
-    console.warn(`  [kota] günlük unit tavanı (${MAX_DAILY_UNITS}): ${unitSpent} harcandı, duruldu`);
+    console.warn(
+      `  [kota] günlük unit tavanı (${MAX_DAILY_UNITS}): ${unitSpent} harcandı, duruldu`,
+    );
     return null;
   }
   params.set("key", key);
@@ -198,18 +202,26 @@ export class YouTubeAdapter implements Adapter {
 
     // 3) Sabit izlenen playlist'ler (launch/gelişme takibi — takip listesi elle büyütülür)
     for (const pl of WATCHED_PLAYLISTS) {
-      const params = new URLSearchParams({ part: "snippet", playlistId: pl.trim(), maxResults: "50" });
+      const params = new URLSearchParams({
+        part: "snippet",
+        playlistId: pl.trim(),
+        maxResults: "50",
+      });
       const res = await ytFetch<{ items: { snippet: { resourceId: { videoId: string } } }[] }>(
         "/playlistItems",
         params,
-        1
+        1,
       );
       // playlistItems sadece video referansı verir → video detayı ayrı çağrı;
       // sinyal açısından trend/video başlıkları zaten 1. adımdan geliyor — burada
       // yalnızca referans not edilir (unit tasarrufu için detay fetch edilmez).
-      console.log(`▶ YT playlist ${pl}: ${res?.items.length ?? 0} referans (detay çekilmedi — unit tasarrufu)`);
+      console.log(
+        `▶ YT playlist ${pl}: ${res?.items.length ?? 0} referans (detay çekilmedi — unit tasarrufu)`,
+      );
     }
 
-    console.log(`✔ YouTube oturumu bitti. processed=${processed}, unit≈${unitSpent}${opts.dryRun ? " (dry-run)" : ""}`);
+    console.log(
+      `✔ YouTube oturumu bitti. processed=${processed}, unit≈${unitSpent}${opts.dryRun ? " (dry-run)" : ""}`,
+    );
   }
 }

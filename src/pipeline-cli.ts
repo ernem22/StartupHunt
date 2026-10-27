@@ -15,7 +15,7 @@ async function main() {
     } else if (cmd === "embed") {
       const s = await runEmbedding(pool);
       console.log(
-        `✔ embedding: embedded=${s.embedded} failed=${s.failed} dim-check=${s.dimensionCheck ? "ok" : "yok (0 kayıt)"}`
+        `✔ embedding: embedded=${s.embedded} failed=${s.failed} dim-check=${s.dimensionCheck ? "ok" : "yok (0 kayıt)"}`,
       );
     } else if (cmd === "all") {
       const c = await runCleaning();

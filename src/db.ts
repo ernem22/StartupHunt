@@ -37,7 +37,7 @@ export function decodeEntities(s: string): string {
 /** Ham veriyi değiştirmeden sakla — unique (source, source_id) upsert. */
 export async function upsertRaw(
   obs: RawObservation,
-  collectedAt: Date = new Date()
+  collectedAt: Date = new Date(),
 ): Promise<"inserted" | "unchanged"> {
   return withDb(async (c) => {
     const r = await c.query(
@@ -45,7 +45,7 @@ export async function upsertRaw(
        values ($1, $2, $3, $4)
        on conflict (source, source_id) do nothing
        returning id`,
-      [obs.source, obs.sourceId, JSON.stringify(obs.rawData), collectedAt]
+      [obs.source, obs.sourceId, JSON.stringify(obs.rawData), collectedAt],
     );
     return r.rowCount && r.rowCount > 0 ? "inserted" : "unchanged";
   });
@@ -54,7 +54,7 @@ export async function upsertRaw(
 /** Normalized observation — status='new' olarak girer, pipeline ilerletir.
  *  language: adapter null verdiyse burada tespit edilir (plan FAZ 4: toplama anında). */
 export async function upsertNormalized(
-  o: NormalizedObservation & { contentHash: string | null }
+  o: NormalizedObservation & { contentHash: string | null },
 ): Promise<"inserted" | "unchanged"> {
   const title = o.title ? decodeEntities(o.title) : o.title;
   const text = decodeEntities(o.text);
@@ -78,7 +78,7 @@ export async function upsertNormalized(
         language,
         JSON.stringify(o.metadata ?? {}),
         o.contentHash,
-      ]
+      ],
     );
     return r.rowCount !== null && r.rowCount > 0 ? "inserted" : "unchanged";
   });
@@ -105,13 +105,17 @@ export async function loadAdapterState<T>(name: string): Promise<T | null> {
   return withDb(async (c) => {
     const r = await c.query<{ last_cursor: T | null }>(
       `select last_cursor from adapter_state where name = $1`,
-      [name]
+      [name],
     );
     return r.rows[0]?.last_cursor ?? null;
   });
 }
 
-export async function saveAdapterState(name: string, cursor: unknown, counters: unknown): Promise<void> {
+export async function saveAdapterState(
+  name: string,
+  cursor: unknown,
+  counters: unknown,
+): Promise<void> {
   await withDb(async (c) => {
     await c.query(
       `insert into adapter_state (name, last_run_at, last_success_at, last_cursor, counters)
@@ -119,7 +123,7 @@ export async function saveAdapterState(name: string, cursor: unknown, counters: 
        on conflict (name)
        do update set last_run_at = now(), last_success_at = now(),
                      last_cursor = $2, counters = $3`,
-      [name, JSON.stringify(cursor ?? {}), JSON.stringify(counters ?? {})]
+      [name, JSON.stringify(cursor ?? {}), JSON.stringify(counters ?? {})],
     );
   });
 }

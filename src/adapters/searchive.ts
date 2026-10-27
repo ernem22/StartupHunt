@@ -12,22 +12,25 @@ import { Readable } from "node:stream";
 import fs from "node:fs";
 import path from "node:path";
 import type { Adapter, CollectOptions, NormalizedObservation } from "../types.js";
-import { upsertRaw, upsertNormalized, contentHash, loadAdapterState, saveAdapterState } from "../db.js";
+import {
+  upsertRaw,
+  upsertNormalized,
+  contentHash,
+  loadAdapterState,
+  saveAdapterState,
+} from "../db.js";
 import { BACKFILL_SINCE } from "../config.js";
 
-const SEVEN_ZIP =
-  process.env.SEVEN_ZIP_BIN ?? "C:\\Program Files\\7-Zip\\7z.exe";
+const SEVEN_ZIP = process.env.SEVEN_ZIP_BIN ?? "C:\\Program Files\\7-Zip\\7z.exe";
 const DUMP_BASE = "https://archive.org/download/stackexchange";
 const DATA_DIR = process.env.SE_DUMP_DIR ?? "data/se-dump";
 
 /** V0.1 site listesi — pain-point yoğun, dump boyutu yönetilebilir siteler.
  *  stackoverflow (devasa) bilinçli olarak DIŞARIDA — pilot sonrası ayrı karar.
  *  Test/kısıt için env override: SE_SITES="softwarerecs.stackexchange.com" */
-const SITES = (process.env.SE_SITES?.split(",").map((s) => s.trim()).filter(Boolean) ?? [
-  "softwarerecs.stackexchange.com",
-  "superuser.com",
-  "serverfault.com",
-]);
+const SITES = process.env.SE_SITES?.split(",")
+  .map((s) => s.trim())
+  .filter(Boolean) ?? ["softwarerecs.stackexchange.com", "superuser.com", "serverfault.com"];
 
 function makeStateStore<T>(dryRun: boolean, initial: () => T) {
   let mem: T | null = null;
@@ -199,7 +202,9 @@ export class SeArchiveAdapter implements Adapter {
           if (opts.limit !== undefined && processed >= opts.limit) {
             // limit: BU soru işlenmedi → imleç bu sorunun ÖNCESİNDE kalır (kayıp yok)
             const resumeFrom = maxId > id ? maxId : id - 1;
-            console.log(`oturum limiti (${opts.limit}) doldu — imleç ${site}:${resumeFrom}'de kaldı`);
+            console.log(
+              `oturum limiti (${opts.limit}) doldu — imleç ${site}:${resumeFrom}'de kaldı`,
+            );
             cursor.lastId[site] = resumeFrom;
             await store.save(cursor);
             seven.kill();
@@ -240,6 +245,8 @@ export class SeArchiveAdapter implements Adapter {
       console.log(`  ${site} tamam (satır=${rows}, obs=${processed} toplam, imleç=${maxId}).`);
     }
 
-    console.log(`✔ SE dump oturumu bitti. processed=${processed}${opts.dryRun ? " (dry-run)" : ""}`);
+    console.log(
+      `✔ SE dump oturumu bitti. processed=${processed}${opts.dryRun ? " (dry-run)" : ""}`,
+    );
   }
 }

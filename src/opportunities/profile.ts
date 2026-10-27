@@ -23,13 +23,7 @@ export interface ProfileScore {
 
 export const KNOWN_COVERAGE_MIN = 0.6;
 export const NEW_COVERAGE_MAX = 0.2;
-const DEFAULT_PROFILE_ROOTS = [
-  "reports",
-  "research_notes",
-  "plan.md",
-  "LOG.md",
-  "docs",
-] as const;
+const DEFAULT_PROFILE_ROOTS = ["reports", "research_notes", "plan.md", "LOG.md", "docs"] as const;
 
 const STOPWORDS = new Set([
   "about",
@@ -497,7 +491,8 @@ function reasonFor(profile: KnownProfile, matched: string[]): string {
   if (matched.length === 0) return "profilde eşleşme yok";
   const terms = [...matched]
     .sort(
-      (a, b) => (profile.tokenCounts.get(b) ?? 0) - (profile.tokenCounts.get(a) ?? 0) || compareText(a, b)
+      (a, b) =>
+        (profile.tokenCounts.get(b) ?? 0) - (profile.tokenCounts.get(a) ?? 0) || compareText(a, b),
     )
     .slice(0, 3);
   return `profilde eşleşen terimler: ${terms.join(", ")}`;

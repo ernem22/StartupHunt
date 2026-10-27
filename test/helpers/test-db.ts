@@ -67,7 +67,7 @@ export async function dropTestDb(db: TestDb): Promise<void> {
 
 export async function seedObservations(
   db: TestDb,
-  observations: SeedObservation[]
+  observations: SeedObservation[],
 ): Promise<string[]> {
   const ids: string[] = [];
   for (const observation of observations) {
@@ -86,7 +86,7 @@ export async function seedObservations(
         observation.observedAt,
         observation.language,
         JSON.stringify(observation.metadata ?? {}),
-      ]
+      ],
     );
     const row = result.rows[0];
     if (!row) {
@@ -97,27 +97,19 @@ export async function seedObservations(
   return ids;
 }
 
-export function runOpportunitiesCli(
-  seam: string,
-  args: string[],
-  databaseUrl: string
-): string {
-  const result = spawnSync(
-    process.execPath,
-    ["--import", "tsx", cliPath, ...args],
-    {
-      cwd: repoRoot,
-      env: { ...process.env, DATABASE_URL: databaseUrl },
-      encoding: "utf8",
-    }
-  );
+export function runOpportunitiesCli(seam: string, args: string[], databaseUrl: string): string {
+  const result = spawnSync(process.execPath, ["--import", "tsx", cliPath, ...args], {
+    cwd: repoRoot,
+    env: { ...process.env, DATABASE_URL: databaseUrl },
+    encoding: "utf8",
+  });
 
   if (result.error) {
     throw new Error(`${seam} seam başlatılamadı: ${result.error.message}`);
   }
   if (result.status !== 0) {
     throw new Error(
-      `${seam} seam başarısız (exit ${result.status ?? "?"})\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`
+      `${seam} seam başarısız (exit ${result.status ?? "?"})\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`,
     );
   }
   return result.stdout;

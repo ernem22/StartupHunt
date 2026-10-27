@@ -13,7 +13,7 @@ const EXPECTED_DIM = 1024; // Qwen3-0.6B — halfvec(1024) şema uyumu kontrolü
 function represent(title: string | null, text: string): string {
   const t = (title ?? "").trim();
   const b = text.trim();
-  return t && b ? `${t}\n\n${b}` : (t || b);
+  return t && b ? `${t}\n\n${b}` : t || b;
 }
 
 export interface EmbeddingStats {
@@ -49,7 +49,7 @@ export async function runEmbedding(pool: pg.Pool, batchSize = BATCH): Promise<Em
        where status = 'cleaned' and embedding is null
        order by id
        limit $1`,
-      [batchSize]
+      [batchSize],
     );
     if (rows.rows.length === 0) break;
 
@@ -57,7 +57,9 @@ export async function runEmbedding(pool: pg.Pool, batchSize = BATCH): Promise<Em
     const vecs = await teiEmbed(inputs);
     if (!vecs) {
       // TEI down — kalan batch'leri boşa dönme; tekrar denenecek (status hâlâ 'cleaned')
-      console.warn("  [tei] endpoint yanıt vermiyor; embedding oturumu durdu — sonra tekrar çalıştır");
+      console.warn(
+        "  [tei] endpoint yanıt vermiyor; embedding oturumu durdu — sonra tekrar çalıştır",
+      );
       break;
     }
     if (vecs.length !== rows.rows.length) {
@@ -82,7 +84,7 @@ export async function runEmbedding(pool: pg.Pool, batchSize = BATCH): Promise<Em
           `update observations
              set embedding = $1::halfvec, status = 'embedded'
            where id = $2`,
-          [`[${v.join(",")}]`, rows.rows[i]!.id]
+          [`[${v.join(",")}]`, rows.rows[i]!.id],
         );
         stats.embedded++;
       }

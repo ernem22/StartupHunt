@@ -32,7 +32,8 @@ function parseArgs(argv: string[]) {
   const opts: CollectOptions = { dryRun: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]!;
-    if (a === "--") continue; // pnpm'in forward ayırıcıyı pozisyonel yapma (docs: collect -- --dry-run)
+    if (a === "--")
+      continue; // pnpm'in forward ayırıcıyı pozisyonel yapma (docs: collect -- --dry-run)
     else if (a === "--dry-run") opts.dryRun = true;
     else if (a === "--limit") opts.limit = Number(argv[++i]);
     else positional.push(a);
