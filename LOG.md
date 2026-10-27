@@ -554,3 +554,22 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 
 ### Sonraki adım
 - Merge sonrası #23 (known-profile + geri bildirim).
+
+---
+
+## 2026-10-27 — Oturum 32: known-profile ve geri bildirim (#23)
+
+### Ne yapıldı
+- `src/opportunities/profile.ts`: yerel dosyalardan (`reports/**`, `research_notes/**`, `plan.md`, `LOG.md`, `docs/**`) ağ/LLM olmadan deterministik bilinen profil. NFKC + küçük harf tokenizasyonu, stopword filtresi, token ve doküman frekansı. Kart skoru kapsama ≥ 0.6 `likely_known`, ≤ 0.2 `likely_new`, arası `uncertain`; `knownReason` eşleşen ilk üç terimi taşıyor, eşleşme yoksa "profilde eşleşme yok".
+- Digest kartları prior sırasına göre (`likely_new` → `uncertain` → `likely_known`, eşitlikte `opportunity_key`) sıralanıyor; prior filtre değil, kanıt elenmiyor. JSON ve Markdown aynı kart setini ve `likelyKnown` + `knownReason` alanlarını taşıyor.
+- `db/schema.sql`: append-only `opportunity_feedback` tablosu (`open|investigate|drop|knew`, note, created_at) + `(opportunity_key, created_at)` index.
+- `src/opportunities/feedback.ts`: event yazımı; son N haftanın drop'larını okuma; aynı key, normalize actor+job eşleşmesi veya problem Jaccard ≥ 0.9 ile bastırma. Varsayılan N = 8, `OPPORTUNITY_DROP_WEEKS` ile override. Kanıt/opportunity satırları silinmiyor.
+- `src/opportunities/cli.ts`: `feedback --id <key> --verdict open|investigate|drop|knew [--note]` ve `digest --now <ISO>`; tek satır özet. `patterns.review_status`/BU hiçbir kod yolunda yazılmıyor.
+- Testler: `test/known-profile.test.ts` (skor/eşik/gerekçe), `test/feedback.unit.test.ts` (drop haftası + bastırma), `test/opportunities.feedback.test.ts` (DB smoke: event kaydı, drop bastırma, satır sayıları, N hafta sonra geri gelme, profil alanları, review_status dokunulmazlığı). Fixture'lar `test/fixtures/` altında.
+
+### Doğrulama
+- `pnpm typecheck` PASS; `pnpm test` 14 PASS + 3 SKIP (DB yok); `pnpm check:encoding` temiz.
+- DB smoke testleri bu laptopta `TEST_DATABASE_URL`/Docker olmadığı için SKIP; davranış CI'daki pgvector service üzerinde doğrulanacak.
+
+### Sonraki adım
+- CI yeşilse merge + #23 kapat; #18 body'sine dokunulmadı.

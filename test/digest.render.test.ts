@@ -12,6 +12,8 @@ function card(index: number): OpportunityCard {
   const nextStep = "Spend 15 minutes checking the bank CSV export";
   return {
     id: `opp-${index}`,
+    likelyKnown: "likely_new",
+    knownReason: "profilde eşleşme yok",
     actor: "solo bookkeeper",
     job: "bank reconciliation",
     problem: "bank transactions are matched by hand",
@@ -78,6 +80,22 @@ test("markdown aynı kart setini ve izlenebilir kanıtı taşır", () => {
     assert.ok(markdown.includes(entry.falsificationNote));
     assert.ok(markdown.includes(entry.existingSolutionGap!));
     assert.ok(markdown.includes(entry.counterArgument!));
+    assert.ok(markdown.includes(entry.likelyKnown));
+    assert.ok(markdown.includes(entry.knownReason));
   }
   assert.equal((markdown.match(/^## /gm) ?? []).length, 2);
+});
+
+test("kartlar known-profile prior'ına göre sıralanır", () => {
+  const known = { ...card(1), likelyKnown: "likely_known" as const };
+  const uncertain = { ...card(2), likelyKnown: "uncertain" as const };
+  const fresh = { ...card(3), likelyKnown: "likely_new" as const };
+  const freshTie = { ...card(0), likelyKnown: "likely_new" as const };
+
+  const digest = composeDigest([known, uncertain, fresh, freshTie], []);
+
+  assert.deepEqual(
+    digest.cards.map((entry) => entry.id),
+    ["opp-0", "opp-3", "opp-2", "opp-1"]
+  );
 });
