@@ -594,3 +594,16 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 
 ### Sonraki adım
 - Baseline PR merge; #24 (live LLM extractor) veya #25 (source registry) paralel başlayabilir.
+
+---
+
+## 2026-10-27 — Oturum 33: retro bulgularını aynı oturumda uygulama kuralı
+
+### Ne yapıldı
+- `docs/agents/issue-tracker.md`: `/retro` sonrası repo içi ve ajan tarafından uygulanabilir bulguların aynı oturumda `chore:` PR'ına dönüşmesi kuralı eklendi; kullanıcı kararları ve global ayarlar kapsam dışı bırakıldı.
+
+### Doğrulama
+- `pnpm check` PASS (yerel DB testleri gerekçeli SKIP).
+
+### Sonraki adım
+- Kural PR'ını merge et; sonraki retro çıktısı doğrudan uygulanacak.

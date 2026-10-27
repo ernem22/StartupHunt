@@ -21,6 +21,7 @@ Branch workflow for this repo is defined below: every change gets a `feat/<konu>
 - Plan/kapsam değişikliği gerektiren karar önce `plan.md`'ye, sonra koda yazılır.
 - Commit yalnız kendi işini kapsar; secret (token/key) commit edilmez.
 - PR body: ne yapıldı + doğrulanamayan kısımlar.
+- `/retro` çıktısındaki repo içi ve ajan tarafından uygulanabilir bulgular aynı oturumda uygulanır ve `chore:` PR'ına dönüşür; yalnız kullanıcı kararları, global skill/ortam ayarları ve geri alınması zor seçimler sorulur.
 
 ## Windows PowerShell 5.1
 
