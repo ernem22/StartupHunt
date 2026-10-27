@@ -569,7 +569,7 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 
 ### Doğrulama
 - `pnpm typecheck` PASS; `pnpm test` 14 PASS + 3 SKIP (DB yok); `pnpm check:encoding` temiz.
-- DB smoke testleri bu laptopta `TEST_DATABASE_URL`/Docker olmadığı için SKIP; davranış CI'daki pgvector service üzerinde doğrulanacak.
+- DB smoke testleri bu laptopta `TEST_DATABASE_URL`/Docker olmadığı için SKIP; CI'daki pgvector service üzerinde PR #41 `checks` PASS (DB smoke dahil).
 
 ### Sonraki adım
 - CI yeşilse merge + #23 kapat; #18 body'sine dokunulmadı.
