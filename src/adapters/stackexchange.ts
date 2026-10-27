@@ -2,7 +2,7 @@
 // search/advanced + questions — dev/SaaS pain point kaynağı (stackoverflow, softwarerecs)
 // Kota: key'li 10.000/gün; 30 req/sn tavan; `backoff` alanı ZORUNLU uygulanır.
 import type { Adapter, CollectOptions, NormalizedObservation } from "../types.js";
-import { upsertRaw, upsertNormalized, contentHash, loadAdapterState, saveAdapterState } from "../db.js";
+import { upsertRaw, upsertNormalized, contentHash } from "../db.js";
 
 interface SeQuestion {
   question_id: number;
@@ -36,10 +36,6 @@ const SITE_QUERIES: { site: string; q: string }[] = [
   { site: "softwarerecs", q: "alternative to" },
   { site: "softwarerecs", q: "saas for" },
 ];
-
-interface SeCursor {
-  pages: string[];
-}
 
 function key(): string | undefined {
   return process.env.STACK_EXCHANGE_KEY || undefined;

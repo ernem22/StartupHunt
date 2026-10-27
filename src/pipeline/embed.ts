@@ -3,7 +3,6 @@
 // Temsil metni: title + text (tek vektör kararı — plan FAZ 6).
 // TEI endpoint: POST /embed {"inputs": [...]} — batch 256.
 import pg from "pg";
-import { config } from "../config.js";
 
 const TEI_URL = process.env.TEI_URL ?? "http://127.0.0.1:8080";
 const BATCH = 64; // TEI max-client-batch 256; DB okuma yazma dengesi için 64
