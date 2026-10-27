@@ -5,7 +5,7 @@ Topluluk metinlerinden kişisel kullanım için "araştırmaya değer fırsat" k
 ## Gereksinimler
 
 - Node 22.23.2 (`.nvmrc`), pnpm 12
-- Python 3.12 (kümeleme; 3060 cihazında doğrulanır)
+- Python 3.12.10 (`.python-version`; kümeleme 3060 cihazında doğrulanır)
 - Postgres/pgvector, TEI, SearXNG ve BERTopic yalnızca 3060 cihazında: `KURULUM.md`
 
 ## Kurulum
@@ -14,13 +14,15 @@ Topluluk metinlerinden kişisel kullanım için "araştırmaya değer fırsat" k
 pnpm install --frozen-lockfile
 ```
 
+`prepare` adımı Husky pre-commit hook'unu kurar; her commit `pnpm check` çalıştırır.
+
 ## Kontrol
 
 ```bash
 pnpm check
 ```
 
-Lint, format kontrolü, typecheck, encoding ve testleri sırayla çalıştırır. DB testleri `TEST_DATABASE_URL` yoksa gerekçeli atlanır; CI'da pgvector service ile koşar.
+TypeScript için lint, format kontrolü ve typecheck; tüm repo için encoding ve testler; Python için sözdizimi kontrolü çalıştırır. DB testleri `TEST_DATABASE_URL` yoksa gerekçeli atlanır; CI'da pgvector service ile koşar.
 
 ## Dokümanlar
 
