@@ -32,9 +32,7 @@ def main() -> None:
         ("stackexchange", lambda: stackexchange.collect(STACKEXCHANGE_SITES, COLLECT_LIMIT)),
         (
             "producthunt",
-            lambda: producthunt.collect(
-                PH_TOKEN, PH_CLIENT_ID, PH_CLIENT_SECRET, COLLECT_LIMIT
-            ),
+            lambda: producthunt.collect(PH_TOKEN, PH_CLIENT_ID, PH_CLIENT_SECRET, COLLECT_LIMIT),
         ),
     ]
     total = 0

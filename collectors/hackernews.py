@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from collectors.http import create_session, get_json
 from collectors.models import RawItem
@@ -33,7 +33,7 @@ def collect(limit: int = 50) -> list[RawItem]:
                 text=str(story.get("text") or ""),
                 score=int(story.get("score") or 0),
                 num_comments=int(story.get("descendants") or 0),
-                created_utc=datetime.fromtimestamp(timestamp, tz=timezone.utc),
+                created_utc=datetime.fromtimestamp(timestamp, tz=UTC),
                 url=str(story.get("url") or f"https://news.ycombinator.com/item?id={story_id}"),
             )
         )

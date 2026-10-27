@@ -135,6 +135,7 @@ hdbscan_model = HDBSCAN(
    def norm(m):
        return m / (np.linalg.norm(m, axis=1, keepdims=True) + 1e-10)
 
+
    sims = norm(obs_vecs) @ norm(centroids).T  # (n_obs, n_pat)
    ```
    — `cluster/assign.py:92-95`
@@ -197,7 +198,9 @@ topics, _ = topic_model.fit_transform(docs, embeddings)
 - Manifest/`run_id` yok: grep `manifest|run_id` yalnızca `research_notes/` ve `reports/` içinde; kodda/şemada yok. `adapter_state` yalnızca imleç ve sayaç tutuyor (`db/schema.sql:105-111`); `patterns.created_at`, `pattern_observations.assigned_at`, `pattern_history.at` timestamp — hangi parametre setiyle üretildiğini söylemiyor.
 - `random_state` kodda var (`recluster.py:39`, `125`) ama çalışma logunda yok. Recluster'ın tek özet satırı:
   ```python
-  print(f"> {n} embedding — UMAP({UMAP_N_COMPONENTS}D) + HDBSCAN(min_cluster={HDBSCAN_MIN_CLUSTER_SIZE})")
+  print(
+      f"> {n} embedding — UMAP({UMAP_N_COMPONENTS}D) + HDBSCAN(min_cluster={HDBSCAN_MIN_CLUSTER_SIZE})"
+  )
   ```
   — `cluster/recluster.py:118`
   Bu satır `n_neighbors`, `min_samples`, `random_state`, `metric`, `min_dist`, `epsilon`, sürümleri yazmıyor.

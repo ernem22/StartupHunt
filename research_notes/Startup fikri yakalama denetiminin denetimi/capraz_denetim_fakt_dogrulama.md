@@ -394,9 +394,7 @@ if is_supported_hdbscan(self.hdbscan_model):
         self.hdbscan_model, "approximate_predict", umap_embeddings
     )
     if self.calculate_probabilities:
-        probabilities = hdbscan_delegator(
-            self.hdbscan_model, "membership_vector", umap_embeddings
-        )
+        probabilities = hdbscan_delegator(self.hdbscan_model, "membership_vector", umap_embeddings)
 else:
     predictions = self.hdbscan_model.predict(umap_embeddings)
     probabilities = None

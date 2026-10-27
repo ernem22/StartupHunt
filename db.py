@@ -29,7 +29,6 @@ def upsert_raw_items(database_url: str, items: Iterable[RawItem]) -> int:
     rows = [item.__dict__ for item in items]
     if not rows:
         return 0
-    with psycopg.connect(database_url) as connection:
-        with connection.cursor() as cursor:
-            cursor.executemany(UPSERT_RAW_ITEMS, rows)
+    with psycopg.connect(database_url) as connection, connection.cursor() as cursor:
+        cursor.executemany(UPSERT_RAW_ITEMS, rows)
     return len(rows)
