@@ -10,7 +10,7 @@ Kullanıcı yalnızca "yeni" olanı görmek istiyor; zorunlu etiketleme ise kull
 
 ## Decision
 
-Bilinen profil, yerel dokümanlardan (`reports/`, `research_notes/`, `plan.md`, `LOG.md`, `docs/`) ağ ve LLM kullanılmadan, deterministik token/doküman frekansıyla kurulur. Kart başına `likely_new`, `uncertain` veya `likely_known` prior'ı ve kısa bir gerekçe üretilir; prior yalnızca digest sıralamasını değiştirir, kartı filtrelemez.
+Bilinen profil, yerel dokümanlardan (`reports/`, `research_notes/`, `LOG.md`, `docs/`) ağ ve LLM kullanılmadan, deterministik token/doküman frekansıyla kurulur. Kart başına `likely_new`, `uncertain` veya `likely_known` prior'ı ve kısa bir gerekçe üretilir; prior yalnızca digest sıralamasını değiştirir, kartı filtrelemez.
 
 Geri bildirim append-only event olarak saklanır: `open`, `investigate`, `drop`, `knew`. Zorunlu etiket yoktur. Bir `drop`, aynı `opportunity_key`'i ve aynı aktör/iş ya da yakın problem metnini 8 hafta (env ile değiştirilebilir) digest'ten gizler; kanıt ve opportunity kayıtları silinmez. Hiçbir feedback yolu `review_status`/BU yazmaz.
 

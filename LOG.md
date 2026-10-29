@@ -612,3 +612,21 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 
 ### Sonraki adım
 - PR merge; sırada #24 (live LLM extractor) veya #25 (source registry).
+
+---
+
+## 2026-10-29 — Oturum 34: repo baseline güncel skill'e göre tamamlandı
+
+### Ne yapıldı
+- `docs/agents/issue-tracker.md` güncel GitHub şablonuna hizalandı: `gh` 2.94+ sub-issue/blocking komutları, açık blocker sayımı, `Fixes #<n>` kapanış kuralı; eski `gh 2.23` ve `authorAssociation` notları kaldırıldı. Repoya özgü Repo workflow, PowerShell ve PR triage bölümleri korundu.
+- `AGENTS.md` Başlangıç satırı GitHub spec'ine göre genericleştirildi; ortam notu “çalışmıyor” olarak doğrulanmış duruma çekildi. `CLAUDE.md` yalnız `@AGENTS.md` satırıyla eklendi.
+- Kökteki güncel plan `docs/archive/plan-2026-10.md` altına arşiv notuyla taşındı; README, KURULUM, `.prettierignore` ve known-profile kaynakları güncellendi.
+- `.gitignore`'a `.ruff_cache/` ve `.mypy_cache/` eklendi.
+- `docs/agents/domain.md`, `triage-labels.md`, `GLOSSARY.md` ve ADR'ler güncel şablon/kararlarla uyumlu bulundu.
+
+### Doğrulama
+- `pnpm check` PASS (17 test; yerel DB testleri gerekçeli SKIP).
+- `gh` 2.103.3; 38/38 Matt skill'i güncel; emekli skill yok. Temiz klon doğrulaması önceki baseline oturumunda yapılmıştı; bu değişikliklerden sonra `pnpm check` tekrar koşuldu.
+
+### Sonraki adım
+- Baseline commit'i (`chore: repo baseline`) hook ile doğrula; push/CI kullanıcıda.

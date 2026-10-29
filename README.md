@@ -31,4 +31,4 @@ TypeScript için lint, format kontrolü ve typecheck; Python için ruff lint/for
 - `GLOSSARY.md` — alan terimleri
 - `docs/adr/` — geri alınması zor kararlar
 - `docs/agents/` — tracker, triage ve iş akışı
-- `plan.md` — güncel plan; `LOG.md` — geliştirme günlüğü
+- `docs/archive/plan-2026-10.md` — arşiv plan; `LOG.md` — geliştirme günlüğü
