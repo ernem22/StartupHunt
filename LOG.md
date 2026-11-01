@@ -645,3 +645,16 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 
 ### Sonraki adım
 - PR merge; trend radar için yeni spec (`/to-spec`), ardından ticket'lar.
+
+---
+
+## 2026-11-01 — Oturum 36: trend radar araştırma notu
+
+### Ne yapıldı
+- `research_notes/Trend radar/oturum-notu-2026-10-29.md`: spec #18 ↔ ticket ↔ ADR ↔ kod denetimi, hedefin "fast follower trend radar"a dönmesi, altı dış raporun değerlendirmesi, ücretsiz kaynak listesi, açık kararlar. Kod değişikliği yok.
+
+### Doğrulama
+- Apple RSS (yeni akış ≤100, eski akış kategoriyle çalışıyor), GitHub `stargazers/history` (token'sız 200), HN Algolia/Firebase, HF trendingScore, npm, pypistats, Wikipedia, Firefox AMO, GitHub Search bu makineden gerçek istekle 200 döndü.
+
+### Sonraki adım
+- Trend radar spec'i (`/to-spec`).
