@@ -638,7 +638,7 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 ### Ne yapıldı
 - `pnpm check` yerelde mypy'de kırılıyordu (`collectors/http.py:20`, 13 hata). Kod 9cb341e'den beri değişmemişti; neden kurulu `requests` 2.34.2'nin artık `py.typed` ile tip taşıması (`requirements.txt` yalnız `>=2.32,<3`). `get_json` imzası `**kwargs: Any` yapıldı.
 - `.gitignore`'a Serena MCP proje klasörü `.serena/` eklendi.
-- #18 ve #24–#31 `ready-for-agent` → `needs-triage`: hedef "fast follower trend radar"a döndü; spec yenilenmeden agent'ların bu ticket'ları almaması için. Ayrıntı: `research_notes/Trend radar/oturum-notu-2026-10-29.md` (ayrı PR).
+- **Yapılmadı, kullanıcıda:** #18 ve #24–#31 hâlâ `ready-for-agent`. Hedef "fast follower trend radar"a döndüğü için spec yenilenmeden agent'ların bunları almaması gerekir; etiketin `needs-triage`'e çekilmesi önerildi (otomatik değişiklik izin kontrolüne takıldı). Ayrıntı: `research_notes/Trend radar/oturum-notu-2026-10-29.md` (ayrı PR).
 
 ### Doğrulama
 - `pnpm check` PASS (mypy dahil). CI'ın aynı `requests` sürümüyle kırılıp kırılmayacağı PR CI'ında görülecek.
