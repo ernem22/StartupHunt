@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import requests
 
 
@@ -16,7 +18,7 @@ def create_session() -> requests.Session:
     return session
 
 
-def get_json(session: requests.Session, url: str, **kwargs: object) -> object:
+def get_json(session: requests.Session, url: str, **kwargs: Any) -> object:
     response = session.get(url, timeout=20, **kwargs)
     response.raise_for_status()
     return response.json()
