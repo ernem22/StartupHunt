@@ -658,3 +658,20 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 
 ### Sonraki adım
 - Trend radar spec'i (`/to-spec`).
+
+---
+
+## 2026-11-03 — Oturum 37: ortam temizliği, eski ticket/PR ağacı kapatıldı
+
+### Ne yapıldı
+- #47 (agent ortamı) ve #48 (trend radar araştırma notu) `main`'e merge edildi.
+- #18 ve #24–#31 `wontfix` ile kapatıldı (kullanıcı onayıyla): hepsi Reddit/SaaS korpusuna dayalı "fırsat motoru v1" ağacıydı; hedef trend radar'a döndü. Yeniden değerlendirilecek fikirler (run manifest, source registry/lisans, kanıt doğrulama, burst/BH-FDR, precision-first ölçüm) #18'e yorum olarak yazıldı.
+- #14 (review UX), #16 (deney çerçevesi, plan v3.3, `package.json` çakışması), #17 (TR/EN eval) kapatıldı; branch'ler (`fix/review-ux`, `exp/framework`, `feat/tren-pilot`) silinmedi.
+- Tam merge edilmiş remote branch'ler silindi.
+
+### Doğrulama
+- Açık issue 0, açık PR 0. `main` üzerinde `pnpm check` yeşil (#47).
+
+### Sonraki adım
+- Kullanıcının ilettiği agent `/to-spec` ile trend radar spec'ini yazar; ardından `/to-tickets`, sonra `ready-for-agent` ticket'lar `/implement` ile.
+- Kullanıcı tarafı: `.env` ve `GITHUB_TOKEN`; snapshot koşumlarının yeri (3060).
