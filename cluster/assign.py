@@ -39,27 +39,26 @@ def db_connect():
 
 
 def main():
-    with db_connect() as conn:
-        with conn.cursor() as cur:
-            # 1) aktif pattern'ler: (id, centroid)
-            cur.execute(
-                """
+    with db_connect() as conn, conn.cursor() as cur:
+        # 1) aktif pattern'ler: (id, centroid)
+        cur.execute(
+            """
                 select id, centroid::text, observation_count
                 from patterns
                 where status = 'active' and centroid is not null
                 """
-            )
-            rows = cur.fetchall()
-            if not rows:
-                print("X aktif pattern yok — önce recluster çalıştır")
-                sys.exit(0)
-            pattern_ids = [r[0] for r in rows]
-            centroids = np.array([json.loads(r[1]) for r in rows], dtype=np.float32)
-            counts = {r[0]: r[2] for r in rows}
+        )
+        rows = cur.fetchall()
+        if not rows:
+            print("X aktif pattern yok — önce recluster çalıştır")
+            sys.exit(0)
+        pattern_ids = [r[0] for r in rows]
+        centroids = np.array([json.loads(r[1]) for r in rows], dtype=np.float32)
+        counts = {r[0]: r[2] for r in rows}
 
-            # 2) atanmamış yeni embedding'ler
-            cur.execute(
-                """
+        # 2) atanmamış yeni embedding'ler
+        cur.execute(
+            """
                 select o.id, o.embedding::text
                 from observations o
                 where o.status = 'embedded' and o.embedding is not null
@@ -77,8 +76,8 @@ def main():
                       and p.status = 'active'
                   )
                 """
-            )
-            new_rows = cur.fetchall()
+        )
+        new_rows = cur.fetchall()
 
     if not new_rows:
         print("OK atanacak yeni observation yok")
@@ -103,7 +102,8 @@ def main():
                     pid = pattern_ids[j]
                     cur.execute(
                         """
-                        insert into pattern_observations (pattern_id, observation_id, similarity, run_kind)
+                        insert into pattern_observations
+                            (pattern_id, observation_id, similarity, run_kind)
                         values (%s, %s, %s, 'centroid')
                         on conflict do nothing
                         """,
@@ -113,7 +113,7 @@ def main():
                     assigned += 1
 
             # pattern sayaç/timeline güncelle
-            for pid, cnt in counts.items():
+            for pid, _cnt in counts.items():
                 cur.execute(
                     """
                     update patterns

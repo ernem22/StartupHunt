@@ -597,7 +597,88 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 
 ---
 
-## 2026-10-27 — Oturum 33: retro bulgularını aynı oturumda uygulama kuralı
+## 2026-10-27 — Oturum 33: baseline'ı Matt skill'lerine göre yeniden denetleme
+
+### Ne yapıldı
+- `docs/agents/issue-tracker.md` güncel seed ile hizalandı: sub-issue ve blocking için `gh` 2.23 uyumlu REST fallback'leri, açık blocker sayımı, comment-sonra-close kuralı, başka repoya issue açmama notu, PR triage sorgusu (`authorAssociation` bu sürümde yok).
+- `AGENTS.md`'deki Node/pnpm/Python sürümleri config'e taşındı (`.nvmrc`, `engines`, yeni `.python-version`); tekrar eden sürüm bilgisi kaldırıldı.
+- `CODING_STANDARDS.md` kural 2'den mekanik dosya-konumu cümlesi çıkarıldı; yalnız yargı kararı kaldı.
+- `README.md` kontrol kapsamı netleştirildi ve Husky kurulumu eklendi.
+- Python guardrail eklendi: `ruff check`, `ruff format --check` ve `mypy` (`pyproject.toml`, `requirements-dev.txt`); 18 ruff ve 4 mypy bulgusu düzeltildi. `check:python` artık yalnız sözdizimi değil, gerçek lint/format/typecheck çalıştırıyor.
+
+### Doğrulama
+- `pnpm check` PASS (17 test; yerel DB testleri gerekçeli SKIP).
+- Temiz klondan `pnpm install --frozen-lockfile` + `pnpm check` doğrulandı.
+
+### Sonraki adım
+- PR merge; sırada #24 (live LLM extractor) veya #25 (source registry).
+
+---
+
+## 2026-10-29 — Oturum 34: repo baseline güncel skill'e göre tamamlandı
+
+### Ne yapıldı
+- `docs/agents/issue-tracker.md` güncel GitHub şablonuna hizalandı: `gh` 2.94+ sub-issue/blocking komutları, açık blocker sayımı, `Fixes #<n>` kapanış kuralı; eski `gh 2.23` ve `authorAssociation` notları kaldırıldı. Repoya özgü Repo workflow, PowerShell ve PR triage bölümleri korundu.
+- `AGENTS.md` Başlangıç satırı GitHub spec'ine göre genericleştirildi; ortam notu “çalışmıyor” olarak doğrulanmış duruma çekildi. `CLAUDE.md` yalnız `@AGENTS.md` satırıyla eklendi.
+- Kökteki güncel plan `docs/archive/plan-2026-10.md` altına arşiv notuyla taşındı; README, KURULUM, `.prettierignore` ve known-profile kaynakları güncellendi.
+- `.gitignore`'a `.ruff_cache/` ve `.mypy_cache/` eklendi.
+- `docs/agents/domain.md`, `triage-labels.md`, `GLOSSARY.md` ve ADR'ler güncel şablon/kararlarla uyumlu bulundu.
+
+### Doğrulama
+- `pnpm check` PASS (17 test; yerel DB testleri gerekçeli SKIP).
+- `gh` 2.103.3; 38/38 Matt skill'i güncel; emekli skill yok. Temiz klon doğrulaması önceki baseline oturumunda yapılmıştı; bu değişikliklerden sonra `pnpm check` tekrar koşuldu.
+
+### Sonraki adım
+- Baseline commit'i (`chore: repo baseline`) hook ile doğrula; push/CI kullanıcıda.
+
+---
+
+## 2026-11-01 — Oturum 35: agent ortamı yeniden yeşile
+
+### Ne yapıldı
+- `pnpm check` yerelde mypy'de kırılıyordu (`collectors/http.py:20`, 13 hata). Kod 9cb341e'den beri değişmemişti; neden kurulu `requests` 2.34.2'nin artık `py.typed` ile tip taşıması (`requirements.txt` yalnız `>=2.32,<3`). `get_json` imzası `**kwargs: Any` yapıldı.
+- `.gitignore`'a Serena MCP proje klasörü `.serena/` eklendi.
+- #18 ve #24–#31 `ready-for-agent` → `needs-triage` (kullanıcı onayıyla, her birine gerekçe yorumu): hedef "fast follower trend radar"a döndü; spec yenilenmeden agent'ların bu ticket'ları almaması için. Ayrıntı: `research_notes/Trend radar/oturum-notu-2026-10-29.md` (ayrı PR).
+
+### Doğrulama
+- `pnpm check` PASS (mypy dahil). CI'ın aynı `requests` sürümüyle kırılıp kırılmayacağı PR CI'ında görülecek.
+
+### Sonraki adım
+- PR merge; trend radar için yeni spec (`/to-spec`), ardından ticket'lar.
+
+---
+
+## 2026-11-01 — Oturum 36: trend radar araştırma notu
+
+### Ne yapıldı
+- `research_notes/Trend radar/oturum-notu-2026-10-29.md`: spec #18 ↔ ticket ↔ ADR ↔ kod denetimi, hedefin "fast follower trend radar"a dönmesi, altı dış raporun değerlendirmesi, ücretsiz kaynak listesi, açık kararlar. Kod değişikliği yok.
+
+### Doğrulama
+- Apple RSS (yeni akış ≤100, eski akış kategoriyle çalışıyor), GitHub `stargazers/history` (token'sız 200), HN Algolia/Firebase, HF trendingScore, npm, pypistats, Wikipedia, Firefox AMO, GitHub Search bu makineden gerçek istekle 200 döndü.
+
+### Sonraki adım
+- Trend radar spec'i (`/to-spec`).
+
+---
+
+## 2026-11-03 — Oturum 37: ortam temizliği, eski ticket/PR ağacı kapatıldı
+
+### Ne yapıldı
+- #47 (agent ortamı) ve #48 (trend radar araştırma notu) `main`'e merge edildi.
+- #18 ve #24–#31 `wontfix` ile kapatıldı (kullanıcı onayıyla): hepsi Reddit/SaaS korpusuna dayalı "fırsat motoru v1" ağacıydı; hedef trend radar'a döndü. Yeniden değerlendirilecek fikirler (run manifest, source registry/lisans, kanıt doğrulama, burst/BH-FDR, precision-first ölçüm) #18'e yorum olarak yazıldı.
+- #14 (review UX), #16 (deney çerçevesi, plan v3.3, `package.json` çakışması), #17 (TR/EN eval) kapatıldı; branch'ler (`fix/review-ux`, `exp/framework`, `feat/tren-pilot`) silinmedi.
+- Tam merge edilmiş remote branch'ler silindi.
+
+### Doğrulama
+- Açık issue 0, açık PR 0. `main` üzerinde `pnpm check` yeşil (#47).
+
+### Sonraki adım
+- Kullanıcının ilettiği agent `/to-spec` ile trend radar spec'ini yazar; ardından `/to-tickets`, sonra `ready-for-agent` ticket'lar `/implement` ile.
+- Kullanıcı tarafı: `.env` ve `GITHUB_TOKEN`; snapshot koşumlarının yeri (3060).
+
+---
+
+## 2026-10-27 — Oturum 38: retro bulgularını aynı oturumda uygulama kuralı
 
 ### Ne yapıldı
 - `docs/agents/issue-tracker.md`: `/retro` sonrası repo içi ve ajan tarafından uygulanabilir bulguların aynı oturumda `chore:` PR'ına dönüşmesi kuralı eklendi; kullanıcı kararları ve global ayarlar kapsam dışı bırakıldı.

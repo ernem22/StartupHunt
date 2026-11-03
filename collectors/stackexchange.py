@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from typing import Iterable
+from collections.abc import Iterable
+from datetime import UTC, datetime
 
 from collectors.http import create_session, get_json
 from collectors.models import RawItem
@@ -47,7 +47,7 @@ def collect(sites: Iterable[str], limit: int = 50) -> list[RawItem]:
                     text=str(question.get("body") or ""),
                     score=int(question.get("score") or 0),
                     num_comments=int(question.get("comment_count") or 0),
-                    created_utc=datetime.fromtimestamp(created, tz=timezone.utc),
+                    created_utc=datetime.fromtimestamp(created, tz=UTC),
                     url=str(question.get("link") or ""),
                 )
             )

@@ -1,6 +1,6 @@
 # StartupHunt — Kurulum (RTX 3060 cihazı)
 
-Geliştirme bu makinede; çalıştırma NVIDIA cihazında (plan.md → "ALTYAPI VE DONANIM").
+Geliştirme bu makinede; çalıştırma NVIDIA cihazında (`docs/archive/plan-2026-10.md` → "ALTYAPI VE DONANIM").
 
 ## Gereksinimler (çalıştırma cihazı)
 

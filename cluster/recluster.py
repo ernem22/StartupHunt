@@ -19,8 +19,8 @@ import time
 
 import numpy as np
 import psycopg
-from dotenv import load_dotenv
 from bertopic import BERTopic
+from dotenv import load_dotenv
 from hdbscan import HDBSCAN
 from sklearn.feature_extraction.text import CountVectorizer
 from umap import UMAP
@@ -58,8 +58,10 @@ def db_connect():
         except Exception as e:
             last = e
             if i < DB_CONNECT_RETRIES - 1:
-                print(f"  db baglanti deneme {i + 1}/{DB_CONNECT_RETRIES} basarisiz ({e}); "
-                      f"{DB_RETRY_SLEEP}sn bekleniyor...")
+                print(
+                    f"  db baglanti deneme {i + 1}/{DB_CONNECT_RETRIES} basarisiz ({e}); "
+                    f"{DB_RETRY_SLEEP}sn bekleniyor..."
+                )
                 time.sleep(DB_RETRY_SLEEP)
     raise last
 
@@ -89,33 +91,33 @@ def fetch_embeddings(cur):
 
 
 def main():
-    with db_connect() as conn:
-        with conn.cursor() as cur:
-            ids, docs, embeddings = fetch_embeddings(cur)
+    with db_connect() as conn, conn.cursor() as cur:
+        ids, docs, embeddings = fetch_embeddings(cur)
 
     n = len(ids)
     if n < HDBSCAN_MIN_CLUSTER_SIZE * 2:
-        print(f"X yetersiz veri: {n} observation (en az ~{HDBSCAN_MIN_CLUSTER_SIZE*2} gerekir)")
+        print(f"X yetersiz veri: {n} observation (en az ~{HDBSCAN_MIN_CLUSTER_SIZE * 2} gerekir)")
         sys.exit(0)
 
     # —— eski aktif pattern'ların kaydı (overlap için, yazımdan ÖNCE) ——
-    with db_connect() as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                """
+    with db_connect() as conn, conn.cursor() as cur:
+        cur.execute(
+            """
                 select p.id, p.review_status, p.status,
                        coalesce((select array_agg(po.observation_id) from pattern_observations
                                   po where po.pattern_id = p.id), '{}')
                 from patterns p where p.status = 'active'
                 """
-            )
-            old_patterns = [
-                {"id": r[0], "review": r[1], "status": r[2], "obs": set(r[3])}
-                for r in cur.fetchall()
-            ]
-            print(f"eski aktif pattern: {len(old_patterns)}")
+        )
+        old_patterns = [
+            {"id": r[0], "review": r[1], "status": r[2], "obs": set(r[3])} for r in cur.fetchall()
+        ]
+        print(f"eski aktif pattern: {len(old_patterns)}")
 
-    print(f"> {n} embedding — UMAP({UMAP_N_COMPONENTS}D) + HDBSCAN(min_cluster={HDBSCAN_MIN_CLUSTER_SIZE})")
+    print(
+        f"> {n} embedding — UMAP({UMAP_N_COMPONENTS}D)"
+        f" + HDBSCAN(min_cluster={HDBSCAN_MIN_CLUSTER_SIZE})"
+    )
 
     umap_model = UMAP(
         n_neighbors=UMAP_N_NEIGHBORS,
@@ -153,15 +155,13 @@ def main():
     info = topic_model.get_topic_info()
     n_clusters = len([t for t in info.Topic if t != -1])
     noise = int((np.array(topics) == -1).sum())
-    print(f"  {n_clusters} cluster, {noise} noise ({noise*100//n}%)")
+    print(f"  {n_clusters} cluster, {noise} noise ({noise * 100 // n}%)")
 
     topic_names: dict[int, str] = {
         int(row.Topic): str(row.Name) for row in info.itertuples() if row.Topic != -1
     }
     topic_keywords: dict[int, list[str]] = {
-        int(t): [w for w, _ in topic_model.get_topic(t)[:15]]
-        for t in info.Topic
-        if t != -1
+        int(t): [w for w, _ in topic_model.get_topic(t)[:15]] for t in info.Topic if t != -1
     }
 
     # —— DB yazımı ——
@@ -169,9 +169,11 @@ def main():
         with conn.cursor() as cur:
             topic_docs: dict[int, list[int]] = {}
             noise_ids: list[int] = []
-            for obs_id, topic in zip(ids, topics):
+            for obs_id, topic in zip(ids, topics, strict=True):
                 if topic == -1:
-                    noise_ids.append(obs_id)  # noise → 'embedded_noise' işareti (orchestrator tetiği bunları dışlar)
+                    # noise → 'embedded_noise' işareti
+                    # (orchestrator tetiği bunları dışlar)
+                    noise_ids.append(obs_id)
                     continue
                 topic_docs.setdefault(topic, []).append(obs_id)
 
@@ -219,8 +221,9 @@ def main():
                 )
                 new_patterns.append((pattern_id, set(obs_list)))
 
-            # —— pattern_history + review_status taşınması (deterministik: sabit old-id sırası;
-            # her eski pattern en-çok ortak yeni'yi seçer; transfer hedef zaten işaretliyse yok sayılır) ——
+            # —— pattern_history + review_status taşınması
+            # (deterministik: sabit old-id sırası; her eski pattern en-çok ortak yeni'yi seçer;
+            # transfer hedef zaten işaretliyse yok sayılır) ——
             history_rows: list[tuple[int, int | None, float, bool]] = []
             for op in sorted(old_patterns, key=lambda o: o["id"]):
                 if not op["obs"]:
@@ -251,7 +254,9 @@ def main():
                     cur.execute(
                         """
                         update patterns
-                           set review_status = (select p2.review_status from patterns p2 where p2.id = %s),
+                           set review_status = (
+                               select p2.review_status from patterns p2 where p2.id = %s
+                           ),
                                status = 'active'
                          where id = %s and review_status = 'unreviewed'
                         """,

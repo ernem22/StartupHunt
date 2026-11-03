@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from typing import Iterable
+from collections.abc import Iterable
+from datetime import UTC, datetime
 from xml.etree import ElementTree
+
+import requests
 
 from collectors.http import create_session, get_json
 from collectors.models import RawItem
@@ -52,16 +54,16 @@ def collect(subreddits: Iterable[str], limit: int = 50) -> list[RawItem]:
                     text=str(data.get("selftext") or ""),
                     score=int(data.get("score") or 0),
                     num_comments=int(data.get("num_comments") or 0),
-                    created_utc=datetime.fromtimestamp(created, tz=timezone.utc),
+                    created_utc=datetime.fromtimestamp(created, tz=UTC),
                     url=f"https://www.reddit.com{permalink}" if permalink else data.get("url"),
                 )
             )
     return items[:limit]
 
 
-def _collect_rss(session: object, subreddit: str, limit: int) -> list[RawItem]:
+def _collect_rss(session: requests.Session, subreddit: str, limit: int) -> list[RawItem]:
     """Use Reddit's public Atom feed when JSON requests require a login."""
-    response = session.get(  # type: ignore[union-attr]
+    response = session.get(
         f"https://www.reddit.com/r/{subreddit}/hot.rss",
         headers={"Accept": "application/atom+xml"},
         timeout=20,
