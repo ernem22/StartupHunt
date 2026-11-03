@@ -675,3 +675,16 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 ### Sonraki adım
 - Kullanıcının ilettiği agent `/to-spec` ile trend radar spec'ini yazar; ardından `/to-tickets`, sonra `ready-for-agent` ticket'lar `/implement` ile.
 - Kullanıcı tarafı: `.env` ve `GITHUB_TOKEN`; snapshot koşumlarının yeri (3060).
+
+---
+
+## 2026-10-27 — Oturum 38: retro bulgularını aynı oturumda uygulama kuralı
+
+### Ne yapıldı
+- `docs/agents/issue-tracker.md`: `/retro` sonrası repo içi ve ajan tarafından uygulanabilir bulguların aynı oturumda `chore:` PR'ına dönüşmesi kuralı eklendi; kullanıcı kararları ve global ayarlar kapsam dışı bırakıldı.
+
+### Doğrulama
+- `pnpm check` PASS (yerel DB testleri gerekçeli SKIP).
+
+### Sonraki adım
+- Kural PR'ını merge et; sonraki retro çıktısı doğrudan uygulanacak.

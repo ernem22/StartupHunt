@@ -26,6 +26,7 @@ File issues only into the user's own repo. Never file into `mattpocock/skills` (
 - Plan/kapsam değişikliği gerektiren karar önce ilgili ticket/spec'e, sonra koda yazılır.
 - Commit yalnız kendi işini kapsar; secret (token/key) commit edilmez.
 - PR body: ne yapıldı + doğrulanamayan kısımlar.
+- `/retro` çıktısındaki repo içi ve ajan tarafından uygulanabilir bulgular aynı oturumda uygulanır ve `chore:` PR'ına dönüşür; yalnız kullanıcı kararları, global skill/ortam ayarları ve geri alınması zor seçimler sorulur.
 
 ## Windows PowerShell 5.1
 
