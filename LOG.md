@@ -688,3 +688,19 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 
 ### Sonraki adım
 - Kural PR'ını merge et; sonraki retro çıktısı doğrudan uygulanacak.
+
+---
+
+## 2026-11-20 — Oturum 39: trend radar yönü için grill, ADR 0003 ve sözlük
+
+### Ne yapıldı
+- Grill oturumu sonunda yön netleşti: tek aktif yön trend radar, kişisel kullanım, kalite = veri ve yöntem doğruluğu. "Para nerede akıyor" şarteri park edildi, BusinessIdeasDB paralı olduğu için reddedildi.
+- `docs/adr/0003-trend-radar-adayi.md` yazıldı; ADR 0001 ve 0002 "superseded by 0003" işaretlendi.
+- `GLOSSARY.md`: Candidate, Momentum, Revenue evidence, TR gap, Candidate pool eklendi; eski terimler "Legacy" bölümüne alındı.
+- `docs/agents/development-discipline.md`: sadeleşmiş disiplin kuralları.
+
+### Doğrulama
+- Apple iTunes Search (`country=tr`) bu makineden 200 döndü. SearXNG ve TrustMRR doğrulanmadı (SearXNG 3060'ta; TrustMRR gerçek istek testi bekliyor).
+
+### Sonraki adım
+- `/to-spec`: yalnızca dilim 1 için bir sayfalık trend radar spec'i, ardından `/to-tickets`.

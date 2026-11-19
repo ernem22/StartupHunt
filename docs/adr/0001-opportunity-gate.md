@@ -2,7 +2,7 @@
 
 ## Status
 
-accepted
+superseded by ADR 0003 (trend radar yönü; bu hat donduruldu, silinmedi)
 
 ## Context
 
