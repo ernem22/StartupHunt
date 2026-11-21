@@ -2,6 +2,11 @@ import type pg from "pg";
 import type { CandidateSeries } from "./github.js";
 import type { Manifest, RadarStore } from "./run.js";
 
+const entityTypeByMetric: Record<string, string> = {
+  weekly_new_stars: "github_repo",
+  hf_trending_score: "hf_model",
+};
+
 export class PostgresRadarStore implements RadarStore {
   constructor(private readonly client: pg.Client) {}
 
@@ -21,8 +26,14 @@ export class PostgresRadarStore implements RadarStore {
         for (const point of candidate.weeks) {
           await this.client.query(
             `insert into metric_snapshots (entity_type, entity_id, metric, value, captured_at)
-             values ('github_repo', $1, 'weekly_new_stars', $2, $3)`,
-            [candidate.url, point.total, new Date(point.week * 1000)],
+             values ($1, $2, $3, $4, $5)`,
+            [
+              entityTypeByMetric[candidate.metric ?? "weekly_new_stars"] ?? "github_repo",
+              candidate.url,
+              candidate.metric ?? "weekly_new_stars",
+              point.total,
+              new Date(point.week * 1000),
+            ],
           );
         }
       }

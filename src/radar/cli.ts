@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
 import pg from "pg";
 import { candidatePool, GitHubMomentumCollector } from "./github.js";
+import { HFMomentumCollector } from "./hf.js";
 import { runRadar } from "./run.js";
 import { PostgresRadarStore } from "./store.js";
 
@@ -17,7 +18,7 @@ async function main(): Promise<void> {
     await client.connect();
     console.log(
       await runRadar(
-        new GitHubMomentumCollector(candidatePool[0]!.query),
+        [new GitHubMomentumCollector(candidatePool[0]!.query!), new HFMomentumCollector()],
         new PostgresRadarStore(client),
         new Date(),
         commit,

@@ -85,7 +85,7 @@ test("history ignores current partial week, sorts chronologically, and drives Ma
   const history = [...fixture(20).weeks, { week: weeks[3]! + 604800, total: 9999 }].reverse();
   const store = new MemoryStore();
   const output = await runRadar(
-    new GitHubMomentumCollector(candidatePool[0]!.query, requestFixture(history)),
+    new GitHubMomentumCollector(candidatePool[0]!.query!, requestFixture(history)),
     store,
     at,
     "abc123",
@@ -186,7 +186,9 @@ test("Postgres contract writes dated metrics atomically; failure rolls back", as
         4,
       );
       assert.deepEqual(calls[2]?.values, [
+        "github_repo",
         "https://github.com/owner/tool",
+        "weekly_new_stars",
         10,
         new Date("2026-10-18T00:00:00Z"),
       ]);
