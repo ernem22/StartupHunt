@@ -5,6 +5,7 @@
   "type": "module",
   "description": "StartupHunt — sinyal radarı: toplama → normalize → embed → cluster → pattern",
   "scripts": {
+    "radar": "tsx src/radar/cli.ts",
     "collect": "tsx src/cli.ts collect",
     "collect:reddit-backfill": "tsx src/cli.ts collect reddit-backfill",
     "collect:reddit-incremental": "tsx src/cli.ts collect reddit-incremental",

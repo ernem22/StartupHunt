@@ -704,3 +704,11 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 
 ### Sonraki adım
 - `/to-spec`: yalnızca dilim 1 için bir sayfalık trend radar spec'i, ardından `/to-tickets`.
+
+## 2026-11-21 — #78: GitHub aday ivmesi
+- `pnpm radar`: dört tamamlanmış hafta, haftalık artış oranı, örneklemden ilk 20, etiketli Markdown ve aday havuzu girdisi eklendi.
+- `metric_snapshots` yazımı ve `stage_runs` manifesti ayrı radar hattına bağlandı; Legacy/kümeleme/review değişmedi.
+- Doğrulandı: 13:19 UTC tokensız GitHub Search HTTP 200 (93559 sonuç, incomplete=false); https://api.github.com/search/repositories?q=topic%3Adeveloper-tools+archived%3Afalse+fork%3Afalse&sort=updated&order=desc&per_page=30
+- Doğrulandı: aynı anda vscode stargazers/history HTTP 200, beş hafta; https://api.github.com/repos/microsoft/vscode/stargazers/history?per_page=5
+- `pnpm check` yeşil: 21 test geçti (7 radar fixture), 3 mevcut DB testi atlandı; gelir/TR yer tutucuları doğrulanmadı (aranmadı).
+- DB/gerçek uçtan uca koşu doğrulanamadı (3060'ta koşulacak); sonraki adım şema + manifest/snapshot karşılaştırması.
