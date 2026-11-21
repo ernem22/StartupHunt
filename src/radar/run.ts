@@ -2,6 +2,9 @@ import { candidatePool, type CandidateSeries, type MomentumCollector } from "./g
 
 export type SourceFamily = "aday üretici" | "doğrulayıcı";
 
+// The pool is opaque metadata for the manifest; sources declare their own shape.
+export type RadarPool = readonly Readonly<Record<string, unknown>>[];
+
 export interface RadarSource {
   source: string;
   family: SourceFamily;
@@ -13,14 +16,14 @@ export interface RadarSource {
   discoveryNote: string;
   sparklineNote: string;
   declarationLabel: string;
-  pool: typeof candidatePool;
+  pool: RadarPool;
   discoveryLimit: number;
   collector: MomentumCollector;
 }
 
 export interface Manifest {
   source: string;
-  parameters: { pool: typeof candidatePool; discoveryLimit: number; weeks: number; at: string };
+  parameters: { pool: RadarPool; discoveryLimit: number; weeks: number; at: string };
   seed: number;
   commitHash: string;
 }
@@ -137,6 +140,9 @@ export async function runRadar(
     lines.push(
       `Sıfır taban nedeniyle sıralanmayan: ${series.length - series.filter((c) => momentum(c.weeks) !== null).length}.`,
     );
+    if (source.collector.excluded !== undefined) {
+      lines.push(`Ürün olmadığı için elenen: ${source.collector.excluded}.`);
+    }
     await store.complete(id, series, {
       entityType: source.entityType,
       metric: source.metric,

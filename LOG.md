@@ -717,5 +717,8 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 - HN Algolia `developer`/`AI tools` sorguları ikinci ivme kaynağı olarak eklendi; haftalık hikâye sayısı sparkline olur, kartta kaynak ailesi (`aday üretici`) ve GitHub `doğrulayıcı` etiketi taşınır.
 - Havuz girdisine HN kaynakları eklendi; `metric_snapshots` HN için `hn_domain`/`weekly_stories` yazar. #78 sözleşmeleri genişletildi, kümeleme/review/opportunities dokunulmadı.
 - Doğrulandı: 2026-11-21 HN Algolia `search_by_date` HTTP 200; `developer` nbHits=362 (örnek 50501205 `github.com/aturley/zoom-r8-hardware-and-firmware`), `AI tools` nbHits=318 (örnek 50498487 `agentcommand.gg`).
-- `pnpm check` yeşil: 26 test (HN fixture dahil), 3 mevcut DB testi atlandı.
+- Düzeltme turu: `NON_PRODUCT_DOMAINS` engel listesi eklendi (YouTube, X/Twitter, Medium, Substack, Reddit, arXiv, Wikipedia, LinkedIn, haber siteleri + repo yolu olmayan GitHub bağlantıları); `identify()` bunlar için `null` döner. Elenen bağlantılar sayılır ve koşu çıktısına "Ürün olmadığı için elenen: N" satırı eklenir.
+- `RadarSource`/`Manifest` havuz alanı `typeof candidatePool` yerine kaynaktan bağımsız `RadarPool` tipine geçirildi; sözleşme GitHub/HN'e özgü varsayım taşımıyor.
+- Engel listesi fixture testi: medium.com ve youtube.com elenir; gerçek ürün alan adı ve `github.com/owner/repo` elenmez.
+- `pnpm check` yeşil: 27 test (24 pass, 3 DB skip), lint/prettier/typecheck/encoding/python temiz.
 - DB uçtan uca ve gerçek `pnpm radar` yazımı doğrulanamadı (3060'ta koşulacak); kaynaklar arası birleştirme #81'de.

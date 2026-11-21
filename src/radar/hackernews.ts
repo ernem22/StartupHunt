@@ -5,6 +5,44 @@ import { completedWeeks, type CandidateSeries, type MomentumCollector } from "./
 const API = "https://hn.algolia.com/api/v1/search_by_date";
 const WEEK = 7 * 86400;
 const HITS_PER_PAGE = 1000;
+
+// Hosts that publish content about products rather than a product itself.
+// Matched against the hostname and its subdomains (after stripping `www.`).
+export const NON_PRODUCT_DOMAINS = [
+  "youtube.com",
+  "youtu.be",
+  "x.com",
+  "twitter.com",
+  "medium.com",
+  "substack.com",
+  "reddit.com",
+  "arxiv.org",
+  "wikipedia.org",
+  "news.ycombinator.com",
+  "linkedin.com",
+  "nytimes.com",
+  "bbc.com",
+  "cnn.com",
+  "theguardian.com",
+  "reuters.com",
+  "bloomberg.com",
+  "techcrunch.com",
+  "theverge.com",
+  "wired.com",
+  "forbes.com",
+  "businessinsider.com",
+  "wsj.com",
+  "arstechnica.com",
+  "engadget.com",
+  "venturebeat.com",
+  "cnbc.com",
+  "ft.com",
+  "economist.com",
+] as const;
+
+function isNonProductHost(host: string): boolean {
+  return NON_PRODUCT_DOMAINS.some((domain) => host === domain || host.endsWith(`.${domain}`));
+}
 interface Hit {
   objectID: string | number;
   created_at: string;
@@ -39,7 +77,10 @@ function identify(raw: string): { name: string; url: string } | null {
       const name = `${match[1]}/${match[2]}`;
       return { name, url: `https://github.com/${name}` };
     }
+    // A bare GitHub link (profile, issue, search) is not a product.
+    return null;
   }
+  if (isNonProductHost(host)) return null;
   return { name: host, url: `https://${host}` };
 }
 
@@ -54,6 +95,9 @@ function windowUrl(queries: readonly string[], from: number, to: number, perPage
 }
 
 export class HackerNewsMomentumCollector implements MomentumCollector {
+  /** Links dropped because they are not a product; reported in the run output. */
+  excluded = 0;
+
   constructor(
     private readonly queries: readonly string[],
     private readonly request: typeof fetch = fetch,
@@ -106,13 +150,17 @@ export class HackerNewsMomentumCollector implements MomentumCollector {
       counts: number[];
     }
     const byKey = new Map<string, Acc>();
+    this.excluded = 0;
     for (const hit of hits.values()) {
       const created = Date.parse(hit.created_at) / 1000;
       const index = Math.floor((created - from) / WEEK);
       if (index < 0 || index > 3) continue;
       if (!hit.url) continue; // Ask HN/self posts carry no product link.
       const product = identify(hit.url);
-      if (!product) continue;
+      if (!product) {
+        this.excluded += 1;
+        continue;
+      }
       const title = hit.title ?? "";
       let acc = byKey.get(product.name);
       if (!acc) {

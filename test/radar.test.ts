@@ -277,6 +277,36 @@ test("HN Algolia emits a second momentum source with family and weekly story spa
   );
 });
 
+test("non-product domains are excluded and counted; product domains and repos are kept", async () => {
+  const hits = [
+    hnHit("1", 2, "https://medium.com/@author/tool"),
+    hnHit("2", 3, "https://medium.com/@author/tool"),
+    hnHit("3", 2, "https://www.youtube.com/watch?v=abc"),
+    hnHit("4", 3, "https://youtu.be/abc"),
+    hnHit("5", 2, "https://example.com/tool"),
+    hnHit("6", 3, "https://example.com/tool"),
+    hnHit("7", 2, "https://github.com/owner/repo"),
+    hnHit("8", 3, "https://github.com/owner/repo"),
+    // A bare GitHub profile link is not a product.
+    hnHit("9", 3, "https://github.com/owner"),
+  ];
+  const store = new MemoryStore();
+  const output = await runRadar(
+    hackerNewsSource(
+      new HackerNewsMomentumCollector(["developer"], hnRequestFixture({ developer: hits })),
+    ),
+    store,
+    at,
+    "hash",
+  );
+  assert.match(output, /## example\.com/);
+  assert.match(output, /## owner\/repo/);
+  assert.ok(!output.includes("medium.com"));
+  assert.ok(!output.includes("youtube.com"));
+  assert.ok(!output.includes("youtu.be"));
+  assert.match(output, /Ürün olmadığı için elenen: 5\./);
+});
+
 test("HN Algolia zero baseline is unranked and HTTP/truncated/malformed responses fail", async () => {
   const store = new MemoryStore();
   const output = await runRadar(

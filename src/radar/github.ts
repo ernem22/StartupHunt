@@ -26,6 +26,8 @@ export interface CandidateSeries {
 // Separate from the frozen text-observation Adapter contract.
 export interface MomentumCollector {
   collect(at: Date): Promise<CandidateSeries[]>;
+  /** Optional count of entries dropped because they are not a product. */
+  readonly excluded?: number;
 }
 
 const API = "https://api.github.com";
