@@ -713,9 +713,9 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 - `pnpm check` yeşil: 21 test geçti (7 radar fixture), 3 mevcut DB testi atlandı; gelir/TR yer tutucuları doğrulanmadı (aranmadı).
 - DB/gerçek uçtan uca koşu doğrulanamadı (3060'ta koşulacak); sonraki adım şema + manifest/snapshot karşılaştırması.
 
-## 2026-11-21 — #82: gelir kanıtı sütunu
-- `src/radar/revenue.ts`: TrustMRR anahtarsız uç gerçek isteği (401/403 → "yok"/doğrulanmadı); 200 kanıt sayılmaz, 5xx koşuyu başarısız eder. `.env`/token okunmaz, LLM'e veri verilmez.
-- Her kartta kaynak URL + tarih + etiketli gelir kanıtı alanı; #78 `MomentumCollector`, `candidatePool`, `stage_runs` sözleşmeleri korundu (opsiyonel alan).
-- Doğrulandı (13:46 UTC, gerçek istek): GET https://trustmrr.com/api/v1/startups?limit=3 → HTTP 401 `{"error":"Missing or invalid API key. Pass it as: Authorization: Bearer tmrr_..."}`; /api/v1/products 404, /api/v1/stats 404, api.trustmrr.com DNS yok.
-- Karar: anahtarsız uç işe yaramadı → "yok"/doğrulanmadı; vekil sinyal uydurulmadı. Havuz lisans notu ve docs/radar.md güncellendi.
-- `pnpm check` yeşil: 30 test (27 geçti, 3 DB SKIP), 6 yeni gelir fixture testi. DB uçtan uca doğrulanamadı (3060'ta koşulacak).
+## 2026-11-21 — #82: gelir kanıtı sütunu (düzeltme)
+- `src/radar/revenue.ts`: yanlış anahtarlı uç yerine anahtarsız salt okunur `GET https://trustmrr.com/api/ai` kullanılıyor. Yanıt 200; `metricAccess.public` gelir/MRR özet alanlarının dönebileceğini belirtiyor. `.env`/token okunmaz, TrustMRR verisi LLM'e verilmez.
+- Eşleme aday başına ve sıkı: GitHub `homepage` domain == TrustMRR `website` domain ya da normalize ad/slug tam eşitliği. Substring/benzerlik yok. Eşleşme yoksa `yok / doğrulanmadı (N kayıtlık örnekte eşleşme yok, kapsam sınırlı, bu bir kanıt değil)`. Eşleşip gelir alanı yoksa açıkça yazılır.
+- `CandidateSeries.homepage` eklendi (GitHub repo homepage); #78 sözleşmesi bozulmadı (opsiyonel gelir alanı + manifest revenueSource güncellendi).
+- Doğrulandı (2026-11-21, gerçek istek): `/api/v1/startups?limit=3` 401; `/api/ai` 200, ~72 KB, 50 kayıt (25 recentlyListed + 25 bestDeals), kayıtlar `revenue.last30Days/mrr/total`, `website`, `name`, `slug`, `url` taşıyor.
+- `pnpm check` koşuldu; DB uçtan uca doğrulanamadı (3060'ta koşulacak).

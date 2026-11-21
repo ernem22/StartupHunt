@@ -7,6 +7,7 @@ import {
   type CandidateSeries,
 } from "../src/radar/github.js";
 import { runRadar, type Manifest, type RadarStore } from "../src/radar/run.js";
+import { unmatchedRevenueEvidence, type RevenueEvidenceCollector } from "../src/radar/revenue.js";
 import { PostgresRadarStore } from "../src/radar/store.js";
 import type pg from "pg";
 
@@ -18,6 +19,7 @@ function fixture(total: number, name = "owner/tool"): CandidateSeries {
     name,
     description: "Developer tool",
     url: `https://github.com/${name}`,
+    homepage: null,
     historyUrl: `https://api.github.com/repos/${name}/stargazers/history?per_page=5`,
     weeks: weeks.map((week, i) => ({ week, total: i === 3 ? total : 10 })),
   };
@@ -39,6 +41,11 @@ class MemoryStore implements RadarStore {
   }
 }
 
+const noRevenue: RevenueEvidenceCollector = {
+  collect: async (atDate, candidates) =>
+    new Map(candidates.map((candidate) => [candidate.url, unmatchedRevenueEvidence(atDate, 50)])),
+};
+
 function requestFixture(history: unknown, incomplete = false): typeof fetch {
   return async (input) => {
     const url = String(input);
@@ -46,7 +53,7 @@ function requestFixture(history: unknown, incomplete = false): typeof fetch {
       url.includes("/search/")
         ? {
             incomplete_results: incomplete,
-            items: [{ full_name: "owner/tool", description: "Developer tool" }],
+            items: [{ full_name: "owner/tool", description: "Developer tool", homepage: null }],
           }
         : history,
     );
@@ -56,16 +63,13 @@ function requestFixture(history: unknown, incomplete = false): typeof fetch {
 test("fixture pipeline emits top 20 by weekly growth, saves all series and a replay manifest", async () => {
   const store = new MemoryStore();
   const series = Array.from({ length: 25 }, (_, i) => fixture(i + 11, `owner/tool${i}`));
-  const output = await runRadar({ collect: async () => series }, store, at, "abc123");
+  const output = await runRadar({ collect: async () => series }, store, at, "abc123", noRevenue);
   assert.equal(output.match(/^## /gm)?.length, 20);
   assert.ok(output.indexOf("## owner/tool24") < output.indexOf("## owner/tool23"));
   assert.ok(!output.includes("## owner/tool0\n"));
   assert.match(output, /İvme: 250\.0%;/);
   assert.match(output, /▃▃▃█ \[10, 10, 10, 35\]/);
-  assert.match(
-    output,
-    /Gelir kanıtı: yok — doğrulanmadı \(TrustMRR anahtarsız uç 401 — anahtarsız gelir kanıtı alınamadı\); https:\/\/trustmrr\.com\/api\/v1\/startups\?limit=3/,
-  );
+  assert.match(output, /Gelir kanıtı: .+ — (ikincil|doğrulanmadı) \(.+\); https:\/\//);
   assert.match(output, /TR durumu: belirsiz — doğrulanmadı/);
   assert.match(output, /ikincil/);
   assert.match(output, /doğrulandı/);
@@ -77,7 +81,7 @@ test("fixture pipeline emits top 20 by weekly growth, saves all series and a rep
       pool: candidatePool,
       discoveryLimit: 30,
       weeks: 4,
-      revenueSource: "TrustMRR keyless probe",
+      revenueSource: "TrustMRR keyless AI endpoint (https://trustmrr.com/api/ai)",
       at: at.toISOString(),
     },
     seed: 0,
@@ -93,6 +97,7 @@ test("history ignores current partial week, sorts chronologically, and drives Ma
     store,
     at,
     "abc123",
+    noRevenue,
   );
   assert.match(output, /100\.0%;/);
   assert.match(output, /\[10, 10, 10, 20\]/);
@@ -111,6 +116,7 @@ test("zero baseline is unranked, negative/zero growth preserved, ties stable, te
     store,
     at,
     "hash",
+    noRevenue,
   );
   assert.ok(!output.includes("## owner/zero"));
   assert.match(output, /-50\.0%/);
@@ -144,6 +150,7 @@ test("missing history is excluded rather than zero-filled", async () => {
     store,
     at,
     "hash",
+    noRevenue,
   );
   assert.ok(!output.includes("## owner/tool"));
   assert.deepEqual(store.series, []);
@@ -155,7 +162,7 @@ test("persistence errors fail the run and never return a success list", async ()
     throw new Error("write failed");
   };
   await assert.rejects(
-    runRadar({ collect: async () => [fixture(20)] }, store, at, "hash"),
+    runRadar({ collect: async () => [fixture(20)] }, store, at, "hash", noRevenue),
     /write failed/,
   );
   assert.equal(store.failed, true);

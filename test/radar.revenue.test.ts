@@ -2,32 +2,59 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { runRadar, type RadarStore } from "../src/radar/run.js";
 import { candidatePool, type CandidateSeries } from "../src/radar/github.js";
-import {
-  TRUSTMRR_KEYLESS_URL,
-  TrustMrrKeylessCollector,
-  unavailableRevenueEvidence,
-} from "../src/radar/revenue.js";
+import { TRUSTMRR_AI_URL, TrustMrrAiCollector } from "../src/radar/revenue.js";
 
 const at = new Date("2026-11-21T13:19:05Z");
 
-function collector(status: number, body = "unauthorized"): typeof fetch {
-  return async () => new Response(body, { status });
+const trustMrrBody = JSON.stringify({
+  metricAccess: {
+    public: "Public responses may include current or last-30-day summary metrics",
+  },
+  recentlyListedStartups: [
+    {
+      name: "Acme Tool",
+      slug: "acme-tool",
+      url: "https://trustmrr.com/startup/acme-tool",
+      website: "https://acme.example",
+      revenue: { last30Days: 1200, mrr: 900, total: 15000 },
+    },
+    {
+      name: "No Revenue Fields",
+      slug: "no-revenue",
+      url: "https://trustmrr.com/startup/no-revenue",
+      website: "https://norevenue.example",
+      revenue: null,
+    },
+  ],
+  bestDeals: [],
+});
+
+function aiCollector(body = trustMrrBody, status = 200): typeof fetch {
+  return async (input) => {
+    assert.equal(String(input), TRUSTMRR_AI_URL);
+    return new Response(body, {
+      status,
+      headers: { "content-type": "application/json" },
+    });
+  };
 }
 
-const series: CandidateSeries[] = [
-  {
+function candidate(overrides: Partial<CandidateSeries> = {}): CandidateSeries {
+  return {
     name: "owner/tool",
     description: "Developer tool",
     url: "https://github.com/owner/tool",
-    historyUrl: "https://api.github.com/repos/owner/tool/stargazers/history",
+    homepage: null,
+    historyUrl: "https://api.github.com/repos/owner/tool/stargazers/history?per_page=5",
     weeks: [
       { week: 1, total: 10 },
       { week: 2, total: 10 },
       { week: 3, total: 10 },
       { week: 4, total: 20 },
     ],
-  },
-];
+    ...overrides,
+  };
+}
 
 const store: RadarStore = {
   start: async () => "1",
@@ -35,53 +62,90 @@ const store: RadarStore = {
   fail: async () => {},
 };
 
-test("TrustMRR keyless 401 is recorded as yok / doğrulanmadı, never as revenue", async () => {
-  const evidence = await new TrustMrrKeylessCollector(collector(401)).collect(at);
-  assert.deepEqual(evidence, {
-    finding: "yok",
-    label: "doğrulanmadı",
-    detail: "TrustMRR anahtarsız uç 401 — anahtarsız gelir kanıtı alınamadı",
-    sourceUrl: TRUSTMRR_KEYLESS_URL,
+test("TrustMRR /api/ai 200 maps per-candidate by strict domain/name match; unmatched is not evidence", async () => {
+  const collector = new TrustMrrAiCollector(aiCollector());
+  const evidence = await collector.collect(at, [
+    candidate({ name: "owner/acme-tool", homepage: "https://acme.example/docs" }),
+    candidate({ name: "owner/other", url: "https://github.com/owner/other", homepage: null }),
+  ]);
+
+  assert.deepEqual(evidence.get("https://github.com/owner/tool"), {
+    finding: "MRR $900, son 30 gün $1,200, toplam $15,000",
+    label: "ikincil",
+    detail: "TrustMRR /api/ai kaydında adayla ad/domain eşleşmesi bulundu",
+    sourceUrl: "https://trustmrr.com/startup/acme-tool",
     observedAt: at.toISOString(),
   });
-  assert.equal(TRUSTMRR_KEYLESS_URL, "https://trustmrr.com/api/v1/startups?limit=3");
+  assert.deepEqual(evidence.get("https://github.com/owner/other"), {
+    finding: "yok",
+    label: "doğrulanmadı",
+    detail: "2 kayıtlık örnekte eşleşme yok, kapsam sınırlı, bu bir kanıt değil",
+    sourceUrl: TRUSTMRR_AI_URL,
+    observedAt: at.toISOString(),
+  });
 });
 
-test("403 is treated like 401; 200 without expected 401 is not claimed as evidence", async () => {
-  const forbidden = await new TrustMrrKeylessCollector(collector(403)).collect(at);
-  assert.equal(forbidden.label, "doğrulanmadı");
-  assert.equal(forbidden.finding, "yok");
-  const unexpected = await new TrustMrrKeylessCollector(collector(200)).collect(at);
-  assert.equal(unexpected.label, "doğrulanmadı");
-  assert.equal(unexpected.finding, "yok");
-  assert.match(unexpected.detail, /beklenen 401 gelmedi/);
+test("normalized name equality matches but substring/similar names do not", async () => {
+  const collector = new TrustMrrAiCollector(aiCollector());
+  const evidence = await collector.collect(at, [
+    candidate({ name: "owner/Acme-Tool", url: "https://github.com/owner/Acme-Tool" }),
+    candidate({ name: "owner/acme", url: "https://github.com/owner/acme" }),
+  ]);
+  assert.equal(evidence.get("https://github.com/owner/Acme-Tool")?.label, "ikincil");
+  assert.equal(evidence.get("https://github.com/owner/acme")?.label, "doğrulanmadı");
+  assert.match(evidence.get("https://github.com/owner/acme")?.detail ?? "", /eşleşme yok/);
+});
+
+test("matched record without revenue/MRR fields is reported explicitly, not fabricated", async () => {
+  const collector = new TrustMrrAiCollector(aiCollector());
+  const evidence = await collector.collect(at, [
+    candidate({ name: "owner/no-revenue", homepage: "https://norevenue.example" }),
+  ]);
+  assert.deepEqual(evidence.get("https://github.com/owner/tool"), {
+    finding: "yok",
+    label: "doğrulanmadı",
+    detail:
+      "TrustMRR eşleşmesi bulundu (https://trustmrr.com/startup/no-revenue) ancak gelir/MRR alanı yok",
+    sourceUrl: TRUSTMRR_AI_URL,
+    observedAt: at.toISOString(),
+  });
 });
 
 test("unexpected HTTP status fails the probe instead of fabricating evidence", async () => {
   await assert.rejects(
-    new TrustMrrKeylessCollector(collector(500)).collect(at),
+    new TrustMrrAiCollector(aiCollector("err", 500)).collect(at, [candidate()]),
     /TrustMRR HTTP 500/,
   );
 });
 
-test("each card carries sourced revenue evidence with label and date", async () => {
-  const revenueCollector = new TrustMrrKeylessCollector(collector(401));
+test("each card carries per-candidate revenue evidence with label, source and date", async () => {
   const output = await runRadar(
-    { collect: async () => series },
+    {
+      collect: async () => [
+        candidate({ name: "owner/acme-tool", homepage: "https://acme.example" }),
+        candidate({ name: "owner/other", url: "https://github.com/owner/other" }),
+      ],
+    },
     store,
     at,
     "hash",
-    revenueCollector,
+    new TrustMrrAiCollector(aiCollector()),
   );
-  assert.match(output, /## owner\/tool/);
   assert.match(
     output,
-    /Gelir kanıtı: yok — doğrulanmadı \(TrustMRR anahtarsız uç 401[^)]*\); https:\/\/trustmrr\.com\/api\/v1\/startups\?limit=3; 2026-11-21T13:19:05\.000Z/,
+    /## owner\/acme-tool[\s\S]*Gelir kanıtı: MRR \$900, son 30 gün \$1,200, toplam \$15,000 — ikincil \(TrustMRR \/api\/ai kaydında adayla ad\/domain eşleşmesi bulundu\); https:\/\/trustmrr\.com\/startup\/acme-tool; 2026-11-21T13:19:05\.000Z/,
   );
-  assert.equal(candidatePool[0]!.revenueSources.length, 1);
+  assert.match(
+    output,
+    /## owner\/other[\s\S]*Gelir kanıtı: yok — doğrulanmadı \(2 kayıtlık örnekte eşleşme yok, kapsam sınırlı, bu bir kanıt değil\); https:\/\/trustmrr\.com\/api\/ai; 2026-11-21T13:19:05\.000Z/,
+  );
+  assert.equal(
+    candidatePool[0]!.revenueSources[0],
+    "TrustMRR /api/ai (anahtarsız, salt okunur; eşleşme aday başına domain/ad)",
+  );
 });
 
-test("candidate-provided revenue evidence is preserved", async () => {
+test("candidate-provided revenue evidence is preserved without collector lookup", async () => {
   const given = {
     finding: "$12k MRR",
     label: "ikincil" as const,
@@ -90,7 +154,7 @@ test("candidate-provided revenue evidence is preserved", async () => {
     observedAt: at.toISOString(),
   };
   const output = await runRadar(
-    { collect: async () => [{ ...series[0]!, revenueEvidence: given }] },
+    { collect: async () => [{ ...candidate(), revenueEvidence: given }] },
     store,
     at,
     "hash",
@@ -99,9 +163,4 @@ test("candidate-provided revenue evidence is preserved", async () => {
     output,
     /Gelir kanıtı: \$12k MRR — ikincil \(fixture\); https:\/\/example\.org\/evidence/,
   );
-});
-
-test("default fallback without a collector stays 'yok / doğrulanmadı'", async () => {
-  assert.equal(unavailableRevenueEvidence(at).finding, "yok");
-  assert.equal(unavailableRevenueEvidence(at).label, "doğrulanmadı");
 });

@@ -1,5 +1,5 @@
 import { candidatePool, type CandidateSeries, type MomentumCollector } from "./github.js";
-import { unavailableRevenueEvidence, type RevenueEvidenceCollector } from "./revenue.js";
+import { TRUSTMRR_AI_URL, type RevenueEvidenceCollector } from "./revenue.js";
 
 export interface Manifest {
   source: string;
@@ -42,7 +42,7 @@ export async function runRadar(
       pool: candidatePool,
       discoveryLimit: 30,
       weeks: 4,
-      revenueSource: "TrustMRR keyless probe",
+      revenueSource: `TrustMRR keyless AI endpoint (${TRUSTMRR_AI_URL})`,
       at: at.toISOString(),
     },
     seed: 0,
@@ -50,15 +50,24 @@ export async function runRadar(
   });
   try {
     const series = await collector.collect(at);
-    const revenue = revenueCollector
-      ? await revenueCollector.collect(at)
-      : unavailableRevenueEvidence(at);
+    const revenueByCandidate =
+      revenueCollector &&
+      (await revenueCollector.collect(
+        at,
+        series.filter((candidate) => !candidate.revenueEvidence),
+      ));
     const ranked = series
-      .map((candidate) => ({
-        ...candidate,
-        revenueEvidence: candidate.revenueEvidence ?? revenue,
-        momentum: momentum(candidate.weeks),
-      }))
+      .map((candidate) => {
+        const revenueEvidence = candidate.revenueEvidence ?? revenueByCandidate?.get(candidate.url);
+        if (!revenueEvidence) {
+          throw new Error(`Missing revenue evidence for ${candidate.name}`);
+        }
+        return {
+          ...candidate,
+          revenueEvidence,
+          momentum: momentum(candidate.weeks),
+        };
+      })
       .filter((candidate) => candidate.momentum !== null)
       .sort((a, b) => b.momentum! - a.momentum! || a.name.localeCompare(b.name, "en"))
       .slice(0, 20);
