@@ -1,7 +1,8 @@
 import { execFileSync } from "node:child_process";
 import pg from "pg";
 import { candidatePool, GitHubMomentumCollector } from "./github.js";
-import { runRadar } from "./run.js";
+import { HackerNewsMomentumCollector } from "./hackernews.js";
+import { githubSource, hackerNewsSource, runRadar } from "./run.js";
 import { PostgresRadarStore } from "./store.js";
 
 async function main(): Promise<void> {
@@ -9,20 +10,25 @@ async function main(): Promise<void> {
   if (!process.env.DATABASE_URL)
     throw new Error("DATABASE_URL must be provided in the process environment");
   const commit = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+  const pool = candidatePool[0]!;
   const client = new pg.Client({
     connectionString: process.env.DATABASE_URL,
     connectionTimeoutMillis: 10000,
   });
   try {
     await client.connect();
-    console.log(
+    const store = new PostgresRadarStore(client);
+    const at = new Date();
+    const outputs = [
+      await runRadar(githubSource(new GitHubMomentumCollector(pool.query)), store, at, commit),
       await runRadar(
-        new GitHubMomentumCollector(candidatePool[0]!.query),
-        new PostgresRadarStore(client),
-        new Date(),
+        hackerNewsSource(new HackerNewsMomentumCollector(pool.hnQueries)),
+        store,
+        at,
         commit,
       ),
-    );
+    ];
+    console.log(outputs.join("\n\n"));
   } finally {
     await client.end();
   }

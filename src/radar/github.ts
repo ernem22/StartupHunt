@@ -1,10 +1,12 @@
 export const candidatePool = [
   {
     type: "geliştirici aracı",
-    trendSources: ["GitHub Search", "GitHub stargazers/history"],
+    trendSources: ["GitHub Search", "GitHub stargazers/history", "HN Algolia"],
     revenueSources: [],
-    licenseNote: "Kişisel kullanım; repo lisansı ayrıca incelenir, kod ve marka kopyalanmaz.",
+    licenseNote:
+      "Kişisel kullanım; repo lisansı ve HN bağlantıları ayrıca incelenir, kod ve marka kopyalanmaz.",
     query: "topic:developer-tools archived:false fork:false",
+    hnQueries: ["developer", "AI tools"],
   },
 ];
 
@@ -24,6 +26,8 @@ export interface CandidateSeries {
 // Separate from the frozen text-observation Adapter contract.
 export interface MomentumCollector {
   collect(at: Date): Promise<CandidateSeries[]>;
+  /** Optional count of entries dropped because they are not a product. */
+  readonly excluded?: number;
 }
 
 const API = "https://api.github.com";
