@@ -20,9 +20,9 @@ Ad ve açıklama repo sahibinin beyanıdır (**ikincil**); haftalık yıldızlar
 
 ## TR durumu (Apple TR, #83)
 
-Her kart için Apple TR kataloğunda (`iTunes Search`, `country=tr`, `entity=software`, en fazla 5 sonuç) muadil aranır. Sorgular deterministiktir: repo adı (tire/nokta boşluğa çevrilir) ve açıklamadaki anlamlı ilk beş kelime; en fazla iki sorgu denenir ve hepsi kartta yazılır. Bir sonuç yalnızca sorgu kelimesiyle adı eşleşirse “bulundu” sayılır (isim ve URL kartta).
+Her kart için Apple TR kataloğunda (`iTunes Search`, `country=tr`, `entity=software`, en fazla 5 sonuç) muadil aranır. Sorgular deterministiktir: repo adı (tire/nokta boşluğa çevrilir) ve açıklamadaki anlamlı ilk beş kelime; en fazla iki sorgu denenir ve hepsi kartta yazılır. Bir sonuç, sorgudaki tüm anlamlı kelimeler uygulama adında geçtiğinde “bulundu” sayılır (isim ve URL kartta). Bu bir aday eşleşmesidir, aynı ürün kanıtı değildir; **ikincil** etiketlenir. İstekler aynı katalog örneğinde en az 1 saniye arayla atılır; iTunes'ın gerçek dakika sınırı doğrulanmadı.
 
-- **bulundu:** Apple TR'de adı eşleşen uygulama var; isim ve URL taşır.
+- **bulundu:** Apple TR'de adı eşleşen aday uygulama var; isim ve URL taşır. **İkincil** (aday eşleşme, kullanıcı doğrulamalı); aynı ürün kanıtı değildir.
 - **bulunamadı:** Denenen sorgularda sonuç yok. “Yok” iddiası değildir; yalnız bu sorgular ve katalog içindir.
 - **belirsiz:** Katalog ulaşılamaz, yanıt bozuk ya da sorgu üretilemez; komut hata vermez.
 

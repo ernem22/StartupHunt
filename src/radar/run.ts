@@ -54,7 +54,7 @@ async function trStatusOf(
 
 function trLine(status: TrStatus, date: string): string {
   if (status.status === "bulundu" && status.match) {
-    return `TR durumu: bulundu (${text(status.match.name)}, ${status.match.url}) — doğrulandı (${status.catalog}, country=tr); denenen sorgular: ${quoted(status.queries)}; ${date}`;
+    return `TR durumu: bulundu (${text(status.match.name)}, ${status.match.url}) — ikincil: aday eşleşme, kullanıcı doğrulamalı (${status.catalog}, country=tr); denenen sorgular: ${quoted(status.queries)}; ${date}`;
   }
   if (status.status === "bulunamadı") {
     return `TR durumu: bulunamadı (bu sorgularda sonuç yok; "yok" iddiası değil) — doğrulandı (${status.catalog}); denenen sorgular: ${quoted(status.queries)}; ${date}`;
@@ -64,7 +64,7 @@ function trLine(status: TrStatus, date: string): string {
 
 function trGapDetail(status: TrStatus): string {
   if (status.status === "bulundu" && status.match) {
-    return `bulundu: ${text(status.match.name)} ${status.match.url}`;
+    return `bulundu (ikincil, aday eşleşme): ${text(status.match.name)} ${status.match.url}`;
   }
   if (status.status === "bulunamadı") {
     return `bulunamadı (denenen: ${quoted(status.queries)})`;

@@ -22,6 +22,11 @@ export interface TrCatalog {
 
 const ENDPOINT = "https://itunes.apple.com/search";
 const CATALOG = "Apple iTunes Search (country=tr, entity=software)";
+const MIN_REQUEST_INTERVAL_MS = 1000;
+
+type Delay = (ms: number) => Promise<void>;
+
+const sleep: Delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const STOPWORDS = new Set([
   "the",
@@ -78,7 +83,8 @@ export function trQueries(candidate: CandidateSeries): string[] {
 function matches(query: string, trackName: string): boolean {
   const wanted = new Set(tokens(query).filter(meaningful));
   if (wanted.size === 0) return false;
-  return tokens(trackName).some((token) => wanted.has(token));
+  const found = new Set(tokens(trackName));
+  return [...wanted].every((token) => found.has(token));
 }
 
 interface AppleHit {
@@ -107,10 +113,22 @@ function parseHits(body: unknown): AppleHit[] {
 
 export class AppleTrCatalog implements TrCatalog {
   readonly catalog = CATALOG;
+  private nextRequestAt = 0;
 
-  constructor(private readonly request: typeof fetch = fetch) {}
+  constructor(
+    private readonly request: typeof fetch = fetch,
+    private readonly delay: Delay = sleep,
+    private readonly now: () => number = Date.now,
+  ) {}
+
+  private async pace(): Promise<void> {
+    const wait = this.nextRequestAt - this.now();
+    if (wait > 0) await this.delay(wait);
+    this.nextRequestAt = this.now() + MIN_REQUEST_INTERVAL_MS;
+  }
 
   private async search(query: string): Promise<AppleHit[]> {
+    await this.pace();
     const params = new URLSearchParams({
       term: query,
       country: "tr",

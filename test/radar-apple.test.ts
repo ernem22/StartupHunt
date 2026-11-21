@@ -6,6 +6,7 @@ import { runRadar, type Manifest, type RadarStore } from "../src/radar/run.js";
 
 const at = new Date("2026-11-21T13:19:05Z");
 const weeks = completedWeeks(at);
+const noDelay = async (): Promise<void> => {};
 
 function fixture(
   total: number,
@@ -93,10 +94,31 @@ test("Apple TR lookup finds a named match and records the attempted query", asyn
 
 test("zero results across every query is bulunamadı with all attempted queries", async () => {
   const request: typeof fetch = async () => Response.json({ resultCount: 0, results: [] });
-  const status = await new AppleTrCatalog(request).lookup(fixture(20, "owner/zzz", "quux corge"));
+  const status = await new AppleTrCatalog(request, noDelay).lookup(
+    fixture(20, "owner/zzz", "quux corge"),
+  );
   assert.equal(status.status, "bulunamadı");
   assert.deepEqual(status.queries, ["zzz", "quux corge"]);
   assert.equal(status.match, undefined);
+});
+
+test("a single shared name token is not reported as a TR match", async () => {
+  const fixtures = [
+    { name: "owner/claw-orchestrator", description: "Developer tool", hit: "Claw Machine" },
+    { name: "owner/foo", description: "Developer code assistant", hit: "Code Editor" },
+  ];
+  for (const item of fixtures) {
+    const request: typeof fetch = async () =>
+      Response.json({
+        resultCount: 1,
+        results: [{ trackName: item.hit, trackViewUrl: "https://apps.apple.com/tr/app/hit/id1" }],
+      });
+    const status = await new AppleTrCatalog(request, noDelay).lookup(
+      fixture(20, item.name, item.description),
+    );
+    assert.equal(status.status, "bulunamadı");
+    assert.equal(status.match, undefined);
+  }
 });
 
 test("catalog HTTP failure and malformed bodies become belirsiz instead of throwing", async () => {
@@ -107,10 +129,32 @@ test("catalog HTTP failure and malformed bodies become belirsiz instead of throw
       throw new Error("network down");
     }) as typeof fetch,
   ]) {
-    const status = await new AppleTrCatalog(request).lookup(fixture(20));
+    const status = await new AppleTrCatalog(request, noDelay).lookup(fixture(20));
     assert.equal(status.status, "belirsiz");
     assert.ok(status.note);
   }
+});
+
+test("catalog paces requests across lookups without real waiting in tests", async () => {
+  const delays: number[] = [];
+  const terms: string[] = [];
+  let clock = 0;
+  const request: typeof fetch = async (input) => {
+    terms.push(new URL(String(input)).searchParams.get("term") ?? "");
+    return Response.json({ resultCount: 0, results: [] });
+  };
+  const catalog = new AppleTrCatalog(
+    request,
+    async (ms) => {
+      delays.push(ms);
+      clock += ms;
+    },
+    () => clock,
+  );
+  await catalog.lookup(fixture(20, "owner/one", "alpha beta"));
+  await catalog.lookup(fixture(20, "owner/two", "gamma delta"));
+  assert.deepEqual(terms, ["one", "alpha beta", "two", "gamma delta"]);
+  assert.deepEqual(delays, [1000, 1000, 1000]);
 });
 
 test("runRadar marks each card with TR status and orders the gap view with not-found first", async () => {
@@ -152,6 +196,32 @@ test("runRadar marks each card with TR status and orders the gap view with not-f
   assert.ok(gap.indexOf("owner/unknown") < gap.indexOf("owner/found"));
   assert.equal(store.manifest?.parameters.trCatalog, "Fake Apple TR");
   assert.equal(store.failed, false);
+});
+
+test("runRadar labels a catalog name match as secondary, not verified", async () => {
+  const store = new MemoryStore();
+  const output = await runRadar(
+    {
+      collect: async () => [fixture(30, "owner/found")],
+    },
+    store,
+    at,
+    "hash",
+    fakeCatalog({
+      "owner/found": {
+        status: "bulundu",
+        queries: ["found"],
+        catalog: "Fake Apple TR",
+        match: { name: "Found App", url: "https://apps.apple.com/tr/app/found/id1" },
+      },
+    }),
+  );
+  const line = output.split("\n").find((value) => value.startsWith("TR durumu: bulundu"));
+  assert.ok(line);
+  assert.match(line, /— ikincil: aday eşleşme, kullanıcı doğrulamalı/);
+  assert.ok(!line.includes("doğrulandı"));
+  const gap = output.slice(output.indexOf("## TR boşluğu görünümü"));
+  assert.match(gap, /bulundu \(ikincil, aday eşleşme\): Found App/);
 });
 
 test("runRadar keeps legacy placeholder when no catalog is supplied", async () => {
