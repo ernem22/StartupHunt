@@ -1,8 +1,15 @@
 import { candidatePool, type CandidateSeries, type MomentumCollector } from "./github.js";
+import { unavailableRevenueEvidence, type RevenueEvidenceCollector } from "./revenue.js";
 
 export interface Manifest {
   source: string;
-  parameters: { pool: typeof candidatePool; discoveryLimit: number; weeks: number; at: string };
+  parameters: {
+    pool: typeof candidatePool;
+    discoveryLimit: number;
+    weeks: number;
+    revenueSource: string;
+    at: string;
+  };
   seed: number;
   commitHash: string;
 }
@@ -27,17 +34,31 @@ export async function runRadar(
   store: RadarStore,
   at: Date,
   commitHash: string,
+  revenueCollector?: RevenueEvidenceCollector,
 ): Promise<string> {
   const id = await store.start({
     source: "github",
-    parameters: { pool: candidatePool, discoveryLimit: 30, weeks: 4, at: at.toISOString() },
+    parameters: {
+      pool: candidatePool,
+      discoveryLimit: 30,
+      weeks: 4,
+      revenueSource: "TrustMRR keyless probe",
+      at: at.toISOString(),
+    },
     seed: 0,
     commitHash,
   });
   try {
     const series = await collector.collect(at);
+    const revenue = revenueCollector
+      ? await revenueCollector.collect(at)
+      : unavailableRevenueEvidence(at);
     const ranked = series
-      .map((candidate) => ({ ...candidate, momentum: momentum(candidate.weeks) }))
+      .map((candidate) => ({
+        ...candidate,
+        revenueEvidence: candidate.revenueEvidence ?? revenue,
+        momentum: momentum(candidate.weeks),
+      }))
       .filter((candidate) => candidate.momentum !== null)
       .sort((a, b) => b.momentum! - a.momentum! || a.name.localeCompare(b.name, "en"))
       .slice(0, 20);
@@ -58,7 +79,7 @@ export async function runRadar(
         `## ${text(candidate.name)}`,
         `Ad/açıklama: ${text(candidate.description || "yok")} — ikincil (repo sahibinin beyanı); ${candidate.url}; ${at.toISOString()}`,
         `İvme: ${(candidate.momentum! * 100).toFixed(1)}%; ${sparkline} [${totals.join(", ")}] — doğrulandı (GitHub haftalık yıldız verisinden hesaplandı); ${candidate.historyUrl}; ${at.toISOString()}`,
-        `Gelir kanıtı: yok — doğrulanmadı (aranmadı); ${candidate.url}; ${at.toISOString()}`,
+        `Gelir kanıtı: ${text(candidate.revenueEvidence!.finding)} — ${text(candidate.revenueEvidence!.label)} (${text(candidate.revenueEvidence!.detail)}); ${candidate.revenueEvidence!.sourceUrl}; ${candidate.revenueEvidence!.observedAt}`,
         `TR durumu: belirsiz — doğrulanmadı (aranmadı); ${candidate.url}; ${at.toISOString()}`,
         "",
       );

@@ -62,7 +62,10 @@ test("fixture pipeline emits top 20 by weekly growth, saves all series and a rep
   assert.ok(!output.includes("## owner/tool0\n"));
   assert.match(output, /İvme: 250\.0%;/);
   assert.match(output, /▃▃▃█ \[10, 10, 10, 35\]/);
-  assert.match(output, /Gelir kanıtı: yok — doğrulanmadı/);
+  assert.match(
+    output,
+    /Gelir kanıtı: yok — doğrulanmadı \(TrustMRR anahtarsız uç 401 — anahtarsız gelir kanıtı alınamadı\); https:\/\/trustmrr\.com\/api\/v1\/startups\?limit=3/,
+  );
   assert.match(output, /TR durumu: belirsiz — doğrulanmadı/);
   assert.match(output, /ikincil/);
   assert.match(output, /doğrulandı/);
@@ -74,6 +77,7 @@ test("fixture pipeline emits top 20 by weekly growth, saves all series and a rep
       pool: candidatePool,
       discoveryLimit: 30,
       weeks: 4,
+      revenueSource: "TrustMRR keyless probe",
       at: at.toISOString(),
     },
     seed: 0,
@@ -171,7 +175,13 @@ test("Postgres contract writes dated metrics atomically; failure rolls back", as
     const store = new PostgresRadarStore(client);
     await store.start({
       source: "github",
-      parameters: { pool: candidatePool, discoveryLimit: 30, weeks: 4, at: at.toISOString() },
+      parameters: {
+        pool: candidatePool,
+        discoveryLimit: 30,
+        weeks: 4,
+        revenueSource: "TrustMRR keyless probe",
+        at: at.toISOString(),
+      },
       seed: 0,
       commitHash: "hash",
     });

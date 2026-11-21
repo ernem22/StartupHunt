@@ -2,8 +2,9 @@ export const candidatePool = [
   {
     type: "geliştirici aracı",
     trendSources: ["GitHub Search", "GitHub stargazers/history"],
-    revenueSources: [],
-    licenseNote: "Kişisel kullanım; repo lisansı ayrıca incelenir, kod ve marka kopyalanmaz.",
+    revenueSources: ["TrustMRR (anahtarsız uç: 401, kullanılamıyor)"],
+    licenseNote:
+      "Kişisel kullanım; repo lisansı ayrıca incelenir, kod ve marka kopyalanmaz. TrustMRR kişisel kullanımda sorun değildir; anahtar/LLM izni doğrulanmadı, veri LLM'e verilmez, kazıma yok; ticari kullanımda lisans yeniden değerlendirilir.",
     query: "topic:developer-tools archived:false fork:false",
   },
 ];
@@ -13,12 +14,23 @@ export interface WeeklyStars {
   total: number;
 }
 
+export type EvidenceLabel = "doğrulandı" | "ikincil" | "doğrulanmadı";
+
+export interface RevenueEvidence {
+  finding: string;
+  label: EvidenceLabel;
+  detail: string;
+  sourceUrl: string;
+  observedAt: string;
+}
+
 export interface CandidateSeries {
   name: string;
   description: string;
   url: string;
   historyUrl: string;
   weeks: WeeklyStars[];
+  revenueEvidence?: RevenueEvidence;
 }
 
 // Separate from the frozen text-observation Adapter contract.
