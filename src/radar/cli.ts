@@ -1,5 +1,6 @@
 import { execFileSync } from "node:child_process";
 import pg from "pg";
+import { AppleTrCatalog } from "./apple.js";
 import { candidatePool, GitHubMomentumCollector } from "./github.js";
 import { runRadar } from "./run.js";
 import { PostgresRadarStore } from "./store.js";
@@ -21,6 +22,7 @@ async function main(): Promise<void> {
         new PostgresRadarStore(client),
         new Date(),
         commit,
+        new AppleTrCatalog(),
       ),
     );
   } finally {

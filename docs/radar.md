@@ -16,8 +16,20 @@ Son dört tamamlanmış UTC haftası kullanılır (Pazar başlangıcı); devam e
 
 Her koşu kaynak, sorgu/havuz, örneklem sınırı, zaman, tohum (rastgelelik yok: 0), commit hash ve durumunu `stage_runs` içine yazar. DB bağlantısı kurulamazsa manifest yazılamaz ve komut başarısız olur. `metric_snapshots`: `entity_type=github_repo`, `entity_id=repo URL`, `metric=weekly_new_stars`, `captured_at=hafta başlangıcı`. Tekrarlanan koşular ayrı snapshot kayıtları bırakır; haftalık değerler toplanmamalıdır.
 
-Ad ve açıklama repo sahibinin beyanıdır (**ikincil**); haftalık yıldızlardan hesaplanan ivme **doğrulandı** olarak sunulur. Gelir kanıtı “yok”, TR durumu “belirsiz” ve ikisi de **doğrulanmadı (aranmadı)** yer tutucudur; bu alanlardaki repo URL'si kontrol edilecek adayın referansıdır, gelir/TR kanıtı değildir.
+Ad ve açıklama repo sahibinin beyanıdır (**ikincil**); haftalık yıldızlardan hesaplanan ivme **doğrulandı** olarak sunulur. Gelir kanıtı “yok” **doğrulanmadı (aranmadı)** yer tutucudur; bu alandaki repo URL'si kontrol edilecek adayın referansıdır, gelir kanıtı değildir.
+
+## TR durumu (Apple TR, #83)
+
+Her kart için Apple TR kataloğunda (`iTunes Search`, `country=tr`, `entity=software`, en fazla 5 sonuç) muadil aranır. Sorgular deterministiktir: repo adı (tire/nokta boşluğa çevrilir) ve açıklamadaki anlamlı ilk beş kelime; en fazla iki sorgu denenir ve hepsi kartta yazılır. Bir sonuç yalnızca sorgu kelimesiyle adı eşleşirse “bulundu” sayılır (isim ve URL kartta).
+
+- **bulundu:** Apple TR'de adı eşleşen uygulama var; isim ve URL taşır.
+- **bulunamadı:** Denenen sorgularda sonuç yok. “Yok” iddiası değildir; yalnız bu sorgular ve katalog içindir.
+- **belirsiz:** Katalog ulaşılamaz, yanıt bozuk ya da sorgu üretilemez; komut hata vermez.
+
+Liste sonunda **TR boşluğu görünümü** aynı adayları sıralar: `bulunamadı` önde, sonra `belirsiz`, sonra `bulundu`. Son hüküm kullanıcıdadır. TR araması `stage_runs.parameters.trCatalog` alanına katalog adı olarak yazılır.
 
 **Doğrulandı (2026-11-21):** tokensız gerçek isteklerde [GitHub Search](https://api.github.com/search/repositories?q=topic%3Adeveloper-tools+archived%3Afalse+fork%3Afalse&sort=updated&order=desc&per_page=30) HTTP 200 (`total_count=93559`, `incomplete_results=false`); [vscode history](https://api.github.com/repos/microsoft/vscode/stargazers/history?per_page=5) HTTP 200, beş haftalık nesne. **Doğrulandı (doküman):** [GitHub REST referansı](https://docs.github.com/en/rest/activity/starring#get-repository-star-history) history alanlarını ve uç noktayı tanımlar. Bunlar DB uçtan uca doğrulaması değildir.
 
-**Doğrulanmadı:** DB bağlantısı, şema uygulaması ve gerçek `pnpm radar` çıktısının PostgreSQL'e yazılması bu makinede doğrulanamadı (3060'ta koşulacak). 3060'ta şemayı uygula, `pnpm radar` çalıştır, son `stage_runs` manifestini ve repo başına dört `metric_snapshots` kaydını karşılaştır. Gelir/TR araması ve diğer kaynaklar #78 kapsamı dışındadır.
+**Doğrulandı (2026-11-21):** [Apple iTunes Search](https://itunes.apple.com/search?term=github&country=tr&entity=software&limit=5) HTTP 200, `resultCount=5`; ilk sonuç `GitHub` (`https://apps.apple.com/tr/app/github/id1477376905`). `term=zzzqqqnonexistenttool` HTTP 200, `resultCount=0`. `term=vscode` HTTP 200, `resultCount=5` ama ilk sonuç `Claude by Anthropic`; bu yüzden sonuç sayısı tek başına “bulundu” sayılmaz, ad eşleşmesi aranır.
+
+**Doğrulanmadı:** DB bağlantısı, şema uygulaması ve gerçek `pnpm radar` çıktısının PostgreSQL'e yazılması bu makinede doğrulanamadı (3060'ta koşulacak). 3060'ta şemayı uygula, `pnpm radar` çalıştır, son `stage_runs` manifestini ve repo başına dört `metric_snapshots` kaydını karşılaştır. Gelir araması ve diğer kaynaklar #78 kapsamı dışındadır.
