@@ -1,6 +1,6 @@
 import { candidatePool, type CandidateSeries, type MomentumCollector } from "./github.js";
 
-export type SourceFamily = "aday üretici" | "doğrulayıcı";
+export type SourceFamily = "aday üretici" | "doğrulayıcı" | "ivme ölçüsü";
 
 // The pool is opaque metadata for the manifest; sources declare their own shape.
 export type RadarPool = readonly Readonly<Record<string, unknown>>[];
@@ -18,6 +18,8 @@ export interface RadarSource {
   declarationLabel: string;
   pool: RadarPool;
   discoveryLimit: number;
+  /** How candidates are ranked; defaults to weekly growth. */
+  ranking?: "weekly" | "score";
   collector: MomentumCollector;
 }
 
@@ -51,6 +53,7 @@ const githubDefaults = {
   sparklineNote: "Sparkline haftalık yeni yıldızları gösterir.",
   declarationLabel: "repo sahibinin beyanı",
   discoveryLimit: 30,
+  ranking: "weekly" as const,
 };
 
 const hackerNewsDefaults = {
@@ -66,6 +69,25 @@ const hackerNewsDefaults = {
   sparklineNote: "Sparkline haftalık hikâye sayılarını gösterir.",
   declarationLabel: "HN hikâye başlığı",
   discoveryLimit: 1000,
+  ranking: "weekly" as const,
+};
+
+// Hugging Face is not a candidate producer like GitHub/HN: it exposes a single
+// point-in-time ranking score, so it is labelled as its own momentum measure.
+const huggingFaceDefaults = {
+  source: "huggingface",
+  family: "ivme ölçüsü" as const,
+  label: "Hugging Face",
+  entityType: "hf_model",
+  metric: "hf_trending_score",
+  unit: "trendingScore",
+  heading: "Hugging Face adayları",
+  discoveryNote:
+    "Keşif: HF trendingScore sıralamasının ilk 30 modeli; küresel ilk 20 iddiası değildir; ürün niteliği elle incelenir.",
+  sparklineNote: "",
+  declarationLabel: "model kimliği yükleme beyanı",
+  discoveryLimit: 30,
+  ranking: "score" as const,
 };
 
 export function githubSource(collector: MomentumCollector): RadarSource {
@@ -76,9 +98,16 @@ export function hackerNewsSource(collector: MomentumCollector): RadarSource {
   return { ...hackerNewsDefaults, pool: candidatePool, collector };
 }
 
-function momentum(weeks: CandidateSeries["weeks"]): number | null {
-  const previous = weeks.at(-2)!.total;
-  return previous === 0 ? null : (weeks.at(-1)!.total - previous) / previous;
+export function huggingFaceSource(collector: MomentumCollector): RadarSource {
+  return { ...huggingFaceDefaults, pool: candidatePool, collector };
+}
+
+function momentum(candidate: CandidateSeries): number | null {
+  // Sources without weekly history (e.g. Hugging Face) rank by their single score.
+  if (candidate.score) return candidate.score.value;
+  if (candidate.weeks.length < 2) return null;
+  const previous = candidate.weeks.at(-2)!.total;
+  return previous === 0 ? null : (candidate.weeks.at(-1)!.total - previous) / previous;
 }
 
 function text(value: string): string {
@@ -96,6 +125,7 @@ export async function runRadar(
   commitHash: string,
 ): Promise<string> {
   const source = isRadarSource(input) ? input : githubSource(input);
+  const ranking = source.ranking ?? "weekly";
   const id = await store.start({
     source: source.source,
     parameters: {
@@ -110,36 +140,54 @@ export async function runRadar(
   try {
     const series = await source.collector.collect(at);
     const ranked = series
-      .map((candidate) => ({ ...candidate, momentum: momentum(candidate.weeks) }))
+      .map((candidate) => ({ ...candidate, momentum: momentum(candidate) }))
       .filter((candidate) => candidate.momentum !== null)
       .sort((a, b) => b.momentum! - a.momentum! || a.name.localeCompare(b.name, "en"))
       .slice(0, 20);
-    const lines = [
-      `# ${source.heading} — ${at.toISOString()}`,
-      "",
-      source.discoveryNote,
-      "Son dört tamamlanmış UTC haftası (Pazar başlangıcı); ivme = (son hafta − önceki hafta) / önceki hafta.",
-      `Sıfır tabanlı oran hesaplanamaz ve sıralamaya girmez. ${source.sparklineNote}`,
-      `Koşu: ${id}; commit: ${commitHash}; tohum: 0.`,
-      "",
-    ];
+    const lines: string[] = [`# ${source.heading} — ${at.toISOString()}`, "", source.discoveryNote];
+    if (ranking === "score") {
+      lines.push(
+        "HF API haftalık geçmiş sağlamaz: sıralama trendingScore (Hugging Face'in kendi son dönem ilgi ölçüsü) ile yapılır; haftalık artış oranı snapshot'lar biriktikten sonra değerlendirilir.",
+        `Snapshot: metric_snapshots'a ${source.metric}, son tamamlanmış hafta başlığıyla yazılır; tekrarlanan koşular ayrı kayıt bırakır.`,
+      );
+    } else {
+      lines.push(
+        "Son dört tamamlanmış UTC haftası (Pazar başlangıcı); ivme = (son hafta − önceki hafta) / önceki hafta.",
+        `Sıfır tabanlı oran hesaplanamaz ve sıralamaya girmez. ${source.sparklineNote}`,
+      );
+    }
+    lines.push(`Koşu: ${id}; commit: ${commitHash}; tohum: 0.`, "");
     for (const candidate of ranked) {
       const totals = candidate.weeks.map((w) => w.total);
-      const max = Math.max(...totals, 1);
-      const sparkline = totals.map((v) => "▁▂▃▄▅▆▇█"[Math.round((v / max) * 7)]).join("");
       lines.push(
         `## ${text(candidate.name)}`,
-        `Ad/açıklama: ${text(candidate.description || "yok")} — ikincil (${source.declarationLabel}); ${candidate.url}; ${at.toISOString()}`,
         `Kaynak ailesi: ${source.family} (${source.label}; kaynak: ${source.source}); ${candidate.url}; ${at.toISOString()}`,
-        `İvme: ${(candidate.momentum! * 100).toFixed(1)}%; ${sparkline} [${totals.join(", ")}] — doğrulandı (${source.label} ${source.unit} verisinden hesaplandı); ${candidate.historyUrl}; ${at.toISOString()}`,
+      );
+      if (candidate.score) {
+        // Single point metric: present the source's own score, never a weekly ratio.
+        lines.push(
+          `Ad: ${text(candidate.name)} — ikincil (${source.declarationLabel}); ${candidate.url}; ${at.toISOString()}`,
+          `Açıklama: ${text(candidate.description || "yok")} — doğrulandı (${source.label} API alanı); ${candidate.url}; ${at.toISOString()}`,
+          `İvme (${candidate.score.label}): ${candidate.score.value} — doğrulandı (${candidate.score.evidence}); ${candidate.historyUrl}; ${at.toISOString()}`,
+        );
+      } else {
+        const max = Math.max(...totals, 1);
+        const sparkline = totals.map((v) => "▁▂▃▄▅▆▇█"[Math.round((v / max) * 7)]).join("");
+        lines.push(
+          `Ad/açıklama: ${text(candidate.description || "yok")} — ikincil (${source.declarationLabel}); ${candidate.url}; ${at.toISOString()}`,
+          `İvme: ${(candidate.momentum! * 100).toFixed(1)}%; ${sparkline} [${totals.join(", ")}] — doğrulandı (${source.label} ${source.unit} verisinden hesaplandı); ${candidate.historyUrl}; ${at.toISOString()}`,
+        );
+      }
+      lines.push(
         `Gelir kanıtı: yok — doğrulanmadı (aranmadı); ${candidate.url}; ${at.toISOString()}`,
         `TR durumu: belirsiz — doğrulanmadı (aranmadı); ${candidate.url}; ${at.toISOString()}`,
         "",
       );
     }
-    lines.push(
-      `Sıfır taban nedeniyle sıralanmayan: ${series.length - series.filter((c) => momentum(c.weeks) !== null).length}.`,
-    );
+    if (ranking !== "score") {
+      const unranked = series.filter((c) => momentum(c) === null).length;
+      lines.push(`Sıfır taban nedeniyle sıralanmayan: ${unranked}.`);
+    }
     if (source.collector.excluded !== undefined) {
       lines.push(`Ürün olmadığı için elenen: ${source.collector.excluded}.`);
     }

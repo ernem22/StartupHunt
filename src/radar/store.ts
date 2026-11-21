@@ -2,6 +2,12 @@ import type pg from "pg";
 import type { CandidateSeries } from "./github.js";
 import type { Manifest, RadarStore } from "./run.js";
 
+const entityTypeByMetric: Record<string, string> = {
+  weekly_new_stars: "github_repo",
+  weekly_stories: "hn_domain",
+  hf_trending_score: "hf_model",
+};
+
 export class PostgresRadarStore implements RadarStore {
   constructor(private readonly client: pg.Client) {}
 
@@ -17,25 +23,20 @@ export class PostgresRadarStore implements RadarStore {
   async complete(
     id: string,
     series: CandidateSeries[],
-    source: { entityType: string; metric: string } = {
-      entityType: "github_repo",
-      metric: "weekly_new_stars",
-    },
+    source?: { entityType: string; metric: string },
   ): Promise<void> {
     await this.client.query("begin");
     try {
       for (const candidate of series) {
+        // Prefer the explicit source contract; fall back to the metric mapping
+        // so direct callers (and older tests) still resolve entity types.
+        const metric = source?.metric ?? candidate.metric ?? "weekly_new_stars";
+        const entityType = source?.entityType ?? entityTypeByMetric[metric] ?? "github_repo";
         for (const point of candidate.weeks) {
           await this.client.query(
             `insert into metric_snapshots (entity_type, entity_id, metric, value, captured_at)
              values ($1, $2, $3, $4, $5)`,
-            [
-              source.entityType,
-              candidate.url,
-              source.metric,
-              point.total,
-              new Date(point.week * 1000),
-            ],
+            [entityType, candidate.url, metric, point.total, new Date(point.week * 1000)],
           );
         }
       }

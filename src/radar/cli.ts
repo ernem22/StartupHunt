@@ -2,7 +2,8 @@ import { execFileSync } from "node:child_process";
 import pg from "pg";
 import { candidatePool, GitHubMomentumCollector } from "./github.js";
 import { HackerNewsMomentumCollector } from "./hackernews.js";
-import { githubSource, hackerNewsSource, runRadar } from "./run.js";
+import { HFMomentumCollector } from "./hf.js";
+import { githubSource, hackerNewsSource, huggingFaceSource, runRadar } from "./run.js";
 import { PostgresRadarStore } from "./store.js";
 
 async function main(): Promise<void> {
@@ -27,6 +28,7 @@ async function main(): Promise<void> {
         at,
         commit,
       ),
+      await runRadar(huggingFaceSource(new HFMomentumCollector()), store, at, commit),
     ];
     console.log(outputs.join("\n\n"));
   } finally {

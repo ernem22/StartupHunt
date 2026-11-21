@@ -722,3 +722,9 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 - Engel listesi fixture testi: medium.com ve youtube.com elenir; gerçek ürün alan adı ve `github.com/owner/repo` elenmez.
 - `pnpm check` yeşil: 27 test (24 pass, 3 DB skip), lint/prettier/typecheck/encoding/python temiz.
 - DB uçtan uca ve gerçek `pnpm radar` yazımı doğrulanamadı (3060'ta koşulacak); kaynaklar arası birleştirme #81'de.
+
+## 2026-11-21 — #80: Hugging Face trendingScore ivme kaynağı
+- `pnpm radar` üçüncü kaynak olarak HF bölümü yazıyor: ayrı `stage_runs` manifesti, `hf_trending_score` snapshot'ı (`entity_type=hf_model`, son tamamlanmış hafta başlığıyla); aday havuzuna yapay zekâ türü + HF girdisi eklendi, GitHub satırlarıyla birleştirme yok.
+- HF, `RadarSource` ailesinde kendi ivme ölçüsü (`ivme ölçüsü`) olarak etiketlenir; aday üretici/doğrulayıcı değildir. HF API haftalık geçmiş sağlamadığı için kart ivmesi `trendingScore` (HF'in son dönem ilgi ölçüsü) ile sıralanıyor; haftalık artış oranı snapshot biriktikten sonra ayrı ticket'ta değerlendirilecek.
+- Doğrulandı: tokensız gerçek istek HF listing HTTP 200 (`id=thinkingmachines/Inkling-2-Mini`, `trendingScore=1002`, `pipeline_tag=image-text-to-text`); https://huggingface.co/api/models?sort=trendingScore&limit=30
+- `pnpm check` yeşil (radar fixture testleri GitHub + HN + HF'yi kapsıyor); DB uçtan uca doğrulanamadı (3060'ta koşulacak).

@@ -92,7 +92,7 @@ test("history ignores current partial week, sorts chronologically, and drives Ma
   const history = [...fixture(20).weeks, { week: weeks[3]! + 604800, total: 9999 }].reverse();
   const store = new MemoryStore();
   const output = await runRadar(
-    new GitHubMomentumCollector(candidatePool[0]!.query, requestFixture(history)),
+    new GitHubMomentumCollector(candidatePool[0]!.query!, requestFixture(history)),
     store,
     at,
     "abc123",
