@@ -712,3 +712,9 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 - Doğrulandı: aynı anda vscode stargazers/history HTTP 200, beş hafta; https://api.github.com/repos/microsoft/vscode/stargazers/history?per_page=5
 - `pnpm check` yeşil: 21 test geçti (7 radar fixture), 3 mevcut DB testi atlandı; gelir/TR yer tutucuları doğrulanmadı (aranmadı).
 - DB/gerçek uçtan uca koşu doğrulanamadı (3060'ta koşulacak); sonraki adım şema + manifest/snapshot karşılaştırması.
+
+## 2026-11-21 — #80: Hugging Face trendingScore ivme kaynağı
+- `pnpm radar` ikinci kaynak olarak HF bölümü yazıyor: ayrı `stage_runs` manifesti, `hf_trending_score` snapshot'ı (`entity_type=hf_model`, son tamamlanmış hafta başlığıyla); aday havuzuna yapay zekâ türü + HF girdisi eklendi, GitHub satırlarıyla birleştirme yok.
+- HF API haftalık geçmiş sağlamadığı için kart ivmesi `trendingScore` (HF'in son dönem ilgi ölçüsü) ile sıralanıyor; haftalık artış oranı snapshot biriktikten sonra ayrı ticket'ta değerlendirilecek.
+- Doğrulandı: tokensız gerçek istek HF listing HTTP 200 (`id=thinkingmachines/Inkling-2-Mini`, `trendingScore=1002`, `pipeline_tag=image-text-to-text`); https://huggingface.co/api/models?sort=trendingScore&limit=30
+- `pnpm check` yeşil (radar fixture testleri artık HF collector/run/store kapsıyor); DB uçtan uca doğrulanamadı (3060'ta koşulacak).
