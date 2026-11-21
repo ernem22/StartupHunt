@@ -712,3 +712,12 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 - Doğrulandı: aynı anda vscode stargazers/history HTTP 200, beş hafta; https://api.github.com/repos/microsoft/vscode/stargazers/history?per_page=5
 - `pnpm check` yeşil: 21 test geçti (7 radar fixture), 3 mevcut DB testi atlandı; gelir/TR yer tutucuları doğrulanmadı (aranmadı).
 - DB/gerçek uçtan uca koşu doğrulanamadı (3060'ta koşulacak); sonraki adım şema + manifest/snapshot karşılaştırması.
+
+## 2026-11-21 — #83: Apple TR kataloğu ile TR durumu
+
+- `pnpm radar`: her kart için Apple TR kataloğu (`country=tr`, `entity=software`) sorgusu; `bulundu` (isim+URL), `bulunamadı` (denenen sorgular), `belirsiz` (katalog ulaşılamaz) ve TR boşluğu görünümü (`bulunamadı` önde) eklendi; #78 sözleşmeleri korundu.
+- Doğrulandı: https://itunes.apple.com/search?term=github&country=tr&entity=software&limit=5 HTTP 200, resultCount=5, ilk sonuç GitHub (apps.apple.com/tr/app/github/id1477376905).
+- Doğrulandı: `term=zzzqqqnonexistenttool` HTTP 200, resultCount=0; `term=vscode` HTTP 200 ama ilk sonuç Claude by Anthropic → sonuç sayısı değil ad eşleşmesi kullanıldı.
+- İnceleme düzeltmesi: ad eşleşmesi artık tek ortak kelimeyle değil sorgudaki tüm anlamlı kelimelerle kuruluyor (`claw-orchestrator` → "Claw Machine" yanlış bulundu örneği). `bulundu` çıktısı `doğrulandı` yerine `ikincil: aday eşleşme, kullanıcı doğrulamalı` etiketini taşıyor. iTunes istekleri aynı katalog örneğinde en az 1 sn aralanıyor; gerçek limit test edilmedi. Üçü için de fixture testi eklendi.
+- `pnpm check` yeşil (34 test, 31 geçti, 3 DB testi gerekçeli atlandı).
+- DB/gerçek uçtan uca koşu doğrulanamadı (3060'ta koşulacak); sonraki adım 3060'ta `pnpm radar` + `stage_runs.parameters.trCatalog` kontrolü.
