@@ -2,8 +2,9 @@ export const candidatePool = [
   {
     type: "geliştirici aracı",
     trendSources: ["GitHub Search", "GitHub stargazers/history"],
-    revenueSources: [],
-    licenseNote: "Kişisel kullanım; repo lisansı ayrıca incelenir, kod ve marka kopyalanmaz.",
+    revenueSources: ["TrustMRR /api/ai (anahtarsız, salt okunur; eşleşme aday başına domain/ad)"],
+    licenseNote:
+      "Kişisel kullanım; repo lisansı ayrıca incelenir, kod ve marka kopyalanmaz. TrustMRR kişisel kullanımda sorun değildir; anahtar/LLM izni doğrulanmadı, veri LLM'e verilmez, kazıma yok; ticari kullanımda lisans yeniden değerlendirilir.",
     query: "topic:developer-tools archived:false fork:false",
   },
 ];
@@ -13,12 +14,24 @@ export interface WeeklyStars {
   total: number;
 }
 
+export type EvidenceLabel = "doğrulandı" | "ikincil" | "doğrulanmadı";
+
+export interface RevenueEvidence {
+  finding: string;
+  label: EvidenceLabel;
+  detail: string;
+  sourceUrl: string;
+  observedAt: string;
+}
+
 export interface CandidateSeries {
   name: string;
   description: string;
   url: string;
+  homepage: string | null;
   historyUrl: string;
   weeks: WeeklyStars[];
+  revenueEvidence?: RevenueEvidence;
 }
 
 // Separate from the frozen text-observation Adapter contract.
@@ -82,7 +95,12 @@ export class GitHubMomentumCollector implements MomentumCollector {
         !repo ||
         typeof repo.full_name !== "string" ||
         !/^[\w.-]+\/[\w.-]+$/.test(repo.full_name) ||
-        !(repo.description === null || typeof repo.description === "string")
+        !(repo.description === null || typeof repo.description === "string") ||
+        !(
+          repo.homepage === null ||
+          repo.homepage === undefined ||
+          typeof repo.homepage === "string"
+        )
       ) {
         throw new Error("Invalid GitHub repository");
       }
@@ -119,6 +137,8 @@ export class GitHubMomentumCollector implements MomentumCollector {
         name: repo.full_name,
         description: repo.description ?? "",
         url: `https://github.com/${repo.full_name}`,
+        homepage:
+          typeof repo.homepage === "string" && repo.homepage.trim() ? repo.homepage.trim() : null,
         historyUrl: `${API}${path}`,
         weeks,
       });

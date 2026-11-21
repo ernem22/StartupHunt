@@ -712,3 +712,10 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 - Doğrulandı: aynı anda vscode stargazers/history HTTP 200, beş hafta; https://api.github.com/repos/microsoft/vscode/stargazers/history?per_page=5
 - `pnpm check` yeşil: 21 test geçti (7 radar fixture), 3 mevcut DB testi atlandı; gelir/TR yer tutucuları doğrulanmadı (aranmadı).
 - DB/gerçek uçtan uca koşu doğrulanamadı (3060'ta koşulacak); sonraki adım şema + manifest/snapshot karşılaştırması.
+
+## 2026-11-21 — #82: gelir kanıtı sütunu (düzeltme)
+- `src/radar/revenue.ts`: yanlış anahtarlı uç yerine anahtarsız salt okunur `GET https://trustmrr.com/api/ai` kullanılıyor. Yanıt 200; `metricAccess.public` gelir/MRR özet alanlarının dönebileceğini belirtiyor. `.env`/token okunmaz, TrustMRR verisi LLM'e verilmez.
+- Eşleme aday başına ve sıkı: GitHub `homepage` domain == TrustMRR `website` domain ya da normalize ad/slug tam eşitliği. Substring/benzerlik yok. Eşleşme yoksa `yok / doğrulanmadı (N kayıtlık örnekte eşleşme yok, kapsam sınırlı, bu bir kanıt değil)`. Eşleşip gelir alanı yoksa açıkça yazılır.
+- `CandidateSeries.homepage` eklendi (GitHub repo homepage); #78 sözleşmesi bozulmadı (opsiyonel gelir alanı + manifest revenueSource güncellendi).
+- Doğrulandı (2026-11-21, gerçek istek): `/api/v1/startups?limit=3` 401; `/api/ai` 200, ~72 KB, 50 kayıt (25 recentlyListed + 25 bestDeals), kayıtlar `revenue.last30Days/mrr/total`, `website`, `name`, `slug`, `url` taşıyor.
+- `pnpm check` koşuldu; DB uçtan uca doğrulanamadı (3060'ta koşulacak).

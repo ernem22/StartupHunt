@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
 import pg from "pg";
 import { candidatePool, GitHubMomentumCollector } from "./github.js";
+import { TrustMrrAiCollector } from "./revenue.js";
 import { runRadar } from "./run.js";
 import { PostgresRadarStore } from "./store.js";
 
@@ -21,6 +22,7 @@ async function main(): Promise<void> {
         new PostgresRadarStore(client),
         new Date(),
         commit,
+        new TrustMrrAiCollector(),
       ),
     );
   } finally {
