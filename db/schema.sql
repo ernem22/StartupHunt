@@ -88,6 +88,18 @@ create table if not exists metric_snapshots (
 );
 create index if not exists idx_metrics_entity on metric_snapshots (entity_type, entity_id, metric, captured_at);
 
+-- Radar run manifest; apply schema.sql also on existing installations.
+create table if not exists stage_runs (
+  id          bigserial primary key,
+  source      text not null,
+  parameters  jsonb not null,
+  seed        integer not null,
+  commit_hash text not null,
+  status      text not null default 'running' check (status in ('running', 'completed', 'failed')),
+  started_at  timestamptz not null default now(),
+  finished_at timestamptz
+);
+
 -- FAZ 14: TR karşılık arama kaydı
 create table if not exists counterpart_searches (
   id           bigserial primary key,
