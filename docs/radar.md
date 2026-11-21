@@ -1,6 +1,6 @@
-# GitHub radar — #78
+# Trend radar — #78 / #79
 
-`pnpm radar` Markdown yazar. Önce `db/schema.sql` mevcut DB'ye de uygulanır; `DATABASE_URL` ve isteğe bağlı `GITHUB_TOKEN` süreç ortamından verilir. Radar `.env` yüklemez. PostgreSQL erişimi zorunludur; başarılı çıktı ancak snapshot transaction'ı tamamlanınca yazılır.
+`pnpm radar` Markdown yazar. Her koşuda iki kaynak ayrı `stage_runs` kaydı olarak işlenir: GitHub (doğrulayıcı aile) ve HN Algolia (aday üretici aile). Önce `db/schema.sql` mevcut DB'ye de uygulanır; `DATABASE_URL` ve isteğe bağlı `GITHUB_TOKEN` süreç ortamından verilir. Radar `.env` yüklemez. PostgreSQL erişimi zorunludur; başarılı çıktı ancak snapshot transaction'ı tamamlanınca yazılır. Kaynaklar arası birebir birleştirme (#81) bu dilimde yoktur; GitHub ve HN kartları ayrı satır kalır.
 
 ## Aday havuzu
 
@@ -8,16 +8,35 @@
 
 | Ürün türü | Trend kaynakları | Gelir kaynakları | Lisans notu |
 | --- | --- | --- | --- |
-| Geliştirici aracı | GitHub Search, GitHub stargazers/history | Yok (bu dilimde aranmaz) | Kişisel kullanım; her repo lisansı ayrıca incelenir, kod ve marka kopyalanmaz. |
+| Geliştirici aracı | GitHub Search, GitHub stargazers/history, HN Algolia | Yok (bu dilimde aranmaz) | Kişisel kullanım; repo lisansı ve HN bağlantıları ayrıca incelenir, kod ve marka kopyalanmaz. |
+
+## GitHub kaynağı (doğrulayıcı)
 
 `topic:developer-tools archived:false fork:false` sorgusunun güncellenme sırasındaki ilk 30 reposu keşif örneklemidir; ürün niteliği elle incelenir. Bu liste tüm GitHub'ın en hızlı 20 ürünü değildir. Örneklem içinde son iki tamamlanmış haftanın yıldız artış oranıyla ilk 20 seçilir; yeterli veri yoksa 20'den az olabilir. Negatif oranlar korunur. Önceki hafta sıfırsa oran tanımsızdır ve aday sıralamaya girmez; snapshot yine saklanır. Eşit oranlar repo adıyla sıralanır. JSON çıktısı eklenmedi (isteğe bağlı).
 
 Son dört tamamlanmış UTC haftası kullanılır (Pazar başlangıcı); devam eden hafta karşılaştırılmaz. Eksik hafta sıfıra çevrilmez: dört haftası tamamlanmayan repo uyarıyla dışlanır. Search eksik sonuç döndürürse, history biçimi bozuksa veya HTTP/rate-limit hatası varsa koşu başarısız olur; kısmi liste yayımlanmaz. Yeniden deneme kullanıcıya bırakılır.
 
-Her koşu kaynak, sorgu/havuz, örneklem sınırı, zaman, tohum (rastgelelik yok: 0), commit hash ve durumunu `stage_runs` içine yazar. DB bağlantısı kurulamazsa manifest yazılamaz ve komut başarısız olur. `metric_snapshots`: `entity_type=github_repo`, `entity_id=repo URL`, `metric=weekly_new_stars`, `captured_at=hafta başlangıcı`. Tekrarlanan koşular ayrı snapshot kayıtları bırakır; haftalık değerler toplanmamalıdır.
+## HN Algolia kaynağı (aday üretici)
 
-Ad ve açıklama repo sahibinin beyanıdır (**ikincil**); haftalık yıldızlardan hesaplanan ivme **doğrulandı** olarak sunulur. Gelir kanıtı “yok”, TR durumu “belirsiz” ve ikisi de **doğrulanmadı (aranmadı)** yer tutucudur; bu alanlardaki repo URL'si kontrol edilecek adayın referansıdır, gelir/TR kanıtı değildir.
+`developer` ve `AI tools` sorguları son dört tamamlanmış UTC haftasında `search_by_date` ile çekilir (`tags=story`, `hitsPerPage=1000`). Aynı `objectID` iki sorguda da görünürse bir kez sayılır. Her hikâye bağlantısının ürün kimliği çıkarılır: `github.com/<owner>/<repo>` repo URL'si, diğer bağlantılar kayıt dışı `www.` atılmış alan adı. Ürün başına haftalık hikâye sayısı sparkline olur; ivme = (son hafta − önceki hafta) / önceki hafta. HN'de sıfır hafta gözlenmiş bir değerdir (o hafta hikâye yok), eksik veri değildir. Önceki haftası sıfır olan aday sıralamaya girmez. Bağlantısız (Ask HN) hikâyeler ve HTTP/biçim hataları atılmaz: hata koşuyu başarısız eder, kısmi liste yayımlanmaz. Sonuç global HN sıralaması değil, bu iki sorgunun keşif örneklemidir.
 
-**Doğrulandı (2026-11-21):** tokensız gerçek isteklerde [GitHub Search](https://api.github.com/search/repositories?q=topic%3Adeveloper-tools+archived%3Afalse+fork%3Afalse&sort=updated&order=desc&per_page=30) HTTP 200 (`total_count=93559`, `incomplete_results=false`); [vscode history](https://api.github.com/repos/microsoft/vscode/stargazers/history?per_page=5) HTTP 200, beş haftalık nesne. **Doğrulandı (doküman):** [GitHub REST referansı](https://docs.github.com/en/rest/activity/starring#get-repository-star-history) history alanlarını ve uç noktayı tanımlar. Bunlar DB uçtan uca doğrulaması değildir.
+HN kartı kaynak ailesini taşır (`aday üretici`); GitHub kartı `doğrulayıcı` etiketini taşır. Aynı ürünün iki kaynaktaki satırlarını birleştirmek #81 kapsamındadır ve henüz yapılmaz.
 
-**Doğrulanmadı:** DB bağlantısı, şema uygulaması ve gerçek `pnpm radar` çıktısının PostgreSQL'e yazılması bu makinede doğrulanamadı (3060'ta koşulacak). 3060'ta şemayı uygula, `pnpm radar` çalıştır, son `stage_runs` manifestini ve repo başına dört `metric_snapshots` kaydını karşılaştır. Gelir/TR araması ve diğer kaynaklar #78 kapsamı dışındadır.
+## Koşu kaydı
+
+Her koşu kaynak, sorgu/havuz, örneklem sınırı, zaman, tohum (rastgelelik yok: 0), commit hash ve durumunu `stage_runs` içine yazar. `pnpm radar` iki kaynak için iki manifest bırakır. DB bağlantısı kurulamazsa manifest yazılamaz ve komut başarısız olur. `metric_snapshots`: GitHub için `entity_type=github_repo`, `entity_id=repo URL`, `metric=weekly_new_stars`; HN için `entity_type=hn_domain`, `entity_id=ürün URL'si`, `metric=weekly_stories`. `captured_at=hafta başlangıcı`. Tekrarlanan koşular ayrı snapshot kayıtları bırakır; haftalık değerler toplanmamalıdır.
+
+Ad ve açıklama kaynağın beyanıdır (**ikincil**: GitHub'da repo sahibi, HN'de hikâye başlığı); haftalık veriden hesaplanan ivme **doğrulandı** olarak sunulur. Gelir kanıtı “yok”, TR durumu “belirsiz” ve ikisi de **doğrulanmadı (aranmadı)** yer tutucudur; bu alanlardaki URL kontrol edilecek adayın referansıdır, gelir/TR kanıtı değildir.
+
+## Gerçek istek testleri
+
+**Doğrulandı (2026-11-21):** tokensız gerçek isteklerde [GitHub Search](https://api.github.com/search/repositories?q=topic%3Adeveloper-tools+archived%3Afalse+fork%3Afalse&sort=updated&order=desc&per_page=30) HTTP 200 (`total_count=93559`, `incomplete_results=false`); [vscode history](https://api.github.com/repos/microsoft/vscode/stargazers/history?per_page=5) HTTP 200, beş haftalık nesne. **Doğrulandı (doküman):** [GitHub REST referansı](https://docs.github.com/en/rest/activity/starring#get-repository-star-history) history alanlarını ve uç noktayı tanımlar.
+
+**Doğrulandı (2026-11-21):** HN Algolia `search_by_date`, `created_at_i` penceresi 2026-10-18–2026-11-15, `hitsPerPage=1000`:
+- `query=developer` → HTTP 200, `nbHits=362`, dönen hit 362; örnek: `objectID=50501205`, `2026-11-14T21:41:51Z`, `https://github.com/aturley/zoom-r8-hardware-and-firmware`.
+- `query=AI tools` → HTTP 200, `nbHits=318`, dönen hit 318; örnek: `objectID=50498487`, `2026-11-14T16:51:53Z`, `https://agentcommand.gg/`.
+- Uç nokta: `https://hn.algolia.com/api/v1/search_by_date?query=developer&tags=story&numericFilters=created_at_i%3E%3D1792281600,created_at_i%3C%3D1794700800&hitsPerPage=1000` (bitiş filtresi kodda `<`).
+
+Bunlar DB uçtan uca doğrulaması değildir.
+
+**Doğrulanmadı:** DB bağlantısı, şema uygulaması ve gerçek `pnpm radar` çıktısının PostgreSQL'e yazılması bu makinede doğrulanamadı (3060'ta koşulacak). 3060'ta şemayı uygula, `pnpm radar` çalıştır, son iki `stage_runs` manifestini ve GitHub `github_repo`/HN `hn_domain` snapshot kayıtlarını karşılaştır. Gelir/TR araması #82/#84 kapsamındadır; kaynaklar arası birleştirme #81 kapsamındadır.

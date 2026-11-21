@@ -1,10 +1,12 @@
 export const candidatePool = [
   {
     type: "geliştirici aracı",
-    trendSources: ["GitHub Search", "GitHub stargazers/history"],
+    trendSources: ["GitHub Search", "GitHub stargazers/history", "HN Algolia"],
     revenueSources: [],
-    licenseNote: "Kişisel kullanım; repo lisansı ayrıca incelenir, kod ve marka kopyalanmaz.",
+    licenseNote:
+      "Kişisel kullanım; repo lisansı ve HN bağlantıları ayrıca incelenir, kod ve marka kopyalanmaz.",
     query: "topic:developer-tools archived:false fork:false",
+    hnQueries: ["developer", "AI tools"],
   },
 ];
 

@@ -14,15 +14,28 @@ export class PostgresRadarStore implements RadarStore {
     return result.rows[0]!.id;
   }
 
-  async complete(id: string, series: CandidateSeries[]): Promise<void> {
+  async complete(
+    id: string,
+    series: CandidateSeries[],
+    source: { entityType: string; metric: string } = {
+      entityType: "github_repo",
+      metric: "weekly_new_stars",
+    },
+  ): Promise<void> {
     await this.client.query("begin");
     try {
       for (const candidate of series) {
         for (const point of candidate.weeks) {
           await this.client.query(
             `insert into metric_snapshots (entity_type, entity_id, metric, value, captured_at)
-             values ('github_repo', $1, 'weekly_new_stars', $2, $3)`,
-            [candidate.url, point.total, new Date(point.week * 1000)],
+             values ($1, $2, $3, $4, $5)`,
+            [
+              source.entityType,
+              candidate.url,
+              source.metric,
+              point.total,
+              new Date(point.week * 1000),
+            ],
           );
         }
       }

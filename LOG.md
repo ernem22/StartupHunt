@@ -712,3 +712,10 @@ Eksik: FAZ 11 signal typing worker (classified status), FAZ 14 SearXNG adapter (
 - Doğrulandı: aynı anda vscode stargazers/history HTTP 200, beş hafta; https://api.github.com/repos/microsoft/vscode/stargazers/history?per_page=5
 - `pnpm check` yeşil: 21 test geçti (7 radar fixture), 3 mevcut DB testi atlandı; gelir/TR yer tutucuları doğrulanmadı (aranmadı).
 - DB/gerçek uçtan uca koşu doğrulanamadı (3060'ta koşulacak); sonraki adım şema + manifest/snapshot karşılaştırması.
+
+## 2026-11-21 — #79: HN Algolia ikinci ivme kaynağı
+- HN Algolia `developer`/`AI tools` sorguları ikinci ivme kaynağı olarak eklendi; haftalık hikâye sayısı sparkline olur, kartta kaynak ailesi (`aday üretici`) ve GitHub `doğrulayıcı` etiketi taşınır.
+- Havuz girdisine HN kaynakları eklendi; `metric_snapshots` HN için `hn_domain`/`weekly_stories` yazar. #78 sözleşmeleri genişletildi, kümeleme/review/opportunities dokunulmadı.
+- Doğrulandı: 2026-11-21 HN Algolia `search_by_date` HTTP 200; `developer` nbHits=362 (örnek 50501205 `github.com/aturley/zoom-r8-hardware-and-firmware`), `AI tools` nbHits=318 (örnek 50498487 `agentcommand.gg`).
+- `pnpm check` yeşil: 26 test (HN fixture dahil), 3 mevcut DB testi atlandı.
+- DB uçtan uca ve gerçek `pnpm radar` yazımı doğrulanamadı (3060'ta koşulacak); kaynaklar arası birleştirme #81'de.

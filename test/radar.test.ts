@@ -6,7 +6,8 @@ import {
   GitHubMomentumCollector,
   type CandidateSeries,
 } from "../src/radar/github.js";
-import { runRadar, type Manifest, type RadarStore } from "../src/radar/run.js";
+import { HackerNewsMomentumCollector } from "../src/radar/hackernews.js";
+import { hackerNewsSource, runRadar, type Manifest, type RadarStore } from "../src/radar/run.js";
 import { PostgresRadarStore } from "../src/radar/store.js";
 import type pg from "pg";
 
@@ -26,13 +27,19 @@ function fixture(total: number, name = "owner/tool"): CandidateSeries {
 class MemoryStore implements RadarStore {
   manifest?: Manifest;
   series?: CandidateSeries[];
+  source?: { entityType: string; metric: string };
   failed = false;
   async start(manifest: Manifest): Promise<string> {
     this.manifest = manifest;
     return "1";
   }
-  async complete(_id: string, series: CandidateSeries[]): Promise<void> {
+  async complete(
+    _id: string,
+    series: CandidateSeries[],
+    source?: { entityType: string; metric: string },
+  ): Promise<void> {
     this.series = series;
+    this.source = source;
   }
   async fail(): Promise<void> {
     this.failed = true;
@@ -186,11 +193,124 @@ test("Postgres contract writes dated metrics atomically; failure rolls back", as
         4,
       );
       assert.deepEqual(calls[2]?.values, [
+        "github_repo",
         "https://github.com/owner/tool",
+        "weekly_new_stars",
         10,
         new Date("2026-10-18T00:00:00Z"),
       ]);
       assert.equal(calls.at(-1)?.sql, "commit");
     }
+  }
+});
+
+function hnHit(objectID: string, week: number, url: string, title = "Show HN: tool") {
+  return {
+    objectID,
+    created_at: new Date((weeks[week]! + 3600) * 1000).toISOString(),
+    title,
+    url,
+  };
+}
+
+function hnRequestFixture(
+  byQuery: Record<string, unknown[]>,
+  nbHits?: Record<string, number>,
+): typeof fetch {
+  return async (input) => {
+    const query = new URL(String(input)).searchParams.get("query") ?? "";
+    const hits = byQuery[query] ?? [];
+    return Response.json({ nbHits: nbHits?.[query] ?? hits.length, hits });
+  };
+}
+
+test("HN Algolia emits a second momentum source with family and weekly story sparkline", async () => {
+  const hits = [
+    hnHit("1", 2, "https://example.com/tool"),
+    hnHit("2", 3, "https://example.com/tool"),
+    hnHit("3", 3, "https://www.example.com/again"),
+    hnHit("4", 3, "https://example.com/third"),
+    hnHit("5", 3, "https://github.com/owner/repo"),
+    hnHit("6", 2, "https://github.com/owner/repo"),
+    // Duplicate across queries must count once.
+    hnHit("1", 2, "https://example.com/tool"),
+  ];
+  const store = new MemoryStore();
+  const output = await runRadar(
+    hackerNewsSource(
+      new HackerNewsMomentumCollector(
+        ["developer", "AI tools"],
+        hnRequestFixture({ developer: hits, "AI tools": hits.slice(0, 2) }),
+      ),
+    ),
+    store,
+    at,
+    "hash",
+  );
+  assert.match(output, /# HN Algolia adayları/);
+  assert.match(output, /Kaynak ailesi: aday üretici \(HN Algolia; kaynak: hackernews\)/);
+  assert.match(output, /İvme: 200\.0%;/);
+  assert.match(output, /\[0, 0, 1, 3\]/);
+  assert.match(output, /doğrulandı \(HN Algolia haftalık hikâye verisinden hesaplandı\)/);
+  assert.match(output, /Sparkline haftalık hikâye sayılarını gösterir/);
+  assert.match(output, /## owner\/repo/);
+  assert.ok(!output.includes("## www.example.com"));
+  assert.equal(output.match(/^## /gm)?.length, 2);
+  assert.deepEqual(store.manifest, {
+    source: "hackernews",
+    parameters: {
+      pool: candidatePool,
+      discoveryLimit: 1000,
+      weeks: 4,
+      at: at.toISOString(),
+    },
+    seed: 0,
+    commitHash: "hash",
+  });
+  assert.deepEqual(store.source, { entityType: "hn_domain", metric: "weekly_stories" });
+  assert.equal(store.series?.length, 2);
+  assert.equal(
+    store.series
+      ?.find((c) => c.name === "example.com")
+      ?.historyUrl.includes("hn.algolia.com/api/v1/search_by_date"),
+    true,
+  );
+});
+
+test("HN Algolia zero baseline is unranked and HTTP/truncated/malformed responses fail", async () => {
+  const store = new MemoryStore();
+  const output = await runRadar(
+    hackerNewsSource(
+      new HackerNewsMomentumCollector(
+        ["developer"],
+        hnRequestFixture({ developer: [hnHit("1", 3, "https://only-last.example")] }),
+      ),
+    ),
+    store,
+    at,
+    "hash",
+  );
+  assert.ok(!output.includes("## only-last.example"));
+  assert.match(output, /Sıfır taban nedeniyle sıralanmayan: 1/);
+
+  for (const request of [
+    (async () => new Response("down", { status: 500 })) as typeof fetch,
+    hnRequestFixture({ developer: [hnHit("1", 3, "https://x.example")] }, { developer: 5 }),
+    hnRequestFixture({
+      developer: [{ objectID: "1", created_at: "not-a-date", url: "https://x" }],
+    }),
+  ]) {
+    const failing = new MemoryStore();
+    await assert.rejects(
+      runRadar(
+        hackerNewsSource(new HackerNewsMomentumCollector(["developer"], request)),
+        failing,
+        at,
+        "hash",
+      ),
+    );
+    assert.equal(failing.failed, true);
+    assert.equal(failing.series, undefined);
+    assert.ok(failing.manifest);
   }
 });
