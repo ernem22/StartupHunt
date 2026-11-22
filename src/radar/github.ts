@@ -8,11 +8,24 @@ export const candidatePool = [
     query: "topic:developer-tools archived:false fork:false",
     hnQueries: ["developer", "AI tools"],
   },
-];
+  {
+    type: "yapay zekâ modeli",
+    trendSources: ["Hugging Face trendingScore"],
+    revenueSources: [],
+    licenseNote: "Kişisel kullanım; model lisansı ayrıca incelenir, kod ve marka kopyalanmaz.",
+  },
+] as const;
 
 export interface WeeklyStars {
   week: number;
   total: number;
+}
+
+/** Sources whose API provides no weekly history rank by a current momentum score. */
+export interface MomentumScore {
+  value: number;
+  label: string;
+  evidence: string;
 }
 
 export interface CandidateSeries {
@@ -21,6 +34,9 @@ export interface CandidateSeries {
   url: string;
   historyUrl: string;
   weeks: WeeklyStars[];
+  /** Snapshot metric name; defaults to weekly_new_stars (GitHub, #78 contract). */
+  metric?: string;
+  score?: MomentumScore;
 }
 
 // Separate from the frozen text-observation Adapter contract.
