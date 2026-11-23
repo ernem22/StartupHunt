@@ -1,0 +1,93 @@
+[
+  {
+    "candidate": {
+      "name": "Landy AI",
+      "description": "web AI landing page builder",
+      "url": "https://landy.ai"
+    },
+    "queries": ["Landy AI", "yapay zeka landing page", "AI page builder"],
+    "evidence": [
+      {
+        "channel": "apple_tr",
+        "name": "Regu - AI Website Builder",
+        "id": "1",
+        "seller": "Mehmet Masa",
+        "ratingCount": 2,
+        "url": "https://apps.apple.com/tr/app/id1"
+      }
+    ],
+    "expected": {
+      "verdict": "uncertain",
+      "reasonContains": ["Web SaaS", "Regu"]
+    }
+  },
+  {
+    "candidate": { "name": "prepi", "description": "weekly meal plans and budget grocery list" },
+    "queries": ["prepi", "haftalık yemek planı bütçe", "weekly meal budget grocery"],
+    "evidence": [
+      {
+        "channel": "apple_tr",
+        "name": "Budgeat: Meal & Grocery Plan",
+        "id": "2",
+        "seller": "Erdenay Karatas",
+        "ratingCount": 2,
+        "url": "https://apps.apple.com/tr/app/id2"
+      }
+    ],
+    "expected": {
+      "verdict": "found",
+      "reasonContains": ["çekiş yok", "Budgeat"]
+    }
+  },
+  {
+    "candidate": { "name": "ContentsKeeper", "description": "home inventory for insurance" },
+    "queries": ["ContentsKeeper", "ev envanter sigorta", "home inventory insurance"],
+    "evidence": [],
+    "expected": {
+      "verdict": "not_found",
+      "reasonContains": ["bulunamadı", "ev envanter sigorta"]
+    }
+  },
+  {
+    "candidate": { "name": "Bubilet", "description": "ticket booking app" },
+    "queries": ["Bubilet", "bilet rezervasyon", "ticket booking"],
+    "evidence": [
+      {
+        "channel": "apple_tr",
+        "name": "Bubilet: Konser & Tiyatro",
+        "id": "1463201795",
+        "ratingCount": 27737,
+        "url": "https://apps.apple.com/tr/app/id1463201795"
+      }
+    ],
+    "expected": {
+      "verdict": "found",
+      "reasonContains": ["çekiş var", "27737"]
+    }
+  },
+  {
+    "candidate": { "name": "YalnizPlay", "description": "bilet rezervasyon" },
+    "queries": ["YalnizPlay", "bilet rezervasyon", "ticket booking"],
+    "evidence": [
+      {
+        "channel": "play_tr",
+        "name": "YalnizPlay",
+        "id": "com.example.yalnizplay",
+        "url": "https://play.google.com/store/apps/details?id=com.example.yalnizplay"
+      }
+    ],
+    "expected": {
+      "verdict": "uncertain",
+      "reasonContains": ["rating sayısı okunamadı", "YalnizPlay"]
+    }
+  },
+  {
+    "candidate": { "name": "NimbusNotlar", "description": "not alma ve haftalık yemek planı" },
+    "queries": ["NimbusNotlar", "yemek", "not alma haftalik meal"],
+    "evidence": [],
+    "expected": {
+      "verdict": "not_found",
+      "reasonContains": ["NimbusNotlar", "yemek"]
+    }
+  }
+]
