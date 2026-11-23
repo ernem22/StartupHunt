@@ -1,0 +1,74 @@
+name: Daily
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  collect-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Radar (aday toplama, data/*.json)
+        run: pnpm radar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fikir listesi (data/ideas.json, data/ideas.md)
+        run: pnpm ideas
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Veriyi dev'e commit et (yalnız değiştiyse, yalnız dev)
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --cached --quiet; then
+            echo "data/ değişmedi; commit yok."
+            exit 0
+          fi
+          git commit -m "chore(data): günlük radar ve fikir listesi"
+          git pull --rebase origin dev
+          git push origin HEAD:refs/heads/dev
+
+      - name: Yayın dizinini hazırla (site + data/ideas.json)
+        run: |
+          rm -rf dist
+          mkdir -p dist/data
+          cp -r site/. dist/
+          cp data/ideas.json dist/data/ideas.json
+
+      - name: Cloudflare Pages'e yayınla
+        if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
+        uses: cloudflare/wrangler-action@v4.1.3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=startuphunt --branch=${{ github.ref_name }}
+
+      - name: Cloudflare yayını atlandı (secret yok)
+        if: env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == ''
+        run: echo "CLOUDFLARE_API_TOKEN veya CLOUDFLARE_ACCOUNT_ID tanımlı değil; yayın atlandı (koşu başarılı sayıldı)."
