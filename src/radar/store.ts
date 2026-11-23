@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import type { Candidate } from "../candidates/model.js";
 import type { CandidateSeries } from "./github.js";
 import type { Manifest, RadarStore } from "./run.js";
 import { momentum } from "./run.js";
@@ -43,10 +44,15 @@ export class JsonRadarStore implements RadarStore {
   }
 
   /** Writes `<dir>/latest.json` and `<dir>/YYYY-MM-DD.json` (UTC); returns the paths. */
-  async write(dir: string, at: Date, commit: string): Promise<string[]> {
+  async write(
+    dir: string,
+    at: Date,
+    commit: string,
+    candidates: Candidate[] = [],
+  ): Promise<string[]> {
     const sources = this.sources.filter((s) => s.status === "completed");
     if (sources.length === 0) throw new Error("Refusing to publish JSON: no source completed");
-    const body = `${JSON.stringify({ generatedAt: at.toISOString(), commit, errors: this.errors, sources }, null, 2)}
+    const body = `${JSON.stringify({ generatedAt: at.toISOString(), commit, errors: this.errors, sources, candidates }, null, 2)}
 `;
     await mkdir(dir, { recursive: true });
     const paths = [
