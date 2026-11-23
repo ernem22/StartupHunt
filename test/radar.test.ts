@@ -8,8 +8,9 @@ import {
 } from "../src/radar/github.js";
 import { HackerNewsMomentumCollector } from "../src/radar/hackernews.js";
 import { hackerNewsSource, runRadar, type Manifest, type RadarStore } from "../src/radar/run.js";
-import { PostgresRadarStore } from "../src/radar/store.js";
-import type pg from "pg";
+import { JsonRadarStore } from "../src/radar/store.js";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
+import path from "node:path";
 
 const at = new Date("2026-11-21T13:19:05Z");
 const weeks = completedWeeks(at);
@@ -164,43 +165,153 @@ test("persistence errors fail the run and never return a success list", async ()
   assert.equal(store.failed, true);
 });
 
-test("Postgres contract writes dated metrics atomically; failure rolls back", async () => {
-  for (const failInsert of [false, true]) {
-    const calls: { sql: string; values?: unknown[] }[] = [];
-    const client = {
-      query: async (sql: string, values?: unknown[]) => {
-        calls.push({ sql, values });
-        if (failInsert && sql.includes("insert into metric_snapshots"))
-          throw new Error("DB failure");
-        return { rows: [{ id: "1" }] };
-      },
-    } as unknown as pg.Client;
-    const store = new PostgresRadarStore(client);
-    await store.start({
-      source: "github",
-      parameters: { pool: candidatePool, discoveryLimit: 30, weeks: 4, at: at.toISOString() },
+test("JSON store writes latest.json and a dated file with ranked candidates; failed runs are not published", async () => {
+  const dir = await mkdtemp(path.join(process.cwd(), "radar-test-"));
+  try {
+    const store = new JsonRadarStore();
+    await runRadar({ collect: async () => [fixture(20)] }, store, at, "hash");
+    const files = await store.write(dir, at, "hash");
+    assert.deepEqual(
+      files.map((f) => path.basename(f)),
+      ["latest.json", "2026-11-21.json"],
+    );
+    const saved = JSON.parse(await readFile(files[0]!, "utf8"));
+    assert.equal(saved.sources[0].status, "completed");
+    assert.equal(saved.sources[0].candidates[0].url, "https://github.com/owner/tool");
+    assert.equal(saved.sources[0].candidates[0].momentum, 1);
+
+    const failing = new JsonRadarStore();
+    await failing.start({
+      source: "x",
+      parameters: { pool: [], discoveryLimit: 1, weeks: 4, at: "" },
       seed: 0,
-      commitHash: "hash",
+      commitHash: "h",
     });
-    if (failInsert) {
-      await assert.rejects(store.complete("1", [fixture(20)]), /DB failure/);
-      assert.equal(calls.at(-1)?.sql, "rollback");
-      assert.ok(!calls.some((call) => call.sql === "commit"));
-    } else {
-      await store.complete("1", [fixture(20)]);
-      assert.equal(
-        calls.filter((call) => call.sql.includes("insert into metric_snapshots")).length,
-        4,
-      );
-      assert.deepEqual(calls[2]?.values, [
-        "github_repo",
-        "https://github.com/owner/tool",
-        "weekly_new_stars",
-        10,
-        new Date("2026-10-18T00:00:00Z"),
-      ]);
-      assert.equal(calls.at(-1)?.sql, "commit");
-    }
+    await failing.fail("0");
+    await assert.rejects(failing.write(dir, at, "h"), /did not complete/);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test("HN Algolia emits a second momentum source with family and weekly story sparkline", async () => {
+  const hits = [
+    hnHit("1", 2, "https://example.com/tool"),
+    hnHit("2", 3, "https://example.com/tool"),
+    hnHit("3", 3, "https://www.example.com/again"),
+    hnHit("4", 3, "https://example.com/third"),
+    hnHit("5", 3, "https://github.com/owner/repo"),
+    hnHit("6", 2, "https://github.com/owner/repo"),
+    // Duplicate across queries must count once.
+    hnHit("1", 2, "https://example.com/tool"),
+  ];
+  const store = new MemoryStore();
+  const output = await runRadar(
+    hackerNewsSource(
+      new HackerNewsMomentumCollector(
+        ["developer", "AI tools"],
+        hnRequestFixture({ developer: hits, "AI tools": hits.slice(0, 2) }),
+      ),
+    ),
+    store,
+    at,
+    "hash",
+  );
+  assert.match(output, /# HN Algolia adayları/);
+  assert.match(output, /Kaynak ailesi: aday üretici \(HN Algolia; kaynak: hackernews\)/);
+  assert.match(output, /İvme: 200\.0%;/);
+  assert.match(output, /\[0, 0, 1, 3\]/);
+  assert.match(output, /doğrulandı \(HN Algolia haftalık hikâye verisinden hesaplandı\)/);
+  assert.match(output, /Sparkline haftalık hikâye sayılarını gösterir/);
+  assert.match(output, /## owner\/repo/);
+  assert.ok(!output.includes("## www.example.com"));
+  assert.equal(output.match(/^## /gm)?.length, 2);
+  assert.deepEqual(store.manifest, {
+    source: "hackernews",
+    parameters: {
+      pool: candidatePool,
+      discoveryLimit: 1000,
+      weeks: 4,
+      at: at.toISOString(),
+    },
+    seed: 0,
+    commitHash: "hash",
+  });
+  assert.deepEqual(store.source, { entityType: "hn_domain", metric: "weekly_stories" });
+  assert.equal(store.series?.length, 2);
+  assert.equal(
+    store.series
+      ?.find((c) => c.name === "example.com")
+      ?.historyUrl.includes("hn.algolia.com/api/v1/search_by_date"),
+    true,
+  );
+});
+
+test("non-product domains are excluded and counted; product domains and repos are kept", async () => {
+  const hits = [
+    hnHit("1", 2, "https://medium.com/@author/tool"),
+    hnHit("2", 3, "https://medium.com/@author/tool"),
+    hnHit("3", 2, "https://www.youtube.com/watch?v=abc"),
+    hnHit("4", 3, "https://youtu.be/abc"),
+    hnHit("5", 2, "https://example.com/tool"),
+    hnHit("6", 3, "https://example.com/tool"),
+    hnHit("7", 2, "https://github.com/owner/repo"),
+    hnHit("8", 3, "https://github.com/owner/repo"),
+    // A bare GitHub profile link is not a product.
+    hnHit("9", 3, "https://github.com/owner"),
+  ];
+  const store = new MemoryStore();
+  const output = await runRadar(
+    hackerNewsSource(
+      new HackerNewsMomentumCollector(["developer"], hnRequestFixture({ developer: hits })),
+    ),
+    store,
+    at,
+    "hash",
+  );
+  assert.match(output, /## example\.com/);
+  assert.match(output, /## owner\/repo/);
+  assert.ok(!output.includes("medium.com"));
+  assert.ok(!output.includes("youtube.com"));
+  assert.ok(!output.includes("youtu.be"));
+  assert.match(output, /Ürün olmadığı için elenen: 5\./);
+});
+
+test("HN Algolia zero baseline is unranked and HTTP/truncated/malformed responses fail", async () => {
+  const store = new MemoryStore();
+  const output = await runRadar(
+    hackerNewsSource(
+      new HackerNewsMomentumCollector(
+        ["developer"],
+        hnRequestFixture({ developer: [hnHit("1", 3, "https://only-last.example")] }),
+      ),
+    ),
+    store,
+    at,
+    "hash",
+  );
+  assert.ok(!output.includes("## only-last.example"));
+  assert.match(output, /Sıfır taban nedeniyle sıralanmayan: 1/);
+
+  for (const request of [
+    (async () => new Response("down", { status: 500 })) as typeof fetch,
+    hnRequestFixture({ developer: [hnHit("1", 3, "https://x.example")] }, { developer: 5 }),
+    hnRequestFixture({
+      developer: [{ objectID: "1", created_at: "not-a-date", url: "https://x" }],
+    }),
+  ]) {
+    const failing = new MemoryStore();
+    await assert.rejects(
+      runRadar(
+        hackerNewsSource(new HackerNewsMomentumCollector(["developer"], request)),
+        failing,
+        at,
+        "hash",
+      ),
+    );
+    assert.equal(failing.failed, true);
+    assert.equal(failing.series, undefined);
+    assert.ok(failing.manifest);
   }
 });
 

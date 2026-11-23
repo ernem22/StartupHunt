@@ -6,11 +6,11 @@
 
 ## Ortam
 
-- Windows (win32), PowerShell 5.1. Runtime sürümleri sabit: `.nvmrc` (Node), `engines` (pnpm), `.python-version` (Python).
-- Docker CLI v29.8.0 kurulu ama daemon çalışmıyor (`docker info` başarısız). Postgres/pgvector, TEI, SearXNG ve BERTopic bu makinede çalışmıyor; DB/embed/cluster doğrulaması 3060 PC'de yapılır — orada koşulmadan "çalışıyor" sayılmaz.
+- Windows (win32), PowerShell 5.1. Runtime sürümleri sabit: `.nvmrc` (Node), `engines` (pnpm). Python, Docker ve veritabanı yok; `pnpm radar` ve `pnpm check` yalnız Node ister.
+- Mimari: git içinde JSON (`data/`), GitHub Actions cron ile toplama, Cloudflare Pages ile yayın (`docs/adr/0004-json-actions-pages.md`). Hedef ve kilometre taşları: `docs/plan-trend-idea-stream.md`.
 - `make` ve `rg` yok; dosya arama için Grep/Read kullan. Konsol Türkçe çıktısını mojibake gösterebilir; dosya içeriğini Read ile doğrula.
 - Scratch dosyaları workspace içinde tutulur ve bitince silinir; `%TEMP%` kullanılmaz.
-- GitHub ve npm registry erişimi var; canlı kaynak API'leri ve 3060 hizmetleri bu makineden doğrulanamaz.
+- GitHub ve npm registry erişimi var; kaynak API'leri (GitHub, HN, HF) bu makineden gerçek istekle denenebilir.
 
 ## Agent skills
 

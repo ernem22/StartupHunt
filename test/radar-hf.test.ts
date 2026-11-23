@@ -10,8 +10,6 @@ import {
   type Manifest,
   type RadarStore,
 } from "../src/radar/run.js";
-import { PostgresRadarStore } from "../src/radar/store.js";
-import type pg from "pg";
 
 const at = new Date("2026-11-21T13:19:05Z");
 const week = completedWeeks(at).at(-1)!;
@@ -168,24 +166,4 @@ test("a failing source marks its run failed without publishing output", async ()
     /HF down/,
   );
   assert.equal(store.failed, 1);
-});
-
-test("Postgres contract maps HF metrics to hf_model entity rows", async () => {
-  const calls: { sql: string; values?: unknown[] }[] = [];
-  const client = {
-    query: async (sql: string, values?: unknown[]) => {
-      calls.push({ sql, values });
-      return { rows: [{ id: "1" }] };
-    },
-  } as unknown as pg.Client;
-  const store = new PostgresRadarStore(client);
-  await store.complete("1", [hfSeries(627, "org/model-a")]);
-  const snapshot = calls.find((call) => call.sql.includes("insert into metric_snapshots"));
-  assert.deepEqual(snapshot?.values, [
-    "hf_model",
-    "https://huggingface.co/org/model-a",
-    "hf_trending_score",
-    627,
-    new Date(week * 1000),
-  ]);
 });

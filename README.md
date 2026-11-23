@@ -1,34 +1,21 @@
 # StartupHunt
 
-Topluluk metinlerinden kişisel kullanım için "araştırmaya değer fırsat" kuyruğu üreten motor.
+Küresel olarak yükselen ürünleri veriyle (sayı + kaynak linki) listeleyen ve Türkiye pazarının o ürün için ne kadar dolu olduğunu gösteren kişisel trend radarı. Plan: `docs/plan-trend-idea-stream.md`.
 
 ## Gereksinimler
 
-- Node 22.23.2 (`.nvmrc`), pnpm 12
-- Python 3.12.10 (`.python-version`; kümeleme 3060 cihazında doğrulanır)
-- Postgres/pgvector, TEI, SearXNG ve BERTopic yalnızca 3060 cihazında: `KURULUM.md`
+Node 22 (`.nvmrc`), pnpm 12. Veritabanı, Docker ya da Python gerekmez.
 
-## Kurulum
+## Kullanım
 
 ```bash
 pnpm install --frozen-lockfile
-python -m pip install -r requirements-dev.txt
+pnpm radar   # GitHub/HN/HF'den çeker; Markdown basar, data/latest.json ve data/YYYY-MM-DD.json yazar
+pnpm check   # lint, format, typecheck, encoding, test
 ```
 
-`prepare` adımı Husky pre-commit hook'unu kurar; her commit `pnpm check` çalıştırır.
-
-## Kontrol
-
-```bash
-pnpm check
-```
-
-TypeScript için lint, format kontrolü ve typecheck; Python için ruff lint/format ve mypy; tüm repo için encoding ve testler. DB testleri `TEST_DATABASE_URL` yoksa gerekçeli atlanır; CI'da pgvector service ile koşar.
+Mimari: git içinde JSON, GitHub Actions günlük toplama, Cloudflare Pages yayın (`docs/adr/0004-json-actions-pages.md`). Actions ve Pages henüz kurulu değil (M5).
 
 ## Dokümanlar
 
-- `AGENTS.md` — ajan giriş noktası ve ortam notları
-- `GLOSSARY.md` — alan terimleri
-- `docs/adr/` — geri alınması zor kararlar
-- `docs/agents/` — tracker, triage ve iş akışı
-- `docs/archive/plan-2026-10.md` — arşiv plan; `LOG.md` — geliştirme günlüğü
+`AGENTS.md` ajan giriş noktası · `GLOSSARY.md` terimler · `docs/adr/` kararlar · `docs/radar.md` radar çıktısı · `docs/agents/` tracker ve iş akışı

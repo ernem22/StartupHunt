@@ -1,21 +1,15 @@
 # ortam / gizli
 .env
 
-# veri
-data/
+# veri (data/*.json radar çıktısıdır ve commit edilir)
 *.csv
 *.parquet
 *.zst
 sei-cache/
-pgdata/
 
-# node / python
+# node
 node_modules/
-.venv/
-__pycache__/
-*.pyc
-.ruff_cache/
-.mypy_cache/
+radar-test-*/
 
 # os
 Thumbs.db
