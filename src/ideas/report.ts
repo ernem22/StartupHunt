@@ -16,6 +16,7 @@ export type Idea = {
   category: string | null;
   sources: string[];
   score: RankedCandidate["score"];
+  weakSignal: boolean;
   momentum: string | null;
   dataPoints: DataPoint[];
   revenueEvidence: string;
@@ -83,7 +84,7 @@ export function renderMarkdown(output: IdeasOutput): string {
       "",
       `- **Ne olduğu:** ${idea.whatItIs}`,
       ...(idea.originalName !== idea.name ? [`- **Ham başlık:** ${idea.originalName}`] : []),
-      `- **Neden listede:** ${idea.sources.join(" + ")} · skor ${idea.score.total} (gelir ${idea.score.revenue}, kaynak ${idea.score.sources}, ürünlük ${idea.score.product}, sinyal ${idea.score.signals}, ivme ${idea.score.momentum})${idea.momentum ? ` · ivme: ${idea.momentum}` : ""}`,
+      `- **Neden listede:** ${idea.sources.join(" + ")} · skor ${idea.score.total} (kalite ${idea.score.quality}: gelir ${idea.score.revenue}, kaynak ${idea.score.sources}, ürünlük ${idea.score.product}; sinyal ${idea.score.signals}, ivme ${idea.score.momentum})${idea.weakSignal ? " · **zayıf sinyal**" : ""}${idea.momentum ? ` · ivme: ${idea.momentum}` : ""}`,
       `- **Ürün:** ${idea.url}`,
     );
     lines.push("- **Veri noktaları:**");
@@ -141,6 +142,7 @@ export async function buildIdeas(dir = "data"): Promise<IdeasOutput> {
       ...(candidate.description ? { description: candidate.description } : {}),
       ...(candidate.url ? { url: candidate.url } : {}),
       queries: shortTrQueries(name, candidate.description),
+      sources: candidate.sources,
     });
     console.error(
       `TR ${index + 1}/${ranked.length}: ${name} → ${verdict.verdict} (${verdict.evidence.length} kanıt)`,
@@ -155,6 +157,7 @@ export async function buildIdeas(dir = "data"): Promise<IdeasOutput> {
       category: candidate.category ?? null,
       sources: candidate.sources,
       score: entry.score,
+      weakSignal: entry.weakSignal,
       momentum: entry.momentumDetail,
       dataPoints: candidate.dataPoints,
       revenueEvidence: revenueEvidence(candidate),

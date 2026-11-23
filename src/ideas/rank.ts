@@ -5,6 +5,7 @@ export type ScoreBreakdown = {
   sources: number;
   revenue: number;
   product: number;
+  quality: number;
   signals: number;
   momentum: number;
   total: number;
@@ -14,6 +15,7 @@ export type RankedCandidate = {
   candidate: Candidate;
   score: ScoreBreakdown;
   momentumDetail: string | null;
+  weakSignal: boolean;
 };
 
 export type PreviousSnapshot = Map<string, Map<string, number>>;
@@ -164,10 +166,12 @@ export function scoreCandidate(
   const total = sourceScore + revenueScore + productScore + signals + momentum;
   return {
     candidate,
+    weakSignal: false,
     score: {
       sources: round(sourceScore),
       revenue: round(revenueScore),
       product: round(productScore),
+      quality: round(sourceScore + revenueScore + productScore),
       signals: round(signals),
       momentum: round(momentum),
       total: round(total),
@@ -203,11 +207,21 @@ export function rankCandidates(
     .filter((candidate) => !isNoise(candidate))
     .map((candidate) => scoreCandidate(candidate, snapshot))
     .sort(byScore);
+  // Do not fill the tail with HN one-offs: require revenue, multiple sources or product metadata.
+  const thresholds = [3, 2.5, 2, 1.5, 0.5];
+  const threshold =
+    thresholds.find(
+      (value) =>
+        scored.filter((entry) => entry.score.quality >= value).length >= Math.min(limit, 10),
+    ) ?? thresholds[thresholds.length - 1]!;
+  const eligible = scored
+    .filter((entry) => entry.score.quality >= threshold)
+    .map((entry) => ({ ...entry, weakSignal: threshold < 3 }));
   // Revenue-backed products are the most actionable ideas: reserve at least half the list for them.
-  const revenue = scored.filter(hasRevenue);
-  const other = scored.filter((entry) => !hasRevenue(entry));
+  const revenue = eligible.filter(hasRevenue);
+  const other = eligible.filter((entry) => !hasRevenue(entry));
   const chosen = [
-    ...revenue.slice(0, Math.min(revenue.length, Math.max(minRevenue, Math.ceil(limit / 2)))),
+    ...revenue.slice(0, Math.min(revenue.length, Math.max(minRevenue, limit))),
     ...other.slice(0, limit),
   ];
   const seen = new Set<string>();

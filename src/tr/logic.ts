@@ -4,9 +4,13 @@ export type TrCandidate = {
   url?: string;
   /** Explicit query list; overrides generated queries (used to keep headline text out of searches). */
   queries?: string[];
+  /** Web SaaS lives on the web, so store results alone cannot prove saturation. */
+  webProduct?: boolean;
+  /** Candidate sources help tell a web SaaS from an app-store product. */
+  sources?: readonly string[];
 };
 
-export type TrChannel = "apple_tr" | "play_tr";
+export type TrChannel = "apple_tr" | "play_tr" | "web_tr";
 
 export type TrEvidence = {
   channel: TrChannel;
@@ -171,12 +175,37 @@ export function buildQueries(candidate: TrCandidate): string[] {
   return queries;
 }
 
-export function isWebSaas(candidate: TrCandidate): boolean {
+/** Web SaaS vs mobile app: URL, description and source metadata decide; store-only evidence is weak for web. */
+export function classifyWebProduct(candidate: TrCandidate): boolean {
+  if (candidate.webProduct !== undefined) return candidate.webProduct;
   const text = `${candidate.name} ${candidate.description ?? ""} ${candidate.url ?? ""}`;
-  return /\b(web|web\s?sitesi|web\s?app|web\s?tabanl|saas|tarayıcı|tarayici|browser|online|hosting|website)\b/i.test(
+  if (/\b(?:apps\.apple\.com|play\.google\.com)\b/i.test(candidate.url ?? "")) return false;
+  if (candidate.sources?.includes("apple") && !candidate.sources?.includes("trustmrr"))
+    return false;
+  const customDomain = /^https?:\/\/(?!apps\.apple\.com|play\.google\.com)[^/]+\.[a-z]{2,}/i.test(
+    candidate.url ?? "",
+  );
+  if (
+    customDomain &&
+    (candidate.sources?.includes("producthunt") || candidate.sources?.includes("trustmrr"))
+  ) {
+    return true;
+  }
+  // "marketing tool for iOS developers" is a web tool; "iOS app" is a mobile product.
+  if (
+    /\b(?:ios|android)\s+(?:app|uygulaması)|mobile app|native app|app store|google play|mobil uygulama/i.test(
+      text,
+    )
+  ) {
+    return false;
+  }
+  return /\b(?:web|web\s?sitesi|web\s?app|web\s?tabanl|saas|tarayıcı|tarayici|browser|online|hosting|website|landing page|dashboard|platform|api|tool)\b/i.test(
     text,
   );
 }
+
+/** @deprecated use classifyWebProduct */
+export const isWebSaas = classifyWebProduct;
 
 function similarity(a: string, b: string): number {
   const x = normalize(a);
@@ -208,16 +237,18 @@ export type VerdictInput = {
   queries: string[];
   evidence: TrEvidence[];
   channelErrors: Record<TrChannel, string[]>;
+  webEvidence?: TrEvidence[];
 };
 
 export function decideVerdict(input: VerdictInput): TrVerdict {
-  const { candidate, queries, evidence, channelErrors } = input;
-  const triedChannels: TrChannel[] = (["apple_tr", "play_tr"] as const).filter(
+  const { candidate, queries, evidence, channelErrors, webEvidence = [] } = input;
+  const webProduct = classifyWebProduct(candidate);
+  const triedChannels: TrChannel[] = (["apple_tr", "play_tr", "web_tr"] as const).filter(
     (channel) => channelErrors[channel].length === 0,
   );
   const attempted = `Denene(n) sorgular: ${queries.join(" | ")}. Kanallar: ${triedChannels.join(", ") || "yok"}.`;
   const failures = (Object.entries(channelErrors) as [TrChannel, string[]][])
-    .filter(([, errors]) => errors.length > 0)
+    .filter(([channel, errors]) => channel !== "web_tr" && errors.length > 0)
     .map(([channel, errors]) => `${channel}: ${errors.join("; ")}`)
     .join(" | ");
 
@@ -228,6 +259,37 @@ export function decideVerdict(input: VerdictInput): TrVerdict {
       queries,
       evidence,
     };
+
+  if (evidence.length === 0 && webProduct) {
+    const exact = webEvidence.filter((item) => !item.id.startsWith("similar:"));
+    const similar = webEvidence.filter((item) => item.id.startsWith("similar:"));
+    if (exact.length > 0) {
+      const best = exact[0]!;
+      return {
+        verdict: "found",
+        reason: `Web ürünü için TR web kanalında ad eşleşmesi: ${best.name} (${best.url}). Mağazada yok ama TR web'de var. ${attempted}`,
+        queries,
+        evidence: exact,
+      };
+    }
+    if (similar.length > 0) {
+      return {
+        verdict: "uncertain",
+        reason: `Web ürünü: mağazada yok; TR web kanalında yalnızca benzer ürünler bulundu (${similar[0]!.name} — ${similar[0]!.url}), doğrudan rakip doğrulanamadı. ${attempted}`,
+        queries,
+        evidence: similar,
+      };
+    }
+    const webProblem = channelErrors.web_tr?.length
+      ? ` Web kanalı hatası: ${channelErrors.web_tr.join("; ")}.`
+      : " Web kanalı (Yandex TR) kontrol edildi, TR'ye özgü eşleşme bulunamadı.";
+    return {
+      verdict: "uncertain",
+      reason: `Web ürünü: mağazada bulunamadı; mağaza sonucu 'yok' anlamına gelmez.${webProblem} ${attempted}`,
+      queries,
+      evidence,
+    };
+  }
 
   if (evidence.length === 0) {
     return {
@@ -248,7 +310,7 @@ export function decideVerdict(input: VerdictInput): TrVerdict {
       verdict: "uncertain",
       reason: `Web SaaS için mağaza sinyali yetersiz; ${best.name} (${ratingText(best)}) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. ${attempted}`,
       queries,
-      evidence,
+      evidence: [...evidence, ...webEvidence],
     };
   }
 

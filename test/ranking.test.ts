@@ -193,7 +193,16 @@ test("report: revenue fallback, description, TR gap labels and markdown links", 
         whatItIs: "AI tool",
         category: null,
         sources: ["showhn"],
-        score: { sources: 0, revenue: 0, product: 0, signals: 1, momentum: 0, total: 1 },
+        score: {
+          sources: 0,
+          revenue: 0,
+          product: 0,
+          quality: 0,
+          signals: 1,
+          momentum: 0,
+          total: 1,
+        },
+        weakSignal: false,
         momentum: null,
         dataPoints: [point("showhn", "hn_points", 5, "https://news.ycombinator.com/item?id=1")],
         revenueEvidence: "aranmadı",
@@ -301,4 +310,28 @@ test("Play rating parser: accepts explicit counts, ignores average scores and mi
   assert.equal(parsePlayRating('<span>"ratingCount":987</span>'), 987);
   assert.equal(parsePlayRating("<span>4,3 değerlendirme</span>"), undefined);
   assert.equal(parsePlayRating("<div>no rating here</div>"), undefined);
+});
+
+test("ranking: low-quality HN one-offs are excluded when enough good candidates exist", () => {
+  const good = Array.from({ length: 12 }, (_, index) =>
+    candidate(
+      `g${index}`,
+      `Product ${index}`,
+      ["trustmrr"],
+      [point("trustmrr", "mrr_usd", 500), point("trustmrr", "growth_mrr_30d_pct", 5)],
+      { url: `https://product${index}.com`, description: "a real web product" },
+    ),
+  );
+  const weak = Array.from({ length: 6 }, (_, index) =>
+    candidate(
+      `w${index}`,
+      `Wikihack ${index}`,
+      ["showhn"],
+      [point("showhn", "hn_points", 500), point("showhn", "hn_comments", 50)],
+    ),
+  );
+  const ranked = rankCandidates([...weak, ...good]);
+  assert.equal(ranked.length, 12);
+  assert.ok(ranked.every((entry) => entry.candidate.key.startsWith("g")));
+  assert.ok(ranked.every((entry) => entry.score.quality >= 3 && !entry.weakSignal));
 });
