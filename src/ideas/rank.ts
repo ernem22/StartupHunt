@@ -5,15 +5,17 @@ export type Label = "trend" | "gelir";
 /** Final list length. A shorter list is fine; padding with jokes is not. */
 export const LIST_SIZE = 20;
 
+/** One named part of the trend strength, shown on the card next to the total. */
+export type TrendPart = { label: string; value: number };
+
 export type Score = {
-  /** Global trend strength: sources, chart ranks, app age, HN/Reddit/PH interest. */
+  /** Global trend strength: the sum of `parts`. */
   trend: number;
   /** Rank or metric change against the previous day's snapshot. */
   momentum: number;
-  /** Small weight for TrustMRR revenue evidence; never enough to outrank a trend signal. */
-  revenue: number;
-  /** trend + momentum + revenue, before the TR gap. */
+  /** trend + momentum, before the TR gap. Revenue is not part of the score. */
   base: number;
+  parts: TrendPart[];
 };
 
 export type RankedCandidate = {
@@ -36,7 +38,11 @@ export const TREND_METRICS: readonly string[] = [
   "hn_comments",
   "reddit_score",
   "reddit_comments",
+  "github_stars_7d",
 ];
+
+/** New GitHub stars in the last 7 days that make a repo trend-led on its own. */
+export const GITHUB_STRONG_STARS_7D = 50;
 
 /** Loads numeric points from a previous data/YYYY-MM-DD.json snapshot, keyed by candidate key then metric. */
 export function readSnapshot(value: unknown): PreviousSnapshot {
@@ -85,6 +91,8 @@ const HN_TOY = [/\bbut for\b/i, /\b\w+-for-\w+\b/i, /\bhacker\s?(?:tube|tv|times
 
 /** Links to social networks, media and code hosts are not the product's own URL. */
 export function hasProductUrl(candidate: Candidate): boolean {
+  // A GitHub repo is the product's own page for developer tools (its stars are the trend numbers).
+  if (candidate.key.startsWith("github:")) return true;
   try {
     const url = new URL(candidate.url);
     if (!/^https?:$/.test(url.protocol)) return false;
@@ -102,10 +110,6 @@ function appleNewRelease(candidate: Candidate): boolean {
   );
 }
 
-function phTop10(candidate: Candidate): boolean {
-  return candidate.dataPoints.some((p) => p.metric === "ph_feed_position" && p.value <= 10);
-}
-
 function isHnOnly(candidate: Candidate): boolean {
   return candidate.sources.length === 1 && candidate.sources[0] === "showhn";
 }
@@ -117,8 +121,7 @@ export function isNoise(candidate: Candidate): boolean {
   if (isHnOnly(candidate) && HN_TOY.some((pattern) => pattern.test(candidate.name))) return true;
   const numeric = candidate.dataPoints.filter((point) => Number.isFinite(point.value));
   // Every idea card must be backed by at least two numeric observations.
-  // A Product Hunt top-10 row carries its own product link and feed position: enough on its own.
-  if (numeric.length < 2 && !phTop10(candidate)) return true;
+  if (numeric.length < 2) return true;
   const onlyApple = candidate.sources.length === 1 && candidate.sources[0] === "apple";
   return (
     onlyApple &&
@@ -136,9 +139,6 @@ function isStrongSignal(point: DataPoint): boolean {
   switch (point.metric) {
     case "reddit_score":
       return point.value >= 20;
-    // PH feed order is the only PH number (no vote counts): the top 10 of the feed.
-    case "ph_feed_position":
-      return point.value <= 10;
     default:
       return false;
   }
@@ -148,14 +148,22 @@ export function trendSignals(candidate: Candidate): DataPoint[] {
   return candidate.dataPoints.filter((point) => TREND_METRICS.includes(point.metric));
 }
 
+function githubStarsStrong(candidate: Candidate): boolean {
+  return candidate.dataPoints.some(
+    (p) => p.metric === "github_stars_7d" && p.value >= GITHUB_STRONG_STARS_7D,
+  );
+}
+
 /**
  * Trend-led: a real product URL and either several sources, a new app in the US top-free chart
- * (rank <= 50, released within a year), a strong PH or Reddit observation. A Show HN post counts
- * only with its own product description; the HN title alone is not enough.
+ * (rank <= 50, released within a year), a strong Reddit observation, or a GitHub repo that
+ * gained enough stars in the last 7 days. A Show HN post counts only with its own product
+ * description; the HN title alone is not enough.
  */
 export function isTrendLed(candidate: Candidate): boolean {
   if (!hasProductUrl(candidate)) return false;
   if (candidate.sources.length >= 2) return true;
+  if (githubStarsStrong(candidate)) return true;
   if (isHnOnly(candidate)) {
     return Boolean(candidate.description) && candidate.dataPoints.some(isHnStrong);
   }
@@ -183,46 +191,57 @@ function logSignal(value: number, scale: number): number {
   return Math.log10(1 + Math.max(0, value)) / Math.log10(1 + scale);
 }
 
-/** Trend strength of one candidate. Revenue is a small separate term, never a trend substitute. */
-function trendStrength(candidate: Candidate): number {
-  let trend = Math.max(0, candidate.sources.length - 1);
+/**
+ * Named parts of a candidate's trend strength, each from one real number (or the source count).
+ * Zero parts are dropped. TR chart ranks are shown on the card but add nothing here.
+ */
+export function trendParts(candidate: Candidate): TrendPart[] {
+  const parts: TrendPart[] = [];
+  const add = (label: string, value: number) => {
+    if (value > 0) parts.push({ label, value: round(value) });
+  };
+  add("kaynak uyumu", Math.max(0, candidate.sources.length - 1));
   for (const point of candidate.dataPoints) {
     const value = point.value;
     if (!Number.isFinite(value)) continue;
     switch (point.metric) {
       case "ph_feed_position":
-        trend += Math.max(0, 1 - value / 20);
+        add("PH sırası", Math.max(0, 1 - value / 20));
         break;
       case "apple_us_top_free_rank":
-        trend += Math.max(0, 1 - value / 100);
+        add("Apple US sırası", Math.max(0, 1 - value / 100));
         break;
       case "apple_us_days_since_release":
-        trend += value <= 30 ? 1 : value <= 180 ? 0.5 : value <= 365 ? 0.25 : 0;
+        add("uygulama yaşı", value <= 30 ? 1 : value <= 180 ? 0.5 : value <= 365 ? 0.25 : 0);
         break;
       case "hn_points":
         // Only a Show HN post with its own product description adds trend weight.
-        if (candidate.description) trend += Math.min(1, logSignal(value, 300));
+        if (candidate.description) add("HN puanı", Math.min(1, logSignal(value, 300)));
         break;
       case "hn_comments":
-        if (candidate.description) trend += Math.min(0.5, logSignal(value, 100) * 0.5);
+        if (candidate.description) add("HN yorumu", Math.min(0.5, logSignal(value, 100) * 0.5));
         break;
       case "reddit_score":
-        trend += Math.min(1, logSignal(value, 100));
+        add("Reddit skoru", Math.min(1, logSignal(value, 100)));
         break;
       case "reddit_comments":
-        trend += Math.min(0.5, logSignal(value, 50) * 0.5);
+        add("Reddit yorumu", Math.min(0.5, logSignal(value, 50) * 0.5));
+        break;
+      case "github_stars_7d":
+        // Log scale saturating at 10 000 new stars a week; a 500 cap made every busy repo tie at 1.
+        add("GitHub yıldız (7g)", Math.min(1, logSignal(value, 10000)));
         break;
     }
   }
-  return trend;
+  return parts;
 }
 
 export function scoreCandidate(
   candidate: Candidate,
   snapshot: PreviousSnapshot = new Map(),
 ): RankedCandidate {
-  const trend = trendStrength(candidate);
-  const revenue = isRevenueLed(candidate) ? 0.25 : 0;
+  const parts = trendParts(candidate);
+  const trend = parts.reduce((sum, part) => sum + part.value, 0);
 
   let momentum = 0;
   let momentumText: string;
@@ -240,8 +259,8 @@ export function scoreCandidate(
       parts.push(`${point.metric} ${before}→${point.value}`);
       const delta = point.value - before;
       if (point.metric === "ph_feed_position" || point.metric.endsWith("_rank")) {
-        // A lower rank number is a rise in the chart.
-        if (delta < 0) momentum += 0.5;
+        // A lower rank number is a rise in the chart; the places gained scale like a count.
+        if (delta < 0) momentum += Math.min(1, logSignal(-delta, 100));
       } else if (delta > 0) {
         momentum += Math.min(1, logSignal(delta, Math.max(1, Math.abs(before))));
       }
@@ -260,8 +279,8 @@ export function scoreCandidate(
     score: {
       trend: round(trend),
       momentum: round(momentum),
-      revenue: round(revenue),
-      base: round(trend + momentum + revenue),
+      base: round(trend + momentum),
+      parts,
     },
     momentum: momentumText,
   };
@@ -271,22 +290,18 @@ function round(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
-function mrrOf(candidate: Candidate): number {
-  return candidate.dataPoints.find((p) => p.metric === "mrr_usd")?.value ?? 0;
-}
-
 function byBase(a: RankedCandidate, b: RankedCandidate): number {
   return (
     b.score.base - a.score.base ||
     b.candidate.sources.length - a.candidate.sources.length ||
-    mrrOf(b.candidate) - mrrOf(a.candidate) ||
     a.candidate.name.localeCompare(b.candidate.name, "en")
   );
 }
 
 /**
  * Ranking uses global trend strength and momentum only. TR is checked afterwards for the chosen
- * cards and never changes the order. Eligible: not noise, and trend-led or revenue-led.
+ * cards and never changes the order. Eligible: not noise and trend-led, i.e. it carries at least
+ * one real trend number with its link. Revenue-only rows are left out.
  */
 export function selectTop(
   candidates: readonly Candidate[],
@@ -294,7 +309,7 @@ export function selectTop(
   size = LIST_SIZE,
 ): RankedCandidate[] {
   return candidates
-    .filter((candidate) => !isNoise(candidate) && labelsOf(candidate).length > 0)
+    .filter((candidate) => !isNoise(candidate) && isTrendLed(candidate))
     .map((candidate) => scoreCandidate(candidate, snapshot))
     .sort(byBase)
     .slice(0, size);

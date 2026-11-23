@@ -12,6 +12,7 @@ import {
   type Label,
   type PreviousSnapshot,
   type RankedCandidate,
+  type TrendPart,
 } from "./rank.js";
 
 export type Idea = {
@@ -25,11 +26,12 @@ export type Idea = {
   /** Display labels: "trend" (trend-led), "gelir" (revenue-led) or both. Nothing is selected by them. */
   labels: Label[];
   sources: string[];
-  score: { trend: number; momentum: number; revenue: number; total: number };
+  /** trend = sum of parts; total = trend + momentum. Revenue and TR are not in it. */
+  score: { trend: number; momentum: number; total: number; parts: TrendPart[] };
   /** "Neden bu sırada": the global factors that set the order. TR is not one of them. */
   reason: string;
   trend: {
-    /** Trend observations only (PH rank, Apple ranks and release age, HN/Reddit numbers with the Show HN date). */
+    /** Trend observations only (PH rank, Apple ranks and release age, HN/Reddit/GitHub numbers with their dates). */
     signals: DataPoint[];
     /** "ilk gözlem" when no earlier snapshot holds the product; otherwise the changed metrics. */
     momentum: string;
@@ -119,8 +121,9 @@ export function previousSnapshotFile(files: readonly string[], runDate: string):
 
 /** "Neden bu sırada": the global factors that set the order. */
 export function reasonLine(entry: RankedCandidate): string {
-  const { trend, momentum, revenue, base } = entry.score;
-  return `trend ${trend} + ivme ${momentum} + gelir ${revenue} = ${base}`;
+  const { trend, momentum, base, parts } = entry.score;
+  const breakdown = parts.map((part) => `${part.label} ${part.value}`).join(" + ");
+  return `trend ${trend} (${breakdown || "yok"}) + ivme ${momentum} = ${base}`;
 }
 
 export function renderMarkdown(output: IdeasOutput): string {
@@ -129,7 +132,7 @@ export function renderMarkdown(output: IdeasOutput): string {
     "",
     `Üretim: ${output.generatedAt} · Kaynak: ${output.sourceFile} · Snapshot: ${output.snapshotFile ?? "yok (ilk gözlem)"} · ${output.ideas.length} fikir`,
     "",
-    "Sıralama yalnızca küresel trend gücüyle yapılır: çoklu kaynak, PH/Apple US sırası, uygulama yaşı, HN/Reddit puanları ve ivme; gelir kanıtı küçük bir ek terimdir (+0,25). TR durumu sıralamaya girmez; her kartta ayrı TR alanı olarak yazılır (dolu olanlar da listede kalır).",
+    "Sıralama yalnızca gerçek trend sayılarıyla yapılır: çoklu kaynak, PH/Apple US sırası, uygulama yaşı, HN/Reddit puanları, GitHub 7 günlük yıldız artışı ve bunların ivmesi. Gelir kanıtı sıralamaya girmez; yalnızca gösterilir. TR durumu sıralamaya girmez; her kartta ayrı TR alanı olarak yazılır (dolu olanlar da listede kalır).",
     "",
   ];
   for (const idea of output.ideas) {
@@ -186,8 +189,8 @@ export function toIdea(entry: RankedCandidate, rank: number, verdict: TrVerdict)
     score: {
       trend: entry.score.trend,
       momentum: entry.score.momentum,
-      revenue: entry.score.revenue,
       total: entry.score.base,
+      parts: entry.score.parts,
     },
     reason: reasonLine(entry),
     trend: { signals: trendSignals(candidate), momentum: entry.momentum },

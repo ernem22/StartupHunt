@@ -1,150 +1,232 @@
 {
-  "generatedAt": "2026-11-23T03:52:43.817Z",
+  "generatedAt": "2026-11-23T12:43:00.625Z",
   "sourceFile": "data\\latest.json",
-  "snapshotFile": "data\\2026-11-23.json",
+  "snapshotFile": null,
   "ideas": [
     {
       "rank": 1,
-      "key": "storestockchecker.com",
-      "name": "Store Stock Checker",
-      "originalName": "Store Stock Checker",
-      "url": "https://www.storestockchecker.com",
-      "whatItIs": "Realtime Apple Store stock checking.",
-      "category": "Analytics",
-      "sources": ["trustmrr"],
+      "key": "apple:6741796873",
+      "name": "TikTok Pro",
+      "originalName": "TikTok Pro - Events",
+      "url": "https://apps.apple.com/us/app/tiktok-pro-events/id6741796873",
+      "whatItIs": "apple sinyalı: apple_us_top_free_rank=1, apple_us_days_since_release=173",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["apple"],
       "score": {
-        "sources": 0,
-        "revenue": 3,
-        "product": 1,
-        "quality": 4,
-        "signals": 2.14,
+        "trend": 1.49,
         "momentum": 0,
-        "total": 6.14
+        "total": 1.49,
+        "parts": [
+          {
+            "label": "Apple US sırası",
+            "value": 0.99
+          },
+          {
+            "label": "uygulama yaşı",
+            "value": 0.5
+          }
+        ]
       },
-      "weakSignal": false,
-      "momentum": null,
+      "reason": "trend 1.49 (Apple US sırası 0.99 + uygulama yaşı 0.5) + ivme 0 = 1.49",
+      "trend": {
+        "signals": [
+          {
+            "source": "apple",
+            "metric": "apple_us_top_free_rank",
+            "value": 1,
+            "date": "2026-11-23",
+            "url": "https://apps.apple.com/us/app/tiktok-pro-events/id6741796873"
+          },
+          {
+            "source": "apple",
+            "metric": "apple_us_days_since_release",
+            "value": 173,
+            "date": "2026-11-23",
+            "url": "https://itunes.apple.com/lookup?id=6741796873&country=us"
+          }
+        ],
+        "momentum": "ilk gözlem"
+      },
       "dataPoints": [
         {
-          "source": "trustmrr",
-          "metric": "mrr_usd",
-          "value": 36005,
+          "source": "apple",
+          "metric": "apple_us_top_free_rank",
+          "value": 1,
           "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/store-stock-checker"
+          "url": "https://apps.apple.com/us/app/tiktok-pro-events/id6741796873"
         },
         {
-          "source": "trustmrr",
-          "metric": "growth_mrr_30d_pct",
-          "value": 1204.5289855072463,
+          "source": "apple",
+          "metric": "apple_us_days_since_release",
+          "value": 173,
           "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/store-stock-checker"
+          "url": "https://itunes.apple.com/lookup?id=6741796873&country=us"
         }
       ],
-      "revenueEvidence": "MRR $36005 (TrustMRR), MRR 30g büyümesi 1204.5% — https://trustmrr.com/startup/store-stock-checker",
+      "revenueEvidence": "aranmadı",
       "tr": {
-        "verdict": "uncertain",
-        "reason": "Web SaaS için mağaza sinyali yetersiz; Stock Checker (rating bilinmiyor) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: Store Stock Checker | Store Stock Checker realtime apple. Kanallar: apple_tr, play_tr, web_tr.",
-        "queries": ["Store Stock Checker", "Store Stock Checker realtime apple"],
+        "verdict": "found",
+        "reason": "TR mağazasında gerçek eşleşme: TikTok (70571972 TR rating, play_tr). Durum: var ve çekiş var. Denene(n) sorgular: TikTok Pro. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["TikTok Pro"],
         "evidence": [
           {
-            "name": "Stock Checker",
+            "name": "TikTok",
             "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.amepos.stockchecker&hl=tr&gl=TR"
+            "ratingCount": 70571972,
+            "url": "https://play.google.com/store/apps/details?id=com.zhiliaoapp.musically&hl=tr&gl=TR"
+          }
+        ],
+        "gapLabel": "dolu"
+      }
+    },
+    {
+      "rank": 2,
+      "key": "apple:6760173601",
+      "name": "Muse from Meta",
+      "originalName": "Muse from Meta",
+      "url": "https://apps.apple.com/us/app/muse-from-meta/id6760173601",
+      "whatItIs": "apple sinyalı: apple_us_top_free_rank=2, apple_us_days_since_release=76",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["apple"],
+      "score": {
+        "trend": 1.48,
+        "momentum": 0,
+        "total": 1.48,
+        "parts": [
+          {
+            "label": "Apple US sırası",
+            "value": 0.98
+          },
+          {
+            "label": "uygulama yaşı",
+            "value": 0.5
+          }
+        ]
+      },
+      "reason": "trend 1.48 (Apple US sırası 0.98 + uygulama yaşı 0.5) + ivme 0 = 1.48",
+      "trend": {
+        "signals": [
+          {
+            "source": "apple",
+            "metric": "apple_us_top_free_rank",
+            "value": 2,
+            "date": "2026-11-23",
+            "url": "https://apps.apple.com/us/app/muse-from-meta/id6760173601"
+          },
+          {
+            "source": "apple",
+            "metric": "apple_us_days_since_release",
+            "value": 76,
+            "date": "2026-11-23",
+            "url": "https://itunes.apple.com/lookup?id=6760173601&country=us"
+          }
+        ],
+        "momentum": "ilk gözlem"
+      },
+      "dataPoints": [
+        {
+          "source": "apple",
+          "metric": "apple_us_top_free_rank",
+          "value": 2,
+          "date": "2026-11-23",
+          "url": "https://apps.apple.com/us/app/muse-from-meta/id6760173601"
+        },
+        {
+          "source": "apple",
+          "metric": "apple_us_days_since_release",
+          "value": 76,
+          "date": "2026-11-23",
+          "url": "https://itunes.apple.com/lookup?id=6760173601&country=us"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "uncertain",
+        "reason": "Muse (play_tr) eşleşti ama TR rating sayısı okunamadı; çekiş ayırt edilemiyor. Denene(n) sorgular: Muse from Meta. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["Muse from Meta"],
+        "evidence": [
+          {
+            "name": "Muse",
+            "channel": "play_tr",
+            "url": "https://play.google.com/store/apps/details?id=com.conzumex.musewatch&hl=tr&gl=TR"
           }
         ],
         "gapLabel": "belirsiz"
       }
     },
     {
-      "rank": 2,
-      "key": "scalereach.ai",
-      "name": "Scalereach.ai",
-      "originalName": "Scalereach.ai",
-      "url": "https://scalereach.ai",
-      "whatItIs": "AI video repurposing tool that turns long videos into viral short clips for TikTok, Reels and YouTube Shorts. Paste a YouTube, Twitch, Kick, Drive or Loom link and ScaleReach finds the best moments, s",
-      "category": "Artificial Intelligence",
-      "sources": ["trustmrr"],
-      "score": {
-        "sources": 0,
-        "revenue": 3,
-        "product": 1,
-        "quality": 4,
-        "signals": 1.96,
-        "momentum": 0,
-        "total": 5.96
-      },
-      "weakSignal": false,
-      "momentum": null,
-      "dataPoints": [
-        {
-          "source": "trustmrr",
-          "metric": "mrr_usd",
-          "value": 6752.9,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/scalereach"
-        },
-        {
-          "source": "trustmrr",
-          "metric": "growth_mrr_30d_pct",
-          "value": 5012.9324096552255,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/scalereach"
-        }
-      ],
-      "revenueEvidence": "MRR $6753 (TrustMRR), MRR 30g büyümesi 5012.9% — https://trustmrr.com/startup/scalereach",
-      "tr": {
-        "verdict": "uncertain",
-        "reason": "Web ürünü: mağazada bulunamadı; mağaza sonucu 'yok' anlamına gelmez. Web kanalı (Yandex TR) kontrol edildi, TR'ye özgü eşleşme bulunamadı. Denene(n) sorgular: Scalereach.ai | Scalereach.ai video repurposing | yapay zeka video aracı. Kanallar: apple_tr, play_tr, web_tr.",
-        "queries": ["Scalereach.ai", "Scalereach.ai video repurposing", "yapay zeka video aracı"],
-        "evidence": [],
-        "gapLabel": "belirsiz"
-      }
-    },
-    {
       "rank": 3,
-      "key": "appzoku.com",
-      "name": "AppZoku",
-      "originalName": "AppZoku",
-      "url": "https://appzoku.com",
-      "whatItIs": "Appzoku is a marketing tool built for solo iOS developers and small teams who need to market like a growth team without hiring one. Scrolling, generating, editing, and rerolling concepts is free and u",
-      "category": "Artificial Intelligence",
-      "sources": ["trustmrr"],
+      "key": "apple:6754134922",
+      "name": "PineDrama",
+      "originalName": "PineDrama - Short Dramas",
+      "url": "https://apps.apple.com/us/app/pinedrama-short-dramas/id6754134922",
+      "whatItIs": "apple sinyalı: apple_us_top_free_rank=7, apple_us_days_since_release=335",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["apple"],
       "score": {
-        "sources": 0,
-        "revenue": 3,
-        "product": 1,
-        "quality": 4,
-        "signals": 1.8,
+        "trend": 1.18,
         "momentum": 0,
-        "total": 5.8
+        "total": 1.18,
+        "parts": [
+          {
+            "label": "Apple US sırası",
+            "value": 0.93
+          },
+          {
+            "label": "uygulama yaşı",
+            "value": 0.25
+          }
+        ]
       },
-      "weakSignal": false,
-      "momentum": null,
+      "reason": "trend 1.18 (Apple US sırası 0.93 + uygulama yaşı 0.25) + ivme 0 = 1.18",
+      "trend": {
+        "signals": [
+          {
+            "source": "apple",
+            "metric": "apple_us_top_free_rank",
+            "value": 7,
+            "date": "2026-11-23",
+            "url": "https://apps.apple.com/us/app/pinedrama-short-dramas/id6754134922"
+          },
+          {
+            "source": "apple",
+            "metric": "apple_us_days_since_release",
+            "value": 335,
+            "date": "2026-11-23",
+            "url": "https://itunes.apple.com/lookup?id=6754134922&country=us"
+          }
+        ],
+        "momentum": "ilk gözlem"
+      },
       "dataPoints": [
         {
-          "source": "trustmrr",
-          "metric": "mrr_usd",
-          "value": 1527.38,
+          "source": "apple",
+          "metric": "apple_us_top_free_rank",
+          "value": 7,
           "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/appzoku"
+          "url": "https://apps.apple.com/us/app/pinedrama-short-dramas/id6754134922"
         },
         {
-          "source": "trustmrr",
-          "metric": "growth_mrr_30d_pct",
-          "value": 866.6947408328365,
+          "source": "apple",
+          "metric": "apple_us_days_since_release",
+          "value": 335,
           "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/appzoku"
+          "url": "https://itunes.apple.com/lookup?id=6754134922&country=us"
         }
       ],
-      "revenueEvidence": "MRR $1527 (TrustMRR), MRR 30g büyümesi 866.7% — https://trustmrr.com/startup/appzoku",
+      "revenueEvidence": "aranmadı",
       "tr": {
         "verdict": "uncertain",
-        "reason": "Web ürünü: mağazada yok; TR web kanalında yalnızca benzer ürünler bulundu (Bağlantı: facebook.com — https://www.facebook.com/appzok/), doğrudan rakip doğrulanamadı. Denene(n) sorgular: AppZoku | AppZoku appzoku marketing | pazarlama aracı. Kanallar: apple_tr, play_tr, web_tr.",
-        "queries": ["AppZoku", "AppZoku appzoku marketing", "pazarlama aracı"],
+        "reason": "Pinedrama Video - Field8 AI (play_tr) eşleşti ama TR rating sayısı okunamadı; çekiş ayırt edilemiyor. Denene(n) sorgular: PineDrama. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["PineDrama"],
         "evidence": [
           {
-            "name": "Bağlantı: facebook.com",
-            "channel": "web_tr",
-            "url": "https://www.facebook.com/appzok/"
+            "name": "Pinedrama Video - Field8 AI",
+            "channel": "play_tr",
+            "url": "https://play.google.com/store/apps/details?id=vip.hicbrickwork.ai.highfield8&hl=tr&gl=TR"
           }
         ],
         "gapLabel": "belirsiz"
@@ -152,56 +234,76 @@
     },
     {
       "rank": 4,
-      "key": "catalogohoy.com",
-      "name": "CatalogoHoy",
-      "originalName": "CatalogoHoy",
-      "url": "https://catalogohoy.com",
-      "whatItIs": "Manage an online product catalog, orders, sales, customers, and store metrics from your phone.",
-      "category": "E-commerce",
-      "sources": ["trustmrr"],
+      "key": "apple:6817187484",
+      "name": "Untraced",
+      "originalName": "Untraced: Find the Suspect",
+      "url": "https://apps.apple.com/us/app/untraced-find-the-suspect/id6817187484",
+      "whatItIs": "apple sinyalı: apple_us_top_free_rank=35, apple_us_days_since_release=32",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["apple"],
       "score": {
-        "sources": 0,
-        "revenue": 3,
-        "product": 1,
-        "quality": 4,
-        "signals": 1.69,
+        "trend": 1.15,
         "momentum": 0,
-        "total": 5.69
-      },
-      "weakSignal": false,
-      "momentum": null,
-      "dataPoints": [
-        {
-          "source": "trustmrr",
-          "metric": "mrr_usd",
-          "value": 555.5,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/catalogohoy"
-        },
-        {
-          "source": "trustmrr",
-          "metric": "growth_mrr_30d_pct",
-          "value": 413.78098409174993,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/catalogohoy"
-        }
-      ],
-      "revenueEvidence": "MRR $556 (TrustMRR), MRR 30g büyümesi 413.8% — https://trustmrr.com/startup/catalogohoy",
-      "tr": {
-        "verdict": "found",
-        "reason": "TR mağazasında gerçek eşleşme: CatalogoHoy: Catálogo y ventas (0 TR rating, apple_tr). Durum: var ama çekiş yok (rating <= 5). Denene(n) sorgular: CatalogoHoy | CatalogoHoy manage catalog. Kanallar: apple_tr, play_tr, web_tr.",
-        "queries": ["CatalogoHoy", "CatalogoHoy manage catalog"],
-        "evidence": [
+        "total": 1.15,
+        "parts": [
           {
-            "name": "CatalogoHoy: Catálogo y ventas",
-            "channel": "apple_tr",
-            "ratingCount": 0,
-            "url": "https://apps.apple.com/tr/app/catalogohoy-cat%C3%A1logo-y-ventas/id6817059692?uo=4"
+            "label": "Apple US sırası",
+            "value": 0.65
           },
           {
-            "name": "CatalogoHoy: Catálogo y ventas",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.catalogohoy.app&hl=tr&gl=TR"
+            "label": "uygulama yaşı",
+            "value": 0.5
+          }
+        ]
+      },
+      "reason": "trend 1.15 (Apple US sırası 0.65 + uygulama yaşı 0.5) + ivme 0 = 1.15",
+      "trend": {
+        "signals": [
+          {
+            "source": "apple",
+            "metric": "apple_us_top_free_rank",
+            "value": 35,
+            "date": "2026-11-23",
+            "url": "https://apps.apple.com/us/app/untraced-find-the-suspect/id6817187484"
+          },
+          {
+            "source": "apple",
+            "metric": "apple_us_days_since_release",
+            "value": 32,
+            "date": "2026-11-23",
+            "url": "https://itunes.apple.com/lookup?id=6817187484&country=us"
+          }
+        ],
+        "momentum": "ilk gözlem"
+      },
+      "dataPoints": [
+        {
+          "source": "apple",
+          "metric": "apple_us_top_free_rank",
+          "value": 35,
+          "date": "2026-11-23",
+          "url": "https://apps.apple.com/us/app/untraced-find-the-suspect/id6817187484"
+        },
+        {
+          "source": "apple",
+          "metric": "apple_us_days_since_release",
+          "value": 32,
+          "date": "2026-11-23",
+          "url": "https://itunes.apple.com/lookup?id=6817187484&country=us"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "found",
+        "reason": "TR mağazasında gerçek eşleşme: Untraced: Find the Suspect (1 TR rating, apple_tr). Durum: var ama çekiş yok (rating <= 5). Denene(n) sorgular: Untraced. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["Untraced"],
+        "evidence": [
+          {
+            "name": "Untraced: Find the Suspect",
+            "channel": "apple_tr",
+            "ratingCount": 1,
+            "url": "https://apps.apple.com/tr/app/untraced-find-the-suspect/id6817187484?uo=4"
           }
         ],
         "gapLabel": "zayıf"
@@ -209,273 +311,339 @@
     },
     {
       "rank": 5,
-      "key": "getscreeny.app",
-      "name": "Screeny",
-      "originalName": "Screeny: Mockup & Product Demo",
-      "url": "https://getscreeny.app",
-      "whatItIs": "The simplest way to make beautiful product demos. Screeny is an iOS and macOS app that turns raw screenshots and screen recordings into polished mockups and 3D animations in seconds, ready for social",
-      "category": "Mobile Apps",
-      "sources": ["trustmrr"],
+      "key": "apple:6760536822",
+      "name": "Health100",
+      "originalName": "Health100",
+      "url": "https://apps.apple.com/us/app/health100/id6760536822",
+      "whatItIs": "apple sinyalı: apple_us_top_free_rank=37, apple_us_days_since_release=145",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["apple"],
       "score": {
-        "sources": 0,
-        "revenue": 3,
-        "product": 1,
-        "quality": 4,
-        "signals": 1.64,
+        "trend": 1.13,
         "momentum": 0,
-        "total": 5.64
+        "total": 1.13,
+        "parts": [
+          {
+            "label": "Apple US sırası",
+            "value": 0.63
+          },
+          {
+            "label": "uygulama yaşı",
+            "value": 0.5
+          }
+        ]
       },
-      "weakSignal": false,
-      "momentum": null,
-      "dataPoints": [
-        {
-          "source": "trustmrr",
-          "metric": "mrr_usd",
-          "value": 489.46,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/screeny"
-        },
-        {
-          "source": "trustmrr",
-          "metric": "growth_mrr_30d_pct",
-          "value": 96.81531223611725,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/screeny"
-        }
-      ],
-      "revenueEvidence": "MRR $489 (TrustMRR), MRR 30g büyümesi 96.8% — https://trustmrr.com/startup/screeny",
-      "tr": {
-        "verdict": "found",
-        "reason": "TR mağazasında gerçek eşleşme: Screeny (0 TR rating, apple_tr). Durum: var ama çekiş yok (rating <= 5). Denene(n) sorgular: Screeny | Screeny simplest make. Kanallar: apple_tr, play_tr, web_tr.",
-        "queries": ["Screeny", "Screeny simplest make"],
-        "evidence": [
+      "reason": "trend 1.13 (Apple US sırası 0.63 + uygulama yaşı 0.5) + ivme 0 = 1.13",
+      "trend": {
+        "signals": [
           {
-            "name": "Screeny",
-            "channel": "apple_tr",
-            "ratingCount": 0,
-            "url": "https://apps.apple.com/tr/app/screeny/id1144250246?uo=4"
+            "source": "apple",
+            "metric": "apple_us_top_free_rank",
+            "value": 37,
+            "date": "2026-11-23",
+            "url": "https://apps.apple.com/us/app/health100/id6760536822"
           },
           {
-            "name": "Screeny: Screenshot Editor",
-            "channel": "apple_tr",
-            "ratingCount": 0,
-            "url": "https://apps.apple.com/tr/app/screeny-screenshot-editor/id6758330232?uo=4"
-          },
-          {
-            "name": "Screeny: App Blocker & Focus",
-            "channel": "apple_tr",
-            "ratingCount": 0,
-            "url": "https://apps.apple.com/tr/app/screeny-app-blocker-focus/id6768062803?uo=4"
-          },
-          {
-            "name": "Screeny - Screenshot Manager",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.nxet.screenshotmanager&hl=tr&gl=TR"
-          },
-          {
-            "name": "Screeny: Ekran Süresi Sınırı",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=screentime.tracker.app.usage.phone.blocker&hl=tr&gl=TR"
+            "source": "apple",
+            "metric": "apple_us_days_since_release",
+            "value": 145,
+            "date": "2026-11-23",
+            "url": "https://itunes.apple.com/lookup?id=6760536822&country=us"
           }
         ],
-        "gapLabel": "zayıf"
+        "momentum": "ilk gözlem"
+      },
+      "dataPoints": [
+        {
+          "source": "apple",
+          "metric": "apple_us_top_free_rank",
+          "value": 37,
+          "date": "2026-11-23",
+          "url": "https://apps.apple.com/us/app/health100/id6760536822"
+        },
+        {
+          "source": "apple",
+          "metric": "apple_us_days_since_release",
+          "value": 145,
+          "date": "2026-11-23",
+          "url": "https://itunes.apple.com/lookup?id=6760536822&country=us"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Health100. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["Health100"],
+        "evidence": [],
+        "gapLabel": "boş"
       }
     },
     {
       "rank": 6,
-      "key": "coralflavor.com",
-      "name": "Coralflavor",
-      "originalName": "Coralflavor",
-      "url": "https://coralflavor.com",
-      "whatItIs": "Private AI chatbot with E2E encryption",
-      "category": "Artificial Intelligence",
-      "sources": ["trustmrr"],
+      "key": "github:googlechrome/modern-web-guidance",
+      "name": "Get your coding",
+      "originalName": "Get your coding agent off ~2019 JavaScript, onto modern web primitives",
+      "url": "https://github.com/GoogleChrome/modern-web-guidance",
+      "whatItIs": "Show HN başlığı: Get your coding agent off ~2019 JavaScript, onto modern web primitives",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["showhn"],
       "score": {
-        "sources": 0,
-        "revenue": 3,
-        "product": 1,
-        "quality": 4,
-        "signals": 1.62,
+        "trend": 0.91,
         "momentum": 0,
-        "total": 5.62
+        "total": 0.91,
+        "parts": [
+          {
+            "label": "GitHub yıldız (7g)",
+            "value": 0.91
+          }
+        ]
       },
-      "weakSignal": false,
-      "momentum": null,
+      "reason": "trend 0.91 (GitHub yıldız (7g) 0.91) + ivme 0 = 0.91",
+      "trend": {
+        "signals": [
+          {
+            "source": "showhn",
+            "metric": "hn_points",
+            "value": 449,
+            "date": "2026-11-10",
+            "url": "https://news.ycombinator.com/item?id=50443812"
+          },
+          {
+            "source": "showhn",
+            "metric": "hn_comments",
+            "value": 146,
+            "date": "2026-11-10",
+            "url": "https://news.ycombinator.com/item?id=50443812"
+          },
+          {
+            "source": "github",
+            "metric": "github_stars_7d",
+            "value": 4170,
+            "date": "2026-11-23",
+            "url": "https://github.com/googlechrome/modern-web-guidance/stargazers"
+          }
+        ],
+        "momentum": "ilk gözlem"
+      },
       "dataPoints": [
         {
-          "source": "trustmrr",
-          "metric": "mrr_usd",
-          "value": 4381,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/coralflavor"
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 449,
+          "date": "2026-11-10",
+          "url": "https://news.ycombinator.com/item?id=50443812"
         },
         {
-          "source": "trustmrr",
-          "metric": "growth_mrr_30d_pct",
-          "value": 70.86583463338533,
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 146,
+          "date": "2026-11-10",
+          "url": "https://news.ycombinator.com/item?id=50443812"
+        },
+        {
+          "source": "github",
+          "metric": "github_stars_7d",
+          "value": 4170,
           "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/coralflavor"
+          "url": "https://github.com/googlechrome/modern-web-guidance/stargazers"
         }
       ],
-      "revenueEvidence": "MRR $4381 (TrustMRR), MRR 30g büyümesi 70.9% — https://trustmrr.com/startup/coralflavor",
+      "revenueEvidence": "aranmadı",
       "tr": {
         "verdict": "uncertain",
-        "reason": "Web ürünü: mağazada bulunamadı; mağaza sonucu 'yok' anlamına gelmez. Web kanalı (Yandex TR) kontrol edildi, TR'ye özgü eşleşme bulunamadı. Denene(n) sorgular: Coralflavor | Coralflavor private chatbot | yapay zeka sohbet botu aracı. Kanallar: apple_tr, play_tr, web_tr.",
-        "queries": ["Coralflavor", "Coralflavor private chatbot", "yapay zeka sohbet botu aracı"],
+        "reason": "Web ürünü: mağazada bulunamadı; mağaza sonucu 'yok' anlamına gelmez. Web kanalı (Yandex TR) kontrol edildi, TR'ye özgü eşleşme bulunamadı. Denene(n) sorgular: Get your coding. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["Get your coding"],
         "evidence": [],
         "gapLabel": "belirsiz"
       }
     },
     {
       "rank": 7,
-      "key": "superjoin.ai",
-      "name": "Superjoin",
-      "originalName": "Superjoin",
-      "url": "https://www.superjoin.ai",
-      "whatItIs": "Superjoin brings live data from HubSpot, Salesforce and 30+ integrations into Google Sheets and Excel, with scheduled refreshes and two-way HubSpot sync. 116 paying business accounts, a HubSpot Certif",
-      "category": "Productivity",
-      "sources": ["trustmrr"],
+      "key": "github:holyarrs/holyarrs",
+      "name": "15 MB self-hosted",
+      "originalName": "A 15 MB self-hosted Netflix and Spotify for your media server",
+      "url": "https://github.com/HolyArrs/HolyArrs",
+      "whatItIs": "Show HN başlığı: A 15 MB self-hosted Netflix and Spotify for your media server",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["showhn"],
       "score": {
-        "sources": 0,
-        "revenue": 3,
-        "product": 1,
-        "quality": 4,
-        "signals": 1.38,
+        "trend": 0.79,
         "momentum": 0,
-        "total": 5.38
+        "total": 0.79,
+        "parts": [
+          {
+            "label": "GitHub yıldız (7g)",
+            "value": 0.79
+          }
+        ]
       },
-      "weakSignal": false,
-      "momentum": null,
-      "dataPoints": [
-        {
-          "source": "trustmrr",
-          "metric": "mrr_usd",
-          "value": 96667,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/superjoin"
-        },
-        {
-          "source": "trustmrr",
-          "metric": "growth_mrr_30d_pct",
-          "value": 13.033056208416646,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/superjoin"
-        }
-      ],
-      "revenueEvidence": "MRR $96667 (TrustMRR), MRR 30g büyümesi 13% — https://trustmrr.com/startup/superjoin",
-      "tr": {
-        "verdict": "uncertain",
-        "reason": "Web ürünü: mağazada yok; TR web kanalında yalnızca benzer ürünler bulundu (Tablo Grafikler: Ücretsiz Online Tablo Oluşturma | Canva — https://www.canva.com/tr_tr/sema/tablo/), doğrudan rakip doğrulanamadı. Denene(n) sorgular: Superjoin | Superjoin superjoin brings | tablo aracı. Kanallar: apple_tr, play_tr, web_tr.",
-        "queries": ["Superjoin", "Superjoin superjoin brings", "tablo aracı"],
-        "evidence": [
+      "reason": "trend 0.79 (GitHub yıldız (7g) 0.79) + ivme 0 = 0.79",
+      "trend": {
+        "signals": [
           {
-            "name": "Tablo Grafikler: Ücretsiz Online Tablo Oluşturma | Canva",
-            "channel": "web_tr",
-            "url": "https://www.canva.com/tr_tr/sema/tablo/"
+            "source": "showhn",
+            "metric": "hn_points",
+            "value": 172,
+            "date": "2026-11-10",
+            "url": "https://news.ycombinator.com/item?id=50439000"
           },
           {
-            "name": "Ücretsiz Online Tablo Oluşturucu | Jotform",
-            "channel": "web_tr",
-            "url": "https://www.jotform.com/tr/online-table-maker/"
+            "source": "showhn",
+            "metric": "hn_comments",
+            "value": 138,
+            "date": "2026-11-10",
+            "url": "https://news.ycombinator.com/item?id=50439000"
           },
           {
-            "name": "Tablohane&#x27;de Fotoğraflarınız ile Tablo Tasarlayabilirsiniz.",
-            "channel": "web_tr",
-            "url": "https://www.tablohane.com/sen-tasarla"
-          },
-          {
-            "name": "Tablo Grafik Oluşturucu | Creately",
-            "channel": "web_tr",
-            "url": "https://creately.com/tr/lp/tablo-olu%C5%9Fturucu/"
-          },
-          {
-            "name": "Google E- Tablolar : Online E- Tablolar ve Şablonlar",
-            "channel": "web_tr",
-            "url": "https://workspace.google.com/intl/tr/products/sheets/"
-          },
-          {
-            "name": "Tablo Oluşturucu - Ücretsiz Online | QuickTableConvert",
-            "channel": "web_tr",
-            "url": "https://quicktableconvert.com/tr/tools/table-generator/"
-          },
-          {
-            "name": "Harika E- Tablolar İçin Yapay Zeka Excel Agent | Kimi Sheets",
-            "channel": "web_tr",
-            "url": "https://www.kimi.ai/tr/features/sheets"
+            "source": "github",
+            "metric": "github_stars_7d",
+            "value": 1397,
+            "date": "2026-11-23",
+            "url": "https://github.com/holyarrs/holyarrs/stargazers"
           }
         ],
-        "gapLabel": "belirsiz"
+        "momentum": "ilk gözlem"
+      },
+      "dataPoints": [
+        {
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 172,
+          "date": "2026-11-10",
+          "url": "https://news.ycombinator.com/item?id=50439000"
+        },
+        {
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 138,
+          "date": "2026-11-10",
+          "url": "https://news.ycombinator.com/item?id=50439000"
+        },
+        {
+          "source": "github",
+          "metric": "github_stars_7d",
+          "value": 1397,
+          "date": "2026-11-23",
+          "url": "https://github.com/holyarrs/holyarrs/stargazers"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: 15 MB self-hosted. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["15 MB self-hosted"],
+        "evidence": [],
+        "gapLabel": "boş"
       }
     },
     {
       "rank": 8,
-      "key": "apple:6821628909",
-      "name": "prepi",
-      "originalName": "prepi",
-      "url": "https://apps.apple.com/us/app/prepi-meal-plan-grocery/id6821628909?uo=4",
-      "whatItIs": "Creates personalized weekly meal plans and a budget-fitting grocery list based on users’ diets, allergies, tastes, and local Gulf supermarket prices.",
-      "category": "Health & Fitness",
-      "sources": ["trustmrr"],
+      "key": "github:frigadehq/yogurt",
+      "name": "Yogurt",
+      "originalName": "Yogurt – Free, private, open-source alternative to Granola",
+      "url": "https://github.com/FrigadeHQ/yogurt",
+      "whatItIs": "Show HN başlığı: Yogurt – Free, private, open-source alternative to Granola",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["showhn"],
       "score": {
-        "sources": 0,
-        "revenue": 3,
-        "product": 1,
-        "quality": 4,
-        "signals": 1.32,
+        "trend": 0.76,
         "momentum": 0,
-        "total": 5.32
+        "total": 0.76,
+        "parts": [
+          {
+            "label": "GitHub yıldız (7g)",
+            "value": 0.76
+          }
+        ]
       },
-      "weakSignal": false,
-      "momentum": null,
+      "reason": "trend 0.76 (GitHub yıldız (7g) 0.76) + ivme 0 = 0.76",
+      "trend": {
+        "signals": [
+          {
+            "source": "showhn",
+            "metric": "hn_points",
+            "value": 307,
+            "date": "2026-11-11",
+            "url": "https://news.ycombinator.com/item?id=50454625"
+          },
+          {
+            "source": "showhn",
+            "metric": "hn_comments",
+            "value": 119,
+            "date": "2026-11-11",
+            "url": "https://news.ycombinator.com/item?id=50454625"
+          },
+          {
+            "source": "github",
+            "metric": "github_stars_7d",
+            "value": 1102,
+            "date": "2026-11-23",
+            "url": "https://github.com/frigadehq/yogurt/stargazers"
+          }
+        ],
+        "momentum": "ilk gözlem"
+      },
       "dataPoints": [
         {
-          "source": "trustmrr",
-          "metric": "mrr_usd",
-          "value": 18.14,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/prepi"
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 307,
+          "date": "2026-11-11",
+          "url": "https://news.ycombinator.com/item?id=50454625"
         },
         {
-          "source": "trustmrr",
-          "metric": "growth_mrr_30d_pct",
-          "value": 100,
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 119,
+          "date": "2026-11-11",
+          "url": "https://news.ycombinator.com/item?id=50454625"
+        },
+        {
+          "source": "github",
+          "metric": "github_stars_7d",
+          "value": 1102,
           "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/prepi"
+          "url": "https://github.com/frigadehq/yogurt/stargazers"
         }
       ],
-      "revenueEvidence": "MRR $18 (TrustMRR), MRR 30g büyümesi 100% — https://trustmrr.com/startup/prepi",
+      "revenueEvidence": "aranmadı",
       "tr": {
         "verdict": "found",
-        "reason": "TR mağazasında gerçek eşleşme: Prepi: Meal Plan & Grocery (0 TR rating, apple_tr). Durum: var ama çekiş yok (rating <= 5). Denene(n) sorgular: prepi | prepi creates personalized. Kanallar: apple_tr, play_tr, web_tr.",
-        "queries": ["prepi", "prepi creates personalized"],
+        "reason": "TR mağazasında gerçek eşleşme: Yogurt Roll 3D (0 TR rating, apple_tr). Durum: var ama çekiş yok (rating <= 5). Denene(n) sorgular: Yogurt. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["Yogurt"],
         "evidence": [
           {
-            "name": "Prepi: Meal Plan & Grocery",
+            "name": "Yogurt Roll 3D",
             "channel": "apple_tr",
             "ratingCount": 0,
-            "url": "https://apps.apple.com/tr/app/prepi-meal-plan-grocery/id6821628909?uo=4"
+            "url": "https://apps.apple.com/tr/app/yogurt-roll-3d/id1516165068?uo=4"
           },
           {
-            "name": "Prepi: Recipes & Meal Planner",
+            "name": "Yogurt",
             "channel": "apple_tr",
             "ratingCount": 0,
-            "url": "https://apps.apple.com/tr/app/prepi-recipes-meal-planner/id6754535508?uo=4"
+            "url": "https://apps.apple.com/tr/app/yogurt/id1525329635?uo=4"
           },
           {
-            "name": "Prepi: Meal Planner & Recipes",
+            "name": "Yogurt App",
             "channel": "apple_tr",
             "ratingCount": 0,
-            "url": "https://apps.apple.com/tr/app/prepi-meal-planner-recipes/id6786804935?uo=4"
+            "url": "https://apps.apple.com/tr/app/yogurt-app/id1639866524?uo=4"
           },
           {
-            "name": "Prepi: Yemek Planı & Tarifler",
+            "name": "Yogurt Atelier",
+            "channel": "apple_tr",
+            "ratingCount": 0,
+            "url": "https://apps.apple.com/tr/app/yogurt-atelier/id6827162799?uo=4"
+          },
+          {
+            "name": "Yogurt App",
             "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.padoski.koku&hl=tr&gl=TR"
-          },
-          {
-            "name": "Prepi: Rezepte, Einkauf & mehr",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=me.prepi&hl=tr&gl=TR"
+            "url": "https://play.google.com/store/apps/details?id=com.npselection&hl=tr&gl=TR"
           }
         ],
         "gapLabel": "zayıf"
@@ -483,425 +651,1007 @@
     },
     {
       "rank": 9,
-      "key": "getfunneled.com",
-      "name": "Get Funneled",
-      "originalName": "Get Funneled",
-      "url": "https://getfunneled.com",
-      "whatItIs": "AI Native post click funnel experience for D2C brands Productized service offering that AI does 97% of the work for",
-      "category": "Marketing",
-      "sources": ["trustmrr"],
+      "key": "github:diggerhq/opencomputer",
+      "name": "OpenComputer",
+      "originalName": "OpenComputer – an open source alternative to Devin",
+      "url": "https://github.com/diggerhq/opencomputer",
+      "whatItIs": "Show HN başlığı: OpenComputer – an open source alternative to Devin",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["showhn"],
       "score": {
-        "sources": 0,
-        "revenue": 3,
-        "product": 1,
-        "quality": 4,
-        "signals": 1.15,
+        "trend": 0.75,
         "momentum": 0,
-        "total": 5.15
+        "total": 0.75,
+        "parts": [
+          {
+            "label": "GitHub yıldız (7g)",
+            "value": 0.75
+          }
+        ]
       },
-      "weakSignal": false,
-      "momentum": null,
+      "reason": "trend 0.75 (GitHub yıldız (7g) 0.75) + ivme 0 = 0.75",
+      "trend": {
+        "signals": [
+          {
+            "source": "showhn",
+            "metric": "hn_points",
+            "value": 125,
+            "date": "2026-11-20",
+            "url": "https://news.ycombinator.com/item?id=50581403"
+          },
+          {
+            "source": "showhn",
+            "metric": "hn_comments",
+            "value": 36,
+            "date": "2026-11-20",
+            "url": "https://news.ycombinator.com/item?id=50581403"
+          },
+          {
+            "source": "github",
+            "metric": "github_stars_7d",
+            "value": 977,
+            "date": "2026-11-23",
+            "url": "https://github.com/diggerhq/opencomputer/stargazers"
+          }
+        ],
+        "momentum": "ilk gözlem"
+      },
       "dataPoints": [
         {
-          "source": "trustmrr",
-          "metric": "mrr_usd",
-          "value": 19125.81,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/getfunneled"
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 125,
+          "date": "2026-11-20",
+          "url": "https://news.ycombinator.com/item?id=50581403"
         },
         {
-          "source": "trustmrr",
-          "metric": "growth_mrr_30d_pct",
-          "value": 8.105954698329223,
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 36,
+          "date": "2026-11-20",
+          "url": "https://news.ycombinator.com/item?id=50581403"
+        },
+        {
+          "source": "github",
+          "metric": "github_stars_7d",
+          "value": 977,
           "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/getfunneled"
+          "url": "https://github.com/diggerhq/opencomputer/stargazers"
         }
       ],
-      "revenueEvidence": "MRR $19126 (TrustMRR), MRR 30g büyümesi 8.1% — https://trustmrr.com/startup/getfunneled",
+      "revenueEvidence": "aranmadı",
       "tr": {
-        "verdict": "uncertain",
-        "reason": "Web ürünü: mağazada bulunamadı; mağaza sonucu 'yok' anlamına gelmez. Web kanalı (Yandex TR) kontrol edildi, TR'ye özgü eşleşme bulunamadı. Denene(n) sorgular: Get Funneled | Get Funneled native post | yapay zeka aracı. Kanallar: apple_tr, play_tr, web_tr.",
-        "queries": ["Get Funneled", "Get Funneled native post", "yapay zeka aracı"],
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: OpenComputer. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["OpenComputer"],
         "evidence": [],
-        "gapLabel": "belirsiz"
+        "gapLabel": "boş"
       }
     },
     {
       "rank": 10,
-      "key": "landy-ai.com",
-      "name": "Landy AI",
-      "originalName": "Landy AI",
-      "url": "https://landy-ai.com",
-      "whatItIs": "AI landing page builder. Users describe their business in a few sentences and AI agents research the audience, write the copy, build the page and publish it on their own domain in minutes, with lead c",
-      "category": "Artificial Intelligence",
-      "sources": ["trustmrr"],
+      "key": "github:dodaios/ste80-humanizer",
+      "name": "STE80 Humanizer",
+      "originalName": "STE80 Humanizer – de-AI text by writing 80% of the way to ASD-STE100",
+      "url": "https://github.com/Dodaios/ste80-humanizer",
+      "whatItIs": "Show HN başlığı: STE80 Humanizer – de-AI text by writing 80% of the way to ASD-STE100",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["showhn"],
       "score": {
-        "sources": 0,
-        "revenue": 3,
-        "product": 1,
-        "quality": 4,
-        "signals": 0.98,
+        "trend": 0.63,
         "momentum": 0,
-        "total": 4.98
-      },
-      "weakSignal": false,
-      "momentum": null,
-      "dataPoints": [
-        {
-          "source": "trustmrr",
-          "metric": "mrr_usd",
-          "value": 8328,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/landy"
-        },
-        {
-          "source": "trustmrr",
-          "metric": "growth_mrr_30d_pct",
-          "value": -12.896140571069973,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/landy"
-        }
-      ],
-      "revenueEvidence": "MRR $8328 (TrustMRR), MRR 30g büyümesi -12.9% — https://trustmrr.com/startup/landy",
-      "tr": {
-        "verdict": "uncertain",
-        "reason": "Web SaaS için mağaza sinyali yetersiz; Landy (rating bilinmiyor) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: Landy AI | Landy AI landing builder | yapay zeka aracı. Kanallar: apple_tr, play_tr, web_tr.",
-        "queries": ["Landy AI", "Landy AI landing builder", "yapay zeka aracı"],
-        "evidence": [
+        "total": 0.63,
+        "parts": [
           {
-            "name": "Landy",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.limbo.landy&hl=tr&gl=TR"
+            "label": "GitHub yıldız (7g)",
+            "value": 0.63
+          }
+        ]
+      },
+      "reason": "trend 0.63 (GitHub yıldız (7g) 0.63) + ivme 0 = 0.63",
+      "trend": {
+        "signals": [
+          {
+            "source": "showhn",
+            "metric": "hn_points",
+            "value": 118,
+            "date": "2026-11-09",
+            "url": "https://news.ycombinator.com/item?id=50429144"
+          },
+          {
+            "source": "showhn",
+            "metric": "hn_comments",
+            "value": 45,
+            "date": "2026-11-09",
+            "url": "https://news.ycombinator.com/item?id=50429144"
+          },
+          {
+            "source": "github",
+            "metric": "github_stars_7d",
+            "value": 342,
+            "date": "2026-11-23",
+            "url": "https://github.com/dodaios/ste80-humanizer/stargazers"
           }
         ],
-        "gapLabel": "belirsiz"
+        "momentum": "ilk gözlem"
+      },
+      "dataPoints": [
+        {
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 118,
+          "date": "2026-11-09",
+          "url": "https://news.ycombinator.com/item?id=50429144"
+        },
+        {
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 45,
+          "date": "2026-11-09",
+          "url": "https://news.ycombinator.com/item?id=50429144"
+        },
+        {
+          "source": "github",
+          "metric": "github_stars_7d",
+          "value": 342,
+          "date": "2026-11-23",
+          "url": "https://github.com/dodaios/ste80-humanizer/stargazers"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: STE80 Humanizer. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["STE80 Humanizer"],
+        "evidence": [],
+        "gapLabel": "boş"
       }
     },
     {
       "rank": 11,
-      "key": "replycurrent.com",
-      "name": "ReplyCurrent",
-      "originalName": "ReplyCurrent",
-      "url": "https://www.replycurrent.com",
-      "whatItIs": "ReplyCurrent is an AI customer support SaaS I built to help businesses answer customer questions automatically. You connect your website, help center, or documents, and it creates an AI chatbot that a",
-      "category": "Artificial Intelligence",
-      "sources": ["trustmrr"],
+      "key": "github:aryamandarda/tamserve",
+      "name": "Open-source",
+      "originalName": "Open-source, real-time object tracking for live video feeds",
+      "url": "https://github.com/aryamandarda/tamserve",
+      "whatItIs": "Show HN başlığı: Open-source, real-time object tracking for live video feeds",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["showhn"],
       "score": {
-        "sources": 0,
-        "revenue": 3,
-        "product": 1,
-        "quality": 4,
-        "signals": 0.97,
+        "trend": 0.59,
         "momentum": 0,
-        "total": 4.97
+        "total": 0.59,
+        "parts": [
+          {
+            "label": "GitHub yıldız (7g)",
+            "value": 0.59
+          }
+        ]
       },
-      "weakSignal": false,
-      "momentum": null,
-      "dataPoints": [
-        {
-          "source": "trustmrr",
-          "metric": "mrr_usd",
-          "value": 303,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/replycurrent"
-        },
-        {
-          "source": "trustmrr",
-          "metric": "growth_mrr_30d_pct",
-          "value": 34.66666666666667,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/replycurrent"
-        }
-      ],
-      "revenueEvidence": "MRR $303 (TrustMRR), MRR 30g büyümesi 34.7% — https://trustmrr.com/startup/replycurrent",
-      "tr": {
-        "verdict": "uncertain",
-        "reason": "Web ürünü: mağazada yok; TR web kanalında yalnızca benzer ürünler bulundu (Daha Akıllı İş Akışları İçin 10 Verimli Yapay Zekâ Sohbet Botu — https://www.kimi.ai/tr/resources/best-ai-chatbot), doğrudan rakip doğrulanamadı. Denene(n) sorgular: ReplyCurrent | ReplyCurrent replycurrent customer | yapay zeka sohbet botu aracı. Kanallar: apple_tr, play_tr, web_tr.",
-        "queries": [
-          "ReplyCurrent",
-          "ReplyCurrent replycurrent customer",
-          "yapay zeka sohbet botu aracı"
-        ],
-        "evidence": [
+      "reason": "trend 0.59 (GitHub yıldız (7g) 0.59) + ivme 0 = 0.59",
+      "trend": {
+        "signals": [
           {
-            "name": "Daha Akıllı İş Akışları İçin 10 Verimli Yapay Zekâ Sohbet Botu",
-            "channel": "web_tr",
-            "url": "https://www.kimi.ai/tr/resources/best-ai-chatbot"
+            "source": "showhn",
+            "metric": "hn_points",
+            "value": 123,
+            "date": "2026-11-16",
+            "url": "https://news.ycombinator.com/item?id=50523377"
           },
           {
-            "name": "Görmezden Gelemeyeceğiniz 10 İnanılmaz Yapay Zeka ...",
-            "channel": "web_tr",
-            "url": "https://www.arkthinker.com/tr/ai-tools/top-ai-chatbot/"
+            "source": "showhn",
+            "metric": "hn_comments",
+            "value": 17,
+            "date": "2026-11-16",
+            "url": "https://news.ycombinator.com/item?id=50523377"
           },
           {
-            "name": "Ücretsiz AI Sohbet — Akıllı Asistan, Anlık Yanıtlar 2026",
-            "channel": "web_tr",
-            "url": "https://get-tools.com/tr/tools/ai/ai-chatbot"
-          },
-          {
-            "name": "AI Bot Oluşturucu · Ücretsiz AI Mini Uygulama",
-            "channel": "web_tr",
-            "url": "https://miniapps.ai/tr/Bot-Studio"
-          },
-          {
-            "name": "Çeşitli Yapay Zekalarla Hepsi Bir Arada Ücretsiz Çevrimiçi...",
-            "channel": "web_tr",
-            "url": "https://sider.ai/tr/products/chat-with-bots"
-          },
-          {
-            "name": "Web Siteleri İçin Yapay Zeka Sohbet Botu — Kendi Yapay ...",
-            "channel": "web_tr",
-            "url": "https://tr.fastbots.ai/"
-          },
-          {
-            "name": "Yapay Zeka Asistanları ve Sohbet Botları : 181 Araç (2026)",
-            "channel": "web_tr",
-            "url": "https://www.yapayzeka.ai/kategoriler/asistanlar/"
-          },
-          {
-            "name": "Yapay Zekaya Soru Sor — Ücretsiz AI ile Konuş, Anında Yanıt",
-            "channel": "web_tr",
-            "url": "https://homiwork.com/tr/app/chat"
+            "source": "github",
+            "metric": "github_stars_7d",
+            "value": 224,
+            "date": "2026-11-23",
+            "url": "https://github.com/aryamandarda/tamserve/stargazers"
           }
         ],
-        "gapLabel": "belirsiz"
+        "momentum": "ilk gözlem"
+      },
+      "dataPoints": [
+        {
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 123,
+          "date": "2026-11-16",
+          "url": "https://news.ycombinator.com/item?id=50523377"
+        },
+        {
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 17,
+          "date": "2026-11-16",
+          "url": "https://news.ycombinator.com/item?id=50523377"
+        },
+        {
+          "source": "github",
+          "metric": "github_stars_7d",
+          "value": 224,
+          "date": "2026-11-23",
+          "url": "https://github.com/aryamandarda/tamserve/stargazers"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Open-source. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["Open-source"],
+        "evidence": [],
+        "gapLabel": "boş"
       }
     },
     {
       "rank": 12,
-      "key": "penmo.co",
-      "name": "Penmo",
-      "originalName": "Penmo",
-      "url": "https://penmo.co",
-      "whatItIs": "Penmo plans and creates content that helps businesses turn interest into customers. We build connected content funnels using blogs, landing pages, emails, case studies, and social posts, with human wr",
-      "category": "Content Creation",
-      "sources": ["trustmrr"],
+      "key": "github:simpsoka/zigzag",
+      "name": "My $300 embroidery",
+      "originalName": "My $300 embroidery machine needed a subscription, so I built my own app",
+      "url": "https://github.com/simpsoka/zigzag",
+      "whatItIs": "Show HN başlığı: My $300 embroidery machine needed a subscription, so I built my own app",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["showhn"],
       "score": {
-        "sources": 0,
-        "revenue": 3,
-        "product": 1,
-        "quality": 4,
-        "signals": 0.96,
+        "trend": 0.58,
         "momentum": 0,
-        "total": 4.96
+        "total": 0.58,
+        "parts": [
+          {
+            "label": "GitHub yıldız (7g)",
+            "value": 0.58
+          }
+        ]
       },
-      "weakSignal": false,
-      "momentum": null,
-      "dataPoints": [
-        {
-          "source": "trustmrr",
-          "metric": "mrr_usd",
-          "value": 6725,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/penmo"
-        },
-        {
-          "source": "trustmrr",
-          "metric": "growth_mrr_30d_pct",
-          "value": 0,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/penmo"
-        }
-      ],
-      "revenueEvidence": "MRR $6725 (TrustMRR), MRR 30g büyümesi 0% — https://trustmrr.com/startup/penmo",
-      "tr": {
-        "verdict": "uncertain",
-        "reason": "Web SaaS için mağaza sinyali yetersiz; Penmo+ Quiet Writing Notebook (0 TR rating) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: Penmo | Penmo penmo plans. Kanallar: apple_tr, play_tr, web_tr.",
-        "queries": ["Penmo", "Penmo penmo plans"],
-        "evidence": [
+      "reason": "trend 0.58 (GitHub yıldız (7g) 0.58) + ivme 0 = 0.58",
+      "trend": {
+        "signals": [
           {
-            "name": "Penmo+ Quiet Writing Notebook",
-            "channel": "apple_tr",
-            "ratingCount": 0,
-            "url": "https://apps.apple.com/tr/app/penmo-quiet-writing-notebook/id6777692398?uo=4"
+            "source": "showhn",
+            "metric": "hn_points",
+            "value": 743,
+            "date": "2026-11-12",
+            "url": "https://news.ycombinator.com/item?id=50470488"
           },
           {
-            "name": "Penmo + Sessiz Yazı Defteri Uygulaması - App Store",
-            "channel": "web_tr",
-            "url": "https://apps.apple.com/tr/app/penmo-sessiz-yaz%C4%B1-defteri/id6777692398?l=tr&platform=mac"
+            "source": "showhn",
+            "metric": "hn_comments",
+            "value": 260,
+            "date": "2026-11-12",
+            "url": "https://news.ycombinator.com/item?id=50470488"
           },
           {
-            "name": "Bağlantı: reddit.com",
-            "channel": "web_tr",
-            "url": "https://www.reddit.com/r/TheFounders/comments/1i5vnx6/introducing_penmoco_a_content_creation_platform/"
+            "source": "github",
+            "metric": "github_stars_7d",
+            "value": 209,
+            "date": "2026-11-23",
+            "url": "https://github.com/simpsoka/zigzag/stargazers"
           }
         ],
-        "gapLabel": "belirsiz"
+        "momentum": "ilk gözlem"
+      },
+      "dataPoints": [
+        {
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 743,
+          "date": "2026-11-12",
+          "url": "https://news.ycombinator.com/item?id=50470488"
+        },
+        {
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 260,
+          "date": "2026-11-12",
+          "url": "https://news.ycombinator.com/item?id=50470488"
+        },
+        {
+          "source": "github",
+          "metric": "github_stars_7d",
+          "value": 209,
+          "date": "2026-11-23",
+          "url": "https://github.com/simpsoka/zigzag/stargazers"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: My $300 embroidery. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["My $300 embroidery"],
+        "evidence": [],
+        "gapLabel": "boş"
       }
     },
     {
       "rank": 13,
-      "key": "linkpost.gg",
-      "name": "LinkPost",
-      "originalName": "LinkPost",
-      "url": "https://www.linkpost.gg",
-      "whatItIs": "LinkPost is part of LinkEmpire, offered as a complete portfolio for USD 79,000: three LinkedIn SaaS products (LinkPost, LinkHub, LinkMagnet), the LinkEarn self-paced course and shared distribution ass",
-      "category": "Artificial Intelligence",
-      "sources": ["trustmrr"],
+      "key": "github:gulivan/worker755",
+      "name": "game where you",
+      "originalName": "I built a game where you are an LLM's subagent",
+      "url": "https://github.com/gulivan/worker755",
+      "whatItIs": "Show HN başlığı: I built a game where you are an LLM's subagent",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["showhn"],
       "score": {
-        "sources": 0,
-        "revenue": 3,
-        "product": 1,
-        "quality": 4,
-        "signals": 0.92,
+        "trend": 0.57,
         "momentum": 0,
-        "total": 4.92
-      },
-      "weakSignal": false,
-      "momentum": null,
-      "dataPoints": [
-        {
-          "source": "trustmrr",
-          "metric": "mrr_usd",
-          "value": 4730.96,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/linkpost"
-        },
-        {
-          "source": "trustmrr",
-          "metric": "growth_mrr_30d_pct",
-          "value": -5.360326881167411,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/linkpost"
-        }
-      ],
-      "revenueEvidence": "MRR $4731 (TrustMRR), MRR 30g büyümesi -5.4% — https://trustmrr.com/startup/linkpost",
-      "tr": {
-        "verdict": "uncertain",
-        "reason": "Web SaaS için mağaza sinyali yetersiz; LinkPost (0 TR rating) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: LinkPost | LinkPost linkpost part. Kanallar: apple_tr, play_tr, web_tr.",
-        "queries": ["LinkPost", "LinkPost linkpost part"],
-        "evidence": [
+        "total": 0.57,
+        "parts": [
           {
-            "name": "LinkPost",
-            "channel": "apple_tr",
-            "ratingCount": 0,
-            "url": "https://apps.apple.com/tr/app/linkpost/id6504302645?uo=4"
+            "label": "GitHub yıldız (7g)",
+            "value": 0.57
+          }
+        ]
+      },
+      "reason": "trend 0.57 (GitHub yıldız (7g) 0.57) + ivme 0 = 0.57",
+      "trend": {
+        "signals": [
+          {
+            "source": "showhn",
+            "metric": "hn_points",
+            "value": 331,
+            "date": "2026-11-22",
+            "url": "https://news.ycombinator.com/item?id=50599762"
           },
           {
-            "name": "LinkPost",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=org.linkpost.app&hl=tr&gl=TR"
+            "source": "showhn",
+            "metric": "hn_comments",
+            "value": 79,
+            "date": "2026-11-22",
+            "url": "https://news.ycombinator.com/item?id=50599762"
+          },
+          {
+            "source": "github",
+            "metric": "github_stars_7d",
+            "value": 187,
+            "date": "2026-11-23",
+            "url": "https://github.com/gulivan/worker755/stargazers"
           }
         ],
-        "gapLabel": "belirsiz"
+        "momentum": "ilk gözlem"
+      },
+      "dataPoints": [
+        {
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 331,
+          "date": "2026-11-22",
+          "url": "https://news.ycombinator.com/item?id=50599762"
+        },
+        {
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 79,
+          "date": "2026-11-22",
+          "url": "https://news.ycombinator.com/item?id=50599762"
+        },
+        {
+          "source": "github",
+          "metric": "github_stars_7d",
+          "value": 187,
+          "date": "2026-11-23",
+          "url": "https://github.com/gulivan/worker755/stargazers"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: game where you. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["game where you"],
+        "evidence": [],
+        "gapLabel": "boş"
       }
     },
     {
       "rank": 14,
-      "key": "canvasninja.app",
-      "name": "CanvasNinja",
-      "originalName": "CanvasNinja",
-      "url": "https://www.canvasninja.app",
-      "whatItIs": "CanvasNinja is a Chrome extension that students use to cheat on Canvas exams by staying undetected by Canvas's logging system. It has three main features: Privacy Guard, Answer Saver and Smart Answers",
-      "category": "Education",
-      "sources": ["trustmrr"],
+      "key": "github:zigaowang/zigzag",
+      "name": "Zigzag",
+      "originalName": "Zigzag, a native Mac browser for people leaving Arc",
+      "url": "https://github.com/ZigaoWang/zigzag",
+      "whatItIs": "Show HN başlığı: Zigzag, a native Mac browser for people leaving Arc",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["showhn"],
       "score": {
-        "sources": 0,
-        "revenue": 3,
-        "product": 1,
-        "quality": 4,
-        "signals": 0.9,
+        "trend": 0.57,
         "momentum": 0,
-        "total": 4.9
+        "total": 0.57,
+        "parts": [
+          {
+            "label": "GitHub yıldız (7g)",
+            "value": 0.57
+          }
+        ]
       },
-      "weakSignal": false,
-      "momentum": null,
+      "reason": "trend 0.57 (GitHub yıldız (7g) 0.57) + ivme 0 = 0.57",
+      "trend": {
+        "signals": [
+          {
+            "source": "showhn",
+            "metric": "hn_points",
+            "value": 123,
+            "date": "2026-11-14",
+            "url": "https://news.ycombinator.com/item?id=50496787"
+          },
+          {
+            "source": "showhn",
+            "metric": "hn_comments",
+            "value": 76,
+            "date": "2026-11-14",
+            "url": "https://news.ycombinator.com/item?id=50496787"
+          },
+          {
+            "source": "github",
+            "metric": "github_stars_7d",
+            "value": 198,
+            "date": "2026-11-23",
+            "url": "https://github.com/zigaowang/zigzag/stargazers"
+          }
+        ],
+        "momentum": "ilk gözlem"
+      },
       "dataPoints": [
         {
-          "source": "trustmrr",
-          "metric": "mrr_usd",
-          "value": 1777.83,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/canvasninjaapp"
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 123,
+          "date": "2026-11-14",
+          "url": "https://news.ycombinator.com/item?id=50496787"
         },
         {
-          "source": "trustmrr",
-          "metric": "growth_mrr_30d_pct",
-          "value": 9.009136059844257,
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 76,
+          "date": "2026-11-14",
+          "url": "https://news.ycombinator.com/item?id=50496787"
+        },
+        {
+          "source": "github",
+          "metric": "github_stars_7d",
+          "value": 198,
           "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/canvasninjaapp"
+          "url": "https://github.com/zigaowang/zigzag/stargazers"
         }
       ],
-      "revenueEvidence": "MRR $1778 (TrustMRR), MRR 30g büyümesi 9% — https://trustmrr.com/startup/canvasninjaapp",
+      "revenueEvidence": "aranmadı",
       "tr": {
-        "verdict": "uncertain",
-        "reason": "Web ürünü: mağazada bulunamadı; mağaza sonucu 'yok' anlamına gelmez. Web kanalı (Yandex TR) kontrol edildi, TR'ye özgü eşleşme bulunamadı. Denene(n) sorgular: CanvasNinja | CanvasNinja canvasninja chrome. Kanallar: apple_tr, play_tr, web_tr.",
-        "queries": ["CanvasNinja", "CanvasNinja canvasninja chrome"],
-        "evidence": [],
-        "gapLabel": "belirsiz"
+        "verdict": "found",
+        "reason": "TR mağazasında gerçek eşleşme: ZigZag (3537 TR rating, apple_tr). Durum: var ve çekiş var. Denene(n) sorgular: Zigzag. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["Zigzag"],
+        "evidence": [
+          {
+            "name": "ZigZag",
+            "channel": "apple_tr",
+            "ratingCount": 3537,
+            "url": "https://apps.apple.com/tr/app/zigzag/id951364656?uo=4"
+          },
+          {
+            "name": "Zigzag Delivery",
+            "channel": "apple_tr",
+            "ratingCount": 0,
+            "url": "https://apps.apple.com/tr/app/zigzag-delivery/id6474760766?uo=4"
+          },
+          {
+            "name": "ZigZag: ZTL Navigation",
+            "channel": "apple_tr",
+            "ratingCount": 0,
+            "url": "https://apps.apple.com/tr/app/zigzag-ztl-navigation/id6738909628?uo=4"
+          },
+          {
+            "name": "ZIGZAG ELD",
+            "channel": "play_tr",
+            "url": "https://play.google.com/store/apps/details?id=com.zigzag.eld&hl=tr&gl=TR"
+          },
+          {
+            "name": "ZigZag Delivery",
+            "channel": "play_tr",
+            "url": "https://play.google.com/store/apps/details?id=com.zigzag.delivery&hl=tr&gl=TR"
+          },
+          {
+            "name": "Zigzag Care",
+            "channel": "play_tr",
+            "url": "https://play.google.com/store/apps/details?id=com.zigzagcare.app&hl=tr&gl=TR"
+          }
+        ],
+        "gapLabel": "dolu"
       }
     },
     {
       "rank": 15,
-      "key": "pdfvault.so",
-      "name": "PDF Vault",
-      "originalName": "PDF Vault",
-      "url": "https://pdfvault.so",
-      "whatItIs": "PDF Vault is a done-for-you digital business-in-a-box. Members license ready-to-sell PDFs that come with a hosted sales page, and they keep 100% of their sales. It earns money two ways: one-time licen",
-      "category": "Marketplace",
-      "sources": ["trustmrr"],
+      "key": "github:ivankovic/omnidiff",
+      "name": "OmniDiff",
+      "originalName": "OmniDiff – Opensource, super fast, content aware Git difftool, in Rust",
+      "url": "https://github.com/ivankovic/omnidiff",
+      "whatItIs": "Show HN başlığı: OmniDiff – Opensource, super fast, content aware Git difftool, in Rust",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["showhn"],
       "score": {
-        "sources": 0,
-        "revenue": 3,
-        "product": 1,
-        "quality": 4,
-        "signals": 0.86,
+        "trend": 0.53,
         "momentum": 0,
-        "total": 4.86
+        "total": 0.53,
+        "parts": [
+          {
+            "label": "GitHub yıldız (7g)",
+            "value": 0.53
+          }
+        ]
       },
-      "weakSignal": false,
-      "momentum": null,
+      "reason": "trend 0.53 (GitHub yıldız (7g) 0.53) + ivme 0 = 0.53",
+      "trend": {
+        "signals": [
+          {
+            "source": "showhn",
+            "metric": "hn_points",
+            "value": 322,
+            "date": "2026-11-01",
+            "url": "https://news.ycombinator.com/item?id=50325253"
+          },
+          {
+            "source": "showhn",
+            "metric": "hn_comments",
+            "value": 97,
+            "date": "2026-11-01",
+            "url": "https://news.ycombinator.com/item?id=50325253"
+          },
+          {
+            "source": "github",
+            "metric": "github_stars_7d",
+            "value": 127,
+            "date": "2026-11-23",
+            "url": "https://github.com/ivankovic/omnidiff/stargazers"
+          }
+        ],
+        "momentum": "ilk gözlem"
+      },
       "dataPoints": [
         {
-          "source": "trustmrr",
-          "metric": "mrr_usd",
-          "value": 2295,
-          "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/pdf-vault"
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 322,
+          "date": "2026-11-01",
+          "url": "https://news.ycombinator.com/item?id=50325253"
         },
         {
-          "source": "trustmrr",
-          "metric": "growth_mrr_30d_pct",
-          "value": 2.4096385542168677,
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 97,
+          "date": "2026-11-01",
+          "url": "https://news.ycombinator.com/item?id=50325253"
+        },
+        {
+          "source": "github",
+          "metric": "github_stars_7d",
+          "value": 127,
           "date": "2026-11-23",
-          "url": "https://trustmrr.com/startup/pdf-vault"
+          "url": "https://github.com/ivankovic/omnidiff/stargazers"
         }
       ],
-      "revenueEvidence": "MRR $2295 (TrustMRR), MRR 30g büyümesi 2.4% — https://trustmrr.com/startup/pdf-vault",
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: OmniDiff. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["OmniDiff"],
+        "evidence": [],
+        "gapLabel": "boş"
+      }
+    },
+    {
+      "rank": 16,
+      "key": "github:apakottur/unref",
+      "name": "Unref",
+      "originalName": "Unref – A Python dead code finder built on Ruff's parser",
+      "url": "https://github.com/Apakottur/unref",
+      "whatItIs": "Show HN başlığı: Unref – A Python dead code finder built on Ruff's parser",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["showhn"],
+      "score": {
+        "trend": 0.53,
+        "momentum": 0,
+        "total": 0.53,
+        "parts": [
+          {
+            "label": "GitHub yıldız (7g)",
+            "value": 0.53
+          }
+        ]
+      },
+      "reason": "trend 0.53 (GitHub yıldız (7g) 0.53) + ivme 0 = 0.53",
+      "trend": {
+        "signals": [
+          {
+            "source": "showhn",
+            "metric": "hn_points",
+            "value": 63,
+            "date": "2026-11-16",
+            "url": "https://news.ycombinator.com/item?id=50517410"
+          },
+          {
+            "source": "showhn",
+            "metric": "hn_comments",
+            "value": 18,
+            "date": "2026-11-16",
+            "url": "https://news.ycombinator.com/item?id=50517410"
+          },
+          {
+            "source": "github",
+            "metric": "github_stars_7d",
+            "value": 134,
+            "date": "2026-11-23",
+            "url": "https://github.com/apakottur/unref/stargazers"
+          }
+        ],
+        "momentum": "ilk gözlem"
+      },
+      "dataPoints": [
+        {
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 63,
+          "date": "2026-11-16",
+          "url": "https://news.ycombinator.com/item?id=50517410"
+        },
+        {
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 18,
+          "date": "2026-11-16",
+          "url": "https://news.ycombinator.com/item?id=50517410"
+        },
+        {
+          "source": "github",
+          "metric": "github_stars_7d",
+          "value": 134,
+          "date": "2026-11-23",
+          "url": "https://github.com/apakottur/unref/stargazers"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Unref. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["Unref"],
+        "evidence": [],
+        "gapLabel": "boş"
+      }
+    },
+    {
+      "rank": 17,
+      "key": "github:parcha-ai/agentrun",
+      "name": "AgentRun",
+      "originalName": "AgentRun – open-source, Self-improving Managed Agents",
+      "url": "https://github.com/Parcha-ai/agentrun/blob/main/README.md",
+      "whatItIs": "Show HN başlığı: AgentRun – open-source, Self-improving Managed Agents",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["showhn"],
+      "score": {
+        "trend": 0.47,
+        "momentum": 0,
+        "total": 0.47,
+        "parts": [
+          {
+            "label": "GitHub yıldız (7g)",
+            "value": 0.47
+          }
+        ]
+      },
+      "reason": "trend 0.47 (GitHub yıldız (7g) 0.47) + ivme 0 = 0.47",
+      "trend": {
+        "signals": [
+          {
+            "source": "showhn",
+            "metric": "hn_points",
+            "value": 138,
+            "date": "2026-11-12",
+            "url": "https://news.ycombinator.com/item?id=50471650"
+          },
+          {
+            "source": "showhn",
+            "metric": "hn_comments",
+            "value": 41,
+            "date": "2026-11-12",
+            "url": "https://news.ycombinator.com/item?id=50471650"
+          },
+          {
+            "source": "github",
+            "metric": "github_stars_7d",
+            "value": 73,
+            "date": "2026-11-23",
+            "url": "https://github.com/parcha-ai/agentrun/stargazers"
+          }
+        ],
+        "momentum": "ilk gözlem"
+      },
+      "dataPoints": [
+        {
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 138,
+          "date": "2026-11-12",
+          "url": "https://news.ycombinator.com/item?id=50471650"
+        },
+        {
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 41,
+          "date": "2026-11-12",
+          "url": "https://news.ycombinator.com/item?id=50471650"
+        },
+        {
+          "source": "github",
+          "metric": "github_stars_7d",
+          "value": 73,
+          "date": "2026-11-23",
+          "url": "https://github.com/parcha-ai/agentrun/stargazers"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: AgentRun. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["AgentRun"],
+        "evidence": [],
+        "gapLabel": "boş"
+      }
+    },
+    {
+      "rank": 18,
+      "key": "github:kborer/cells",
+      "name": "ASCII cell aquarium",
+      "originalName": "An ASCII cell aquarium for your terminal",
+      "url": "https://github.com/kborer/cells/",
+      "whatItIs": "Show HN başlığı: An ASCII cell aquarium for your terminal",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["showhn"],
+      "score": {
+        "trend": 0.45,
+        "momentum": 0,
+        "total": 0.45,
+        "parts": [
+          {
+            "label": "GitHub yıldız (7g)",
+            "value": 0.45
+          }
+        ]
+      },
+      "reason": "trend 0.45 (GitHub yıldız (7g) 0.45) + ivme 0 = 0.45",
+      "trend": {
+        "signals": [
+          {
+            "source": "showhn",
+            "metric": "hn_points",
+            "value": 67,
+            "date": "2026-11-18",
+            "url": "https://news.ycombinator.com/item?id=50541047"
+          },
+          {
+            "source": "showhn",
+            "metric": "hn_comments",
+            "value": 22,
+            "date": "2026-11-18",
+            "url": "https://news.ycombinator.com/item?id=50541047"
+          },
+          {
+            "source": "github",
+            "metric": "github_stars_7d",
+            "value": 64,
+            "date": "2026-11-23",
+            "url": "https://github.com/kborer/cells/stargazers"
+          }
+        ],
+        "momentum": "ilk gözlem"
+      },
+      "dataPoints": [
+        {
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 67,
+          "date": "2026-11-18",
+          "url": "https://news.ycombinator.com/item?id=50541047"
+        },
+        {
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 22,
+          "date": "2026-11-18",
+          "url": "https://news.ycombinator.com/item?id=50541047"
+        },
+        {
+          "source": "github",
+          "metric": "github_stars_7d",
+          "value": 64,
+          "date": "2026-11-23",
+          "url": "https://github.com/kborer/cells/stargazers"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: ASCII cell aquarium. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["ASCII cell aquarium"],
+        "evidence": [],
+        "gapLabel": "boş"
+      }
+    },
+    {
+      "rank": 19,
+      "key": "github:0nelight/sutra-os",
+      "name": "Sutra-OS",
+      "originalName": "Sutra-OS – A self-hosted ontology platform",
+      "url": "https://github.com/0nelight/sutra-os",
+      "whatItIs": "Show HN başlığı: Sutra-OS – A self-hosted ontology platform",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["showhn"],
+      "score": {
+        "trend": 0.44,
+        "momentum": 0,
+        "total": 0.44,
+        "parts": [
+          {
+            "label": "GitHub yıldız (7g)",
+            "value": 0.44
+          }
+        ]
+      },
+      "reason": "trend 0.44 (GitHub yıldız (7g) 0.44) + ivme 0 = 0.44",
+      "trend": {
+        "signals": [
+          {
+            "source": "showhn",
+            "metric": "hn_points",
+            "value": 72,
+            "date": "2026-11-16",
+            "url": "https://news.ycombinator.com/item?id=50525052"
+          },
+          {
+            "source": "showhn",
+            "metric": "hn_comments",
+            "value": 37,
+            "date": "2026-11-16",
+            "url": "https://news.ycombinator.com/item?id=50525052"
+          },
+          {
+            "source": "github",
+            "metric": "github_stars_7d",
+            "value": 57,
+            "date": "2026-11-23",
+            "url": "https://github.com/0nelight/sutra-os/stargazers"
+          }
+        ],
+        "momentum": "ilk gözlem"
+      },
+      "dataPoints": [
+        {
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 72,
+          "date": "2026-11-16",
+          "url": "https://news.ycombinator.com/item?id=50525052"
+        },
+        {
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 37,
+          "date": "2026-11-16",
+          "url": "https://news.ycombinator.com/item?id=50525052"
+        },
+        {
+          "source": "github",
+          "metric": "github_stars_7d",
+          "value": 57,
+          "date": "2026-11-23",
+          "url": "https://github.com/0nelight/sutra-os/stargazers"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
       "tr": {
         "verdict": "uncertain",
-        "reason": "Web SaaS için mağaza sinyali yetersiz; PDF Vault - Document App (0 TR rating) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: PDF Vault | PDF Vault vault done-for-you. Kanallar: apple_tr, play_tr, web_tr.",
-        "queries": ["PDF Vault", "PDF Vault vault done-for-you"],
+        "reason": "Sutra (play_tr) eşleşti ama TR rating sayısı okunamadı; çekiş ayırt edilemiyor. Denene(n) sorgular: Sutra-OS. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["Sutra-OS"],
         "evidence": [
           {
-            "name": "PDF Vault - Document App",
-            "channel": "apple_tr",
-            "ratingCount": 0,
-            "url": "https://apps.apple.com/tr/app/pdf-vault-document-app/id1599303874?uo=4"
-          },
-          {
-            "name": "PDF Vault–Scanner & Converter",
-            "channel": "apple_tr",
-            "ratingCount": 0,
-            "url": "https://apps.apple.com/tr/app/pdf-vault-scanner-converter/id6820427196?uo=4"
-          },
-          {
-            "name": "PDF Vault–Scanner & Converter",
+            "name": "Sutra",
             "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.smartsudio.pdfvault&hl=tr&gl=TR"
+            "url": "https://play.google.com/store/apps/details?id=cyou.sutra.app&hl=tr&gl=TR"
           },
           {
-            "name": "PDF Vault Pro: PDF Reader",
+            "name": "Sutra",
             "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.pdfvaultpro.app&hl=tr&gl=TR"
-          },
-          {
-            "name": "PDF Vault Offline: PDF Tools",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.medicheckco.pdfora&hl=tr&gl=TR"
+            "url": "https://play.google.com/store/apps/details?id=com.dralien.sutra&hl=tr&gl=TR"
           }
         ],
         "gapLabel": "belirsiz"
+      }
+    },
+    {
+      "rank": 20,
+      "key": "github:tamnd/riemann-handbook",
+      "name": "Riemann Proof Handbook",
+      "originalName": "The Riemann Proof Handbook",
+      "url": "https://github.com/tamnd/riemann-handbook",
+      "whatItIs": "Show HN başlığı: The Riemann Proof Handbook",
+      "category": null,
+      "labels": ["trend"],
+      "sources": ["showhn"],
+      "score": {
+        "trend": 0.44,
+        "momentum": 0,
+        "total": 0.44,
+        "parts": [
+          {
+            "label": "GitHub yıldız (7g)",
+            "value": 0.44
+          }
+        ]
+      },
+      "reason": "trend 0.44 (GitHub yıldız (7g) 0.44) + ivme 0 = 0.44",
+      "trend": {
+        "signals": [
+          {
+            "source": "showhn",
+            "metric": "hn_points",
+            "value": 88,
+            "date": "2026-11-22",
+            "url": "https://news.ycombinator.com/item?id=50596664"
+          },
+          {
+            "source": "showhn",
+            "metric": "hn_comments",
+            "value": 60,
+            "date": "2026-11-22",
+            "url": "https://news.ycombinator.com/item?id=50596664"
+          },
+          {
+            "source": "github",
+            "metric": "github_stars_7d",
+            "value": 56,
+            "date": "2026-11-23",
+            "url": "https://github.com/tamnd/riemann-handbook/stargazers"
+          }
+        ],
+        "momentum": "ilk gözlem"
+      },
+      "dataPoints": [
+        {
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 88,
+          "date": "2026-11-22",
+          "url": "https://news.ycombinator.com/item?id=50596664"
+        },
+        {
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 60,
+          "date": "2026-11-22",
+          "url": "https://news.ycombinator.com/item?id=50596664"
+        },
+        {
+          "source": "github",
+          "metric": "github_stars_7d",
+          "value": 56,
+          "date": "2026-11-23",
+          "url": "https://github.com/tamnd/riemann-handbook/stargazers"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Riemann Proof Handbook. Kanallar: apple_tr, play_tr, web_tr.",
+        "queries": ["Riemann Proof Handbook"],
+        "evidence": [],
+        "gapLabel": "boş"
       }
     }
   ]

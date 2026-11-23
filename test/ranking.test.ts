@@ -70,30 +70,30 @@ test("ranking: top PH feed position outranks a low one", () => {
   assert.ok(top.score.trend > bottom.score.trend);
 });
 
-test("ranking: revenue is a small term and cannot outrank a real trend signal", () => {
-  const revenue = scoreCandidate(
-    candidate(
-      "g",
-      "Growing",
-      ["trustmrr"],
-      [point("trustmrr", "mrr_usd", 1000000), point("trustmrr", "growth_mrr_30d_pct", 900)],
-      { url: "https://growing.app" },
-    ),
+test("ranking: revenue is not a trend signal; a revenue-only row is left out of the list", () => {
+  const revenueRow = candidate(
+    "g",
+    "Growing",
+    ["trustmrr"],
+    [point("trustmrr", "mrr_usd", 1000000), point("trustmrr", "growth_mrr_30d_pct", 900)],
+    { url: "https://growing.app" },
   );
-  const trend = scoreCandidate(
-    candidate(
-      "t",
-      "Trend",
-      ["reddit"],
-      [point("reddit", "reddit_score", 25), point("reddit", "reddit_comments", 3)],
-      {
-        url: "https://trend.app",
-      },
-    ),
+  const trendRow = candidate(
+    "t",
+    "Trend",
+    ["reddit"],
+    [point("reddit", "reddit_score", 25), point("reddit", "reddit_comments", 3)],
+    {
+      url: "https://trend.app",
+    },
   );
+  const revenue = scoreCandidate(revenueRow);
   assert.equal(revenue.score.trend, 0);
-  assert.equal(revenue.score.revenue, 0.25);
-  assert.ok(trend.score.base > revenue.score.base);
+  assert.equal("revenue" in revenue.score, false);
+  assert.deepEqual(
+    selectTop([revenueRow, trendRow]).map((entry) => entry.candidate.key),
+    ["t"],
+  );
 });
 
 test("ranking: momentum from previous snapshot rewards rank drops and metric growth", () => {
@@ -270,13 +270,13 @@ test("Play rating parser: accepts explicit counts, ignores average scores and mi
   assert.equal(parsePlayRating("<div>no rating here</div>"), undefined);
 });
 
-test("ranking: low-signal HN posts (under the trend threshold, no revenue) are excluded", () => {
+test("ranking: low-signal HN posts (under the trend threshold) are excluded", () => {
   const good = Array.from({ length: 12 }, (_, index) =>
     candidate(
       `g${index}`,
       `Product ${index}`,
-      ["trustmrr"],
-      [point("trustmrr", "mrr_usd", 500), point("trustmrr", "growth_mrr_30d_pct", 5)],
+      ["reddit"],
+      [point("reddit", "reddit_score", 30), point("reddit", "reddit_comments", 4)],
       { url: `https://product${index}.com`, description: "a real web product" },
     ),
   );
@@ -292,5 +292,5 @@ test("ranking: low-signal HN posts (under the trend threshold, no revenue) are e
   const ranked = selectTop([...weak, ...good]);
   assert.equal(ranked.length, 12);
   assert.ok(ranked.every((entry) => entry.candidate.key.startsWith("g")));
-  assert.ok(ranked.every((entry) => entry.labels.includes("gelir")));
+  assert.ok(ranked.every((entry) => entry.labels.includes("trend")));
 });

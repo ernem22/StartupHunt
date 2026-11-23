@@ -1,227 +1,411 @@
 # Startup fikirleri
 
-Üretim: 2026-11-23T03:52:43.817Z · Kaynak: data\latest.json · Snapshot: data\2026-11-23.json · 15 fikir
+Üretim: 2026-11-23T12:43:00.625Z · Kaynak: data\latest.json · Snapshot: yok (ilk gözlem) · 20 fikir
 
-Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (URL/açıklama/kısa ad), sinyaller (log ölçekli HN/Reddit/MRR), snapshot ivmesi. En az 5 kart gelir kanıtlı. TR boşluğu: dolu/zayıf/boş/belirsiz.
+Sıralama yalnızca gerçek trend sayılarıyla yapılır: çoklu kaynak, PH/Apple US sırası, uygulama yaşı, HN/Reddit puanları, GitHub 7 günlük yıldız artışı ve bunların ivmesi. Gelir kanıtı sıralamaya girmez; yalnızca gösterilir. TR durumu sıralamaya girmez; her kartta ayrı TR alanı olarak yazılır (dolu olanlar da listede kalır).
 
-## 1. Store Stock Checker
+## 1. TikTok Pro
 
-- **Ne olduğu:** Realtime Apple Store stock checking.
-- **Neden listede:** trustmrr · skor 6.14 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 2.14, ivme 0)
-- **Ürün:** https://www.storestockchecker.com
+- **Etiket:** trend
+- **Ne olduğu:** apple sinyalı: apple_us_top_free_rank=1, apple_us_days_since_release=173
+- **Ham başlık:** TikTok Pro - Events
+- **Neden bu sırada:** trend 1.49 (Apple US sırası 0.99 + uygulama yaşı 0.5) + ivme 0 = 1.49 · toplam 1.49
+- **Ürün:** https://apps.apple.com/us/app/tiktok-pro-events/id6741796873
+- **Kaynaklar:** apple
+- **Trend:** ivme: ilk gözlem
+  - apple · apple_us_top_free_rank: **1** (2026-11-23) — https://apps.apple.com/us/app/tiktok-pro-events/id6741796873
+  - apple · apple_us_days_since_release: **173** (2026-11-23) — https://itunes.apple.com/lookup?id=6741796873&country=us
 - **Veri noktaları:**
-  - trustmrr · mrr_usd: **36005** (2026-11-23) — https://trustmrr.com/startup/store-stock-checker
-  - trustmrr · growth_mrr_30d_pct: **1204.5289855072463** (2026-11-23) — https://trustmrr.com/startup/store-stock-checker
-- **Gelir kanıtı:** MRR $36005 (TrustMRR), MRR 30g büyümesi 1204.5% — https://trustmrr.com/startup/store-stock-checker
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web SaaS için mağaza sinyali yetersiz; Stock Checker (rating bilinmiyor) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: Store Stock Checker | Store Stock Checker realtime apple. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: Store Stock Checker | Store Stock Checker realtime apple
-  - play_tr · Stock Checker (rating yok) — https://play.google.com/store/apps/details?id=com.amepos.stockchecker&hl=tr&gl=TR
+  - apple · apple_us_top_free_rank: **1** (2026-11-23) — https://apps.apple.com/us/app/tiktok-pro-events/id6741796873
+  - apple · apple_us_days_since_release: **173** (2026-11-23) — https://itunes.apple.com/lookup?id=6741796873&country=us
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** found · **TR boşluğu: dolu** — TR mağazasında gerçek eşleşme: TikTok (70571972 TR rating, play_tr). Durum: var ve çekiş var. Denene(n) sorgular: TikTok Pro. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: TikTok Pro
+  - play_tr · TikTok (70571972 TR rating) — https://play.google.com/store/apps/details?id=com.zhiliaoapp.musically&hl=tr&gl=TR
 
-## 2. Scalereach.ai
+## 2. Muse from Meta
 
-- **Ne olduğu:** AI video repurposing tool that turns long videos into viral short clips for TikTok, Reels and YouTube Shorts. Paste a YouTube, Twitch, Kick, Drive or Loom link and ScaleReach finds the best moments, s
-- **Neden listede:** trustmrr · skor 5.96 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 1.96, ivme 0)
-- **Ürün:** https://scalereach.ai
+- **Etiket:** trend
+- **Ne olduğu:** apple sinyalı: apple_us_top_free_rank=2, apple_us_days_since_release=76
+- **Neden bu sırada:** trend 1.48 (Apple US sırası 0.98 + uygulama yaşı 0.5) + ivme 0 = 1.48 · toplam 1.48
+- **Ürün:** https://apps.apple.com/us/app/muse-from-meta/id6760173601
+- **Kaynaklar:** apple
+- **Trend:** ivme: ilk gözlem
+  - apple · apple_us_top_free_rank: **2** (2026-11-23) — https://apps.apple.com/us/app/muse-from-meta/id6760173601
+  - apple · apple_us_days_since_release: **76** (2026-11-23) — https://itunes.apple.com/lookup?id=6760173601&country=us
 - **Veri noktaları:**
-  - trustmrr · mrr_usd: **6752.9** (2026-11-23) — https://trustmrr.com/startup/scalereach
-  - trustmrr · growth_mrr_30d_pct: **5012.9324096552255** (2026-11-23) — https://trustmrr.com/startup/scalereach
-- **Gelir kanıtı:** MRR $6753 (TrustMRR), MRR 30g büyümesi 5012.9% — https://trustmrr.com/startup/scalereach
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada bulunamadı; mağaza sonucu 'yok' anlamına gelmez. Web kanalı (Yandex TR) kontrol edildi, TR'ye özgü eşleşme bulunamadı. Denene(n) sorgular: Scalereach.ai | Scalereach.ai video repurposing | yapay zeka video aracı. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: Scalereach.ai | Scalereach.ai video repurposing | yapay zeka video aracı
+  - apple · apple_us_top_free_rank: **2** (2026-11-23) — https://apps.apple.com/us/app/muse-from-meta/id6760173601
+  - apple · apple_us_days_since_release: **76** (2026-11-23) — https://itunes.apple.com/lookup?id=6760173601&country=us
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Muse (play_tr) eşleşti ama TR rating sayısı okunamadı; çekiş ayırt edilemiyor. Denene(n) sorgular: Muse from Meta. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: Muse from Meta
+  - play_tr · Muse (rating yok) — https://play.google.com/store/apps/details?id=com.conzumex.musewatch&hl=tr&gl=TR
 
-## 3. AppZoku
+## 3. PineDrama
 
-- **Ne olduğu:** Appzoku is a marketing tool built for solo iOS developers and small teams who need to market like a growth team without hiring one. Scrolling, generating, editing, and rerolling concepts is free and u
-- **Neden listede:** trustmrr · skor 5.8 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 1.8, ivme 0)
-- **Ürün:** https://appzoku.com
+- **Etiket:** trend
+- **Ne olduğu:** apple sinyalı: apple_us_top_free_rank=7, apple_us_days_since_release=335
+- **Ham başlık:** PineDrama - Short Dramas
+- **Neden bu sırada:** trend 1.18 (Apple US sırası 0.93 + uygulama yaşı 0.25) + ivme 0 = 1.18 · toplam 1.18
+- **Ürün:** https://apps.apple.com/us/app/pinedrama-short-dramas/id6754134922
+- **Kaynaklar:** apple
+- **Trend:** ivme: ilk gözlem
+  - apple · apple_us_top_free_rank: **7** (2026-11-23) — https://apps.apple.com/us/app/pinedrama-short-dramas/id6754134922
+  - apple · apple_us_days_since_release: **335** (2026-11-23) — https://itunes.apple.com/lookup?id=6754134922&country=us
 - **Veri noktaları:**
-  - trustmrr · mrr_usd: **1527.38** (2026-11-23) — https://trustmrr.com/startup/appzoku
-  - trustmrr · growth_mrr_30d_pct: **866.6947408328365** (2026-11-23) — https://trustmrr.com/startup/appzoku
-- **Gelir kanıtı:** MRR $1527 (TrustMRR), MRR 30g büyümesi 866.7% — https://trustmrr.com/startup/appzoku
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada yok; TR web kanalında yalnızca benzer ürünler bulundu (Bağlantı: facebook.com — https://www.facebook.com/appzok/), doğrudan rakip doğrulanamadı. Denene(n) sorgular: AppZoku | AppZoku appzoku marketing | pazarlama aracı. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: AppZoku | AppZoku appzoku marketing | pazarlama aracı
-  - web_tr · Bağlantı: facebook.com (rating yok) — https://www.facebook.com/appzok/
+  - apple · apple_us_top_free_rank: **7** (2026-11-23) — https://apps.apple.com/us/app/pinedrama-short-dramas/id6754134922
+  - apple · apple_us_days_since_release: **335** (2026-11-23) — https://itunes.apple.com/lookup?id=6754134922&country=us
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Pinedrama Video - Field8 AI (play_tr) eşleşti ama TR rating sayısı okunamadı; çekiş ayırt edilemiyor. Denene(n) sorgular: PineDrama. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: PineDrama
+  - play_tr · Pinedrama Video - Field8 AI (rating yok) — https://play.google.com/store/apps/details?id=vip.hicbrickwork.ai.highfield8&hl=tr&gl=TR
 
-## 4. CatalogoHoy
+## 4. Untraced
 
-- **Ne olduğu:** Manage an online product catalog, orders, sales, customers, and store metrics from your phone.
-- **Neden listede:** trustmrr · skor 5.69 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 1.69, ivme 0)
-- **Ürün:** https://catalogohoy.com
+- **Etiket:** trend
+- **Ne olduğu:** apple sinyalı: apple_us_top_free_rank=35, apple_us_days_since_release=32
+- **Ham başlık:** Untraced: Find the Suspect
+- **Neden bu sırada:** trend 1.15 (Apple US sırası 0.65 + uygulama yaşı 0.5) + ivme 0 = 1.15 · toplam 1.15
+- **Ürün:** https://apps.apple.com/us/app/untraced-find-the-suspect/id6817187484
+- **Kaynaklar:** apple
+- **Trend:** ivme: ilk gözlem
+  - apple · apple_us_top_free_rank: **35** (2026-11-23) — https://apps.apple.com/us/app/untraced-find-the-suspect/id6817187484
+  - apple · apple_us_days_since_release: **32** (2026-11-23) — https://itunes.apple.com/lookup?id=6817187484&country=us
 - **Veri noktaları:**
-  - trustmrr · mrr_usd: **555.5** (2026-11-23) — https://trustmrr.com/startup/catalogohoy
-  - trustmrr · growth_mrr_30d_pct: **413.78098409174993** (2026-11-23) — https://trustmrr.com/startup/catalogohoy
-- **Gelir kanıtı:** MRR $556 (TrustMRR), MRR 30g büyümesi 413.8% — https://trustmrr.com/startup/catalogohoy
-- **TR doygunluğu:** found · **TR boşluğu: zayıf** — TR mağazasında gerçek eşleşme: CatalogoHoy: Catálogo y ventas (0 TR rating, apple_tr). Durum: var ama çekiş yok (rating <= 5). Denene(n) sorgular: CatalogoHoy | CatalogoHoy manage catalog. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: CatalogoHoy | CatalogoHoy manage catalog
-  - apple_tr · CatalogoHoy: Catálogo y ventas (0 TR rating) — https://apps.apple.com/tr/app/catalogohoy-cat%C3%A1logo-y-ventas/id6817059692?uo=4
-  - play_tr · CatalogoHoy: Catálogo y ventas (rating yok) — https://play.google.com/store/apps/details?id=com.catalogohoy.app&hl=tr&gl=TR
+  - apple · apple_us_top_free_rank: **35** (2026-11-23) — https://apps.apple.com/us/app/untraced-find-the-suspect/id6817187484
+  - apple · apple_us_days_since_release: **32** (2026-11-23) — https://itunes.apple.com/lookup?id=6817187484&country=us
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** found · **TR boşluğu: zayıf** — TR mağazasında gerçek eşleşme: Untraced: Find the Suspect (1 TR rating, apple_tr). Durum: var ama çekiş yok (rating <= 5). Denene(n) sorgular: Untraced. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: Untraced
+  - apple_tr · Untraced: Find the Suspect (1 TR rating) — https://apps.apple.com/tr/app/untraced-find-the-suspect/id6817187484?uo=4
 
-## 5. Screeny
+## 5. Health100
 
-- **Ne olduğu:** The simplest way to make beautiful product demos. Screeny is an iOS and macOS app that turns raw screenshots and screen recordings into polished mockups and 3D animations in seconds, ready for social
-- **Ham başlık:** Screeny: Mockup & Product Demo
-- **Neden listede:** trustmrr · skor 5.64 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 1.64, ivme 0)
-- **Ürün:** https://getscreeny.app
+- **Etiket:** trend
+- **Ne olduğu:** apple sinyalı: apple_us_top_free_rank=37, apple_us_days_since_release=145
+- **Neden bu sırada:** trend 1.13 (Apple US sırası 0.63 + uygulama yaşı 0.5) + ivme 0 = 1.13 · toplam 1.13
+- **Ürün:** https://apps.apple.com/us/app/health100/id6760536822
+- **Kaynaklar:** apple
+- **Trend:** ivme: ilk gözlem
+  - apple · apple_us_top_free_rank: **37** (2026-11-23) — https://apps.apple.com/us/app/health100/id6760536822
+  - apple · apple_us_days_since_release: **145** (2026-11-23) — https://itunes.apple.com/lookup?id=6760536822&country=us
 - **Veri noktaları:**
-  - trustmrr · mrr_usd: **489.46** (2026-11-23) — https://trustmrr.com/startup/screeny
-  - trustmrr · growth_mrr_30d_pct: **96.81531223611725** (2026-11-23) — https://trustmrr.com/startup/screeny
-- **Gelir kanıtı:** MRR $489 (TrustMRR), MRR 30g büyümesi 96.8% — https://trustmrr.com/startup/screeny
-- **TR doygunluğu:** found · **TR boşluğu: zayıf** — TR mağazasında gerçek eşleşme: Screeny (0 TR rating, apple_tr). Durum: var ama çekiş yok (rating <= 5). Denene(n) sorgular: Screeny | Screeny simplest make. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: Screeny | Screeny simplest make
-  - apple_tr · Screeny (0 TR rating) — https://apps.apple.com/tr/app/screeny/id1144250246?uo=4
-  - apple_tr · Screeny: Screenshot Editor (0 TR rating) — https://apps.apple.com/tr/app/screeny-screenshot-editor/id6758330232?uo=4
-  - apple_tr · Screeny: App Blocker & Focus (0 TR rating) — https://apps.apple.com/tr/app/screeny-app-blocker-focus/id6768062803?uo=4
-  - play_tr · Screeny - Screenshot Manager (rating yok) — https://play.google.com/store/apps/details?id=com.nxet.screenshotmanager&hl=tr&gl=TR
-  - play_tr · Screeny: Ekran Süresi Sınırı (rating yok) — https://play.google.com/store/apps/details?id=screentime.tracker.app.usage.phone.blocker&hl=tr&gl=TR
+  - apple · apple_us_top_free_rank: **37** (2026-11-23) — https://apps.apple.com/us/app/health100/id6760536822
+  - apple · apple_us_days_since_release: **145** (2026-11-23) — https://itunes.apple.com/lookup?id=6760536822&country=us
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** not_found · **TR boşluğu: boş** — TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Health100. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: Health100
 
-## 6. Coralflavor
+## 6. Get your coding
 
-- **Ne olduğu:** Private AI chatbot with E2E encryption
-- **Neden listede:** trustmrr · skor 5.62 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 1.62, ivme 0)
-- **Ürün:** https://coralflavor.com
+- **Etiket:** trend
+- **Ne olduğu:** Show HN başlığı: Get your coding agent off ~2019 JavaScript, onto modern web primitives
+- **Ham başlık:** Get your coding agent off ~2019 JavaScript, onto modern web primitives
+- **Neden bu sırada:** trend 0.91 (GitHub yıldız (7g) 0.91) + ivme 0 = 0.91 · toplam 0.91
+- **Ürün:** https://github.com/GoogleChrome/modern-web-guidance
+- **Kaynaklar:** showhn
+- **Trend:** ivme: ilk gözlem
+  - showhn · hn_points: **449** (2026-11-10) — https://news.ycombinator.com/item?id=50443812
+  - showhn · hn_comments: **146** (2026-11-10) — https://news.ycombinator.com/item?id=50443812
+  - github · github_stars_7d: **4170** (2026-11-23) — https://github.com/googlechrome/modern-web-guidance/stargazers
 - **Veri noktaları:**
-  - trustmrr · mrr_usd: **4381** (2026-11-23) — https://trustmrr.com/startup/coralflavor
-  - trustmrr · growth_mrr_30d_pct: **70.86583463338533** (2026-11-23) — https://trustmrr.com/startup/coralflavor
-- **Gelir kanıtı:** MRR $4381 (TrustMRR), MRR 30g büyümesi 70.9% — https://trustmrr.com/startup/coralflavor
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada bulunamadı; mağaza sonucu 'yok' anlamına gelmez. Web kanalı (Yandex TR) kontrol edildi, TR'ye özgü eşleşme bulunamadı. Denene(n) sorgular: Coralflavor | Coralflavor private chatbot | yapay zeka sohbet botu aracı. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: Coralflavor | Coralflavor private chatbot | yapay zeka sohbet botu aracı
+  - showhn · hn_points: **449** (2026-11-10) — https://news.ycombinator.com/item?id=50443812
+  - showhn · hn_comments: **146** (2026-11-10) — https://news.ycombinator.com/item?id=50443812
+  - github · github_stars_7d: **4170** (2026-11-23) — https://github.com/googlechrome/modern-web-guidance/stargazers
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada bulunamadı; mağaza sonucu 'yok' anlamına gelmez. Web kanalı (Yandex TR) kontrol edildi, TR'ye özgü eşleşme bulunamadı. Denene(n) sorgular: Get your coding. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: Get your coding
 
-## 7. Superjoin
+## 7. 15 MB self-hosted
 
-- **Ne olduğu:** Superjoin brings live data from HubSpot, Salesforce and 30+ integrations into Google Sheets and Excel, with scheduled refreshes and two-way HubSpot sync. 116 paying business accounts, a HubSpot Certif
-- **Neden listede:** trustmrr · skor 5.38 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 1.38, ivme 0)
-- **Ürün:** https://www.superjoin.ai
+- **Etiket:** trend
+- **Ne olduğu:** Show HN başlığı: A 15 MB self-hosted Netflix and Spotify for your media server
+- **Ham başlık:** A 15 MB self-hosted Netflix and Spotify for your media server
+- **Neden bu sırada:** trend 0.79 (GitHub yıldız (7g) 0.79) + ivme 0 = 0.79 · toplam 0.79
+- **Ürün:** https://github.com/HolyArrs/HolyArrs
+- **Kaynaklar:** showhn
+- **Trend:** ivme: ilk gözlem
+  - showhn · hn_points: **172** (2026-11-10) — https://news.ycombinator.com/item?id=50439000
+  - showhn · hn_comments: **138** (2026-11-10) — https://news.ycombinator.com/item?id=50439000
+  - github · github_stars_7d: **1397** (2026-11-23) — https://github.com/holyarrs/holyarrs/stargazers
 - **Veri noktaları:**
-  - trustmrr · mrr_usd: **96667** (2026-11-23) — https://trustmrr.com/startup/superjoin
-  - trustmrr · growth_mrr_30d_pct: **13.033056208416646** (2026-11-23) — https://trustmrr.com/startup/superjoin
-- **Gelir kanıtı:** MRR $96667 (TrustMRR), MRR 30g büyümesi 13% — https://trustmrr.com/startup/superjoin
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada yok; TR web kanalında yalnızca benzer ürünler bulundu (Tablo Grafikler: Ücretsiz Online Tablo Oluşturma | Canva — https://www.canva.com/tr_tr/sema/tablo/), doğrudan rakip doğrulanamadı. Denene(n) sorgular: Superjoin | Superjoin superjoin brings | tablo aracı. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: Superjoin | Superjoin superjoin brings | tablo aracı
-  - web_tr · Tablo Grafikler: Ücretsiz Online Tablo Oluşturma | Canva (rating yok) — https://www.canva.com/tr_tr/sema/tablo/
-  - web_tr · Ücretsiz Online Tablo Oluşturucu | Jotform (rating yok) — https://www.jotform.com/tr/online-table-maker/
-  - web_tr · Tablohane&#x27;de Fotoğraflarınız ile Tablo Tasarlayabilirsiniz. (rating yok) — https://www.tablohane.com/sen-tasarla
-  - web_tr · Tablo Grafik Oluşturucu | Creately (rating yok) — https://creately.com/tr/lp/tablo-olu%C5%9Fturucu/
-  - web_tr · Google E- Tablolar : Online E- Tablolar ve Şablonlar (rating yok) — https://workspace.google.com/intl/tr/products/sheets/
-  - web_tr · Tablo Oluşturucu - Ücretsiz Online | QuickTableConvert (rating yok) — https://quicktableconvert.com/tr/tools/table-generator/
-  - web_tr · Harika E- Tablolar İçin Yapay Zeka Excel Agent | Kimi Sheets (rating yok) — https://www.kimi.ai/tr/features/sheets
+  - showhn · hn_points: **172** (2026-11-10) — https://news.ycombinator.com/item?id=50439000
+  - showhn · hn_comments: **138** (2026-11-10) — https://news.ycombinator.com/item?id=50439000
+  - github · github_stars_7d: **1397** (2026-11-23) — https://github.com/holyarrs/holyarrs/stargazers
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** not_found · **TR boşluğu: boş** — TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: 15 MB self-hosted. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: 15 MB self-hosted
 
-## 8. prepi
+## 8. Yogurt
 
-- **Ne olduğu:** Creates personalized weekly meal plans and a budget-fitting grocery list based on users’ diets, allergies, tastes, and local Gulf supermarket prices.
-- **Neden listede:** trustmrr · skor 5.32 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 1.32, ivme 0)
-- **Ürün:** https://apps.apple.com/us/app/prepi-meal-plan-grocery/id6821628909?uo=4
+- **Etiket:** trend
+- **Ne olduğu:** Show HN başlığı: Yogurt – Free, private, open-source alternative to Granola
+- **Ham başlık:** Yogurt – Free, private, open-source alternative to Granola
+- **Neden bu sırada:** trend 0.76 (GitHub yıldız (7g) 0.76) + ivme 0 = 0.76 · toplam 0.76
+- **Ürün:** https://github.com/FrigadeHQ/yogurt
+- **Kaynaklar:** showhn
+- **Trend:** ivme: ilk gözlem
+  - showhn · hn_points: **307** (2026-11-11) — https://news.ycombinator.com/item?id=50454625
+  - showhn · hn_comments: **119** (2026-11-11) — https://news.ycombinator.com/item?id=50454625
+  - github · github_stars_7d: **1102** (2026-11-23) — https://github.com/frigadehq/yogurt/stargazers
 - **Veri noktaları:**
-  - trustmrr · mrr_usd: **18.14** (2026-11-23) — https://trustmrr.com/startup/prepi
-  - trustmrr · growth_mrr_30d_pct: **100** (2026-11-23) — https://trustmrr.com/startup/prepi
-- **Gelir kanıtı:** MRR $18 (TrustMRR), MRR 30g büyümesi 100% — https://trustmrr.com/startup/prepi
-- **TR doygunluğu:** found · **TR boşluğu: zayıf** — TR mağazasında gerçek eşleşme: Prepi: Meal Plan & Grocery (0 TR rating, apple_tr). Durum: var ama çekiş yok (rating <= 5). Denene(n) sorgular: prepi | prepi creates personalized. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: prepi | prepi creates personalized
-  - apple_tr · Prepi: Meal Plan & Grocery (0 TR rating) — https://apps.apple.com/tr/app/prepi-meal-plan-grocery/id6821628909?uo=4
-  - apple_tr · Prepi: Recipes & Meal Planner (0 TR rating) — https://apps.apple.com/tr/app/prepi-recipes-meal-planner/id6754535508?uo=4
-  - apple_tr · Prepi: Meal Planner & Recipes (0 TR rating) — https://apps.apple.com/tr/app/prepi-meal-planner-recipes/id6786804935?uo=4
-  - play_tr · Prepi: Yemek Planı & Tarifler (rating yok) — https://play.google.com/store/apps/details?id=com.padoski.koku&hl=tr&gl=TR
-  - play_tr · Prepi: Rezepte, Einkauf & mehr (rating yok) — https://play.google.com/store/apps/details?id=me.prepi&hl=tr&gl=TR
+  - showhn · hn_points: **307** (2026-11-11) — https://news.ycombinator.com/item?id=50454625
+  - showhn · hn_comments: **119** (2026-11-11) — https://news.ycombinator.com/item?id=50454625
+  - github · github_stars_7d: **1102** (2026-11-23) — https://github.com/frigadehq/yogurt/stargazers
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** found · **TR boşluğu: zayıf** — TR mağazasında gerçek eşleşme: Yogurt Roll 3D (0 TR rating, apple_tr). Durum: var ama çekiş yok (rating <= 5). Denene(n) sorgular: Yogurt. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: Yogurt
+  - apple_tr · Yogurt Roll 3D (0 TR rating) — https://apps.apple.com/tr/app/yogurt-roll-3d/id1516165068?uo=4
+  - apple_tr · Yogurt (0 TR rating) — https://apps.apple.com/tr/app/yogurt/id1525329635?uo=4
+  - apple_tr · Yogurt App (0 TR rating) — https://apps.apple.com/tr/app/yogurt-app/id1639866524?uo=4
+  - apple_tr · Yogurt Atelier (0 TR rating) — https://apps.apple.com/tr/app/yogurt-atelier/id6827162799?uo=4
+  - play_tr · Yogurt App (rating yok) — https://play.google.com/store/apps/details?id=com.npselection&hl=tr&gl=TR
 
-## 9. Get Funneled
+## 9. OpenComputer
 
-- **Ne olduğu:** AI Native post click funnel experience for D2C brands Productized service offering that AI does 97% of the work for
-- **Neden listede:** trustmrr · skor 5.15 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 1.15, ivme 0)
-- **Ürün:** https://getfunneled.com
+- **Etiket:** trend
+- **Ne olduğu:** Show HN başlığı: OpenComputer – an open source alternative to Devin
+- **Ham başlık:** OpenComputer – an open source alternative to Devin
+- **Neden bu sırada:** trend 0.75 (GitHub yıldız (7g) 0.75) + ivme 0 = 0.75 · toplam 0.75
+- **Ürün:** https://github.com/diggerhq/opencomputer
+- **Kaynaklar:** showhn
+- **Trend:** ivme: ilk gözlem
+  - showhn · hn_points: **125** (2026-11-20) — https://news.ycombinator.com/item?id=50581403
+  - showhn · hn_comments: **36** (2026-11-20) — https://news.ycombinator.com/item?id=50581403
+  - github · github_stars_7d: **977** (2026-11-23) — https://github.com/diggerhq/opencomputer/stargazers
 - **Veri noktaları:**
-  - trustmrr · mrr_usd: **19125.81** (2026-11-23) — https://trustmrr.com/startup/getfunneled
-  - trustmrr · growth_mrr_30d_pct: **8.105954698329223** (2026-11-23) — https://trustmrr.com/startup/getfunneled
-- **Gelir kanıtı:** MRR $19126 (TrustMRR), MRR 30g büyümesi 8.1% — https://trustmrr.com/startup/getfunneled
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada bulunamadı; mağaza sonucu 'yok' anlamına gelmez. Web kanalı (Yandex TR) kontrol edildi, TR'ye özgü eşleşme bulunamadı. Denene(n) sorgular: Get Funneled | Get Funneled native post | yapay zeka aracı. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: Get Funneled | Get Funneled native post | yapay zeka aracı
+  - showhn · hn_points: **125** (2026-11-20) — https://news.ycombinator.com/item?id=50581403
+  - showhn · hn_comments: **36** (2026-11-20) — https://news.ycombinator.com/item?id=50581403
+  - github · github_stars_7d: **977** (2026-11-23) — https://github.com/diggerhq/opencomputer/stargazers
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** not_found · **TR boşluğu: boş** — TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: OpenComputer. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: OpenComputer
 
-## 10. Landy AI
+## 10. STE80 Humanizer
 
-- **Ne olduğu:** AI landing page builder. Users describe their business in a few sentences and AI agents research the audience, write the copy, build the page and publish it on their own domain in minutes, with lead c
-- **Neden listede:** trustmrr · skor 4.98 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 0.98, ivme 0)
-- **Ürün:** https://landy-ai.com
+- **Etiket:** trend
+- **Ne olduğu:** Show HN başlığı: STE80 Humanizer – de-AI text by writing 80% of the way to ASD-STE100
+- **Ham başlık:** STE80 Humanizer – de-AI text by writing 80% of the way to ASD-STE100
+- **Neden bu sırada:** trend 0.63 (GitHub yıldız (7g) 0.63) + ivme 0 = 0.63 · toplam 0.63
+- **Ürün:** https://github.com/Dodaios/ste80-humanizer
+- **Kaynaklar:** showhn
+- **Trend:** ivme: ilk gözlem
+  - showhn · hn_points: **118** (2026-11-09) — https://news.ycombinator.com/item?id=50429144
+  - showhn · hn_comments: **45** (2026-11-09) — https://news.ycombinator.com/item?id=50429144
+  - github · github_stars_7d: **342** (2026-11-23) — https://github.com/dodaios/ste80-humanizer/stargazers
 - **Veri noktaları:**
-  - trustmrr · mrr_usd: **8328** (2026-11-23) — https://trustmrr.com/startup/landy
-  - trustmrr · growth_mrr_30d_pct: **-12.896140571069973** (2026-11-23) — https://trustmrr.com/startup/landy
-- **Gelir kanıtı:** MRR $8328 (TrustMRR), MRR 30g büyümesi -12.9% — https://trustmrr.com/startup/landy
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web SaaS için mağaza sinyali yetersiz; Landy (rating bilinmiyor) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: Landy AI | Landy AI landing builder | yapay zeka aracı. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: Landy AI | Landy AI landing builder | yapay zeka aracı
-  - play_tr · Landy (rating yok) — https://play.google.com/store/apps/details?id=com.limbo.landy&hl=tr&gl=TR
+  - showhn · hn_points: **118** (2026-11-09) — https://news.ycombinator.com/item?id=50429144
+  - showhn · hn_comments: **45** (2026-11-09) — https://news.ycombinator.com/item?id=50429144
+  - github · github_stars_7d: **342** (2026-11-23) — https://github.com/dodaios/ste80-humanizer/stargazers
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** not_found · **TR boşluğu: boş** — TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: STE80 Humanizer. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: STE80 Humanizer
 
-## 11. ReplyCurrent
+## 11. Open-source
 
-- **Ne olduğu:** ReplyCurrent is an AI customer support SaaS I built to help businesses answer customer questions automatically. You connect your website, help center, or documents, and it creates an AI chatbot that a
-- **Neden listede:** trustmrr · skor 4.97 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 0.97, ivme 0)
-- **Ürün:** https://www.replycurrent.com
+- **Etiket:** trend
+- **Ne olduğu:** Show HN başlığı: Open-source, real-time object tracking for live video feeds
+- **Ham başlık:** Open-source, real-time object tracking for live video feeds
+- **Neden bu sırada:** trend 0.59 (GitHub yıldız (7g) 0.59) + ivme 0 = 0.59 · toplam 0.59
+- **Ürün:** https://github.com/aryamandarda/tamserve
+- **Kaynaklar:** showhn
+- **Trend:** ivme: ilk gözlem
+  - showhn · hn_points: **123** (2026-11-16) — https://news.ycombinator.com/item?id=50523377
+  - showhn · hn_comments: **17** (2026-11-16) — https://news.ycombinator.com/item?id=50523377
+  - github · github_stars_7d: **224** (2026-11-23) — https://github.com/aryamandarda/tamserve/stargazers
 - **Veri noktaları:**
-  - trustmrr · mrr_usd: **303** (2026-11-23) — https://trustmrr.com/startup/replycurrent
-  - trustmrr · growth_mrr_30d_pct: **34.66666666666667** (2026-11-23) — https://trustmrr.com/startup/replycurrent
-- **Gelir kanıtı:** MRR $303 (TrustMRR), MRR 30g büyümesi 34.7% — https://trustmrr.com/startup/replycurrent
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada yok; TR web kanalında yalnızca benzer ürünler bulundu (Daha Akıllı İş Akışları İçin 10 Verimli Yapay Zekâ Sohbet Botu — https://www.kimi.ai/tr/resources/best-ai-chatbot), doğrudan rakip doğrulanamadı. Denene(n) sorgular: ReplyCurrent | ReplyCurrent replycurrent customer | yapay zeka sohbet botu aracı. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: ReplyCurrent | ReplyCurrent replycurrent customer | yapay zeka sohbet botu aracı
-  - web_tr · Daha Akıllı İş Akışları İçin 10 Verimli Yapay Zekâ Sohbet Botu (rating yok) — https://www.kimi.ai/tr/resources/best-ai-chatbot
-  - web_tr · Görmezden Gelemeyeceğiniz 10 İnanılmaz Yapay Zeka ... (rating yok) — https://www.arkthinker.com/tr/ai-tools/top-ai-chatbot/
-  - web_tr · Ücretsiz AI Sohbet — Akıllı Asistan, Anlık Yanıtlar 2026 (rating yok) — https://get-tools.com/tr/tools/ai/ai-chatbot
-  - web_tr · AI Bot Oluşturucu · Ücretsiz AI Mini Uygulama (rating yok) — https://miniapps.ai/tr/Bot-Studio
-  - web_tr · Çeşitli Yapay Zekalarla Hepsi Bir Arada Ücretsiz Çevrimiçi... (rating yok) — https://sider.ai/tr/products/chat-with-bots
-  - web_tr · Web Siteleri İçin Yapay Zeka Sohbet Botu — Kendi Yapay ... (rating yok) — https://tr.fastbots.ai/
-  - web_tr · Yapay Zeka Asistanları ve Sohbet Botları : 181 Araç (2026) (rating yok) — https://www.yapayzeka.ai/kategoriler/asistanlar/
-  - web_tr · Yapay Zekaya Soru Sor — Ücretsiz AI ile Konuş, Anında Yanıt (rating yok) — https://homiwork.com/tr/app/chat
+  - showhn · hn_points: **123** (2026-11-16) — https://news.ycombinator.com/item?id=50523377
+  - showhn · hn_comments: **17** (2026-11-16) — https://news.ycombinator.com/item?id=50523377
+  - github · github_stars_7d: **224** (2026-11-23) — https://github.com/aryamandarda/tamserve/stargazers
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** not_found · **TR boşluğu: boş** — TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Open-source. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: Open-source
 
-## 12. Penmo
+## 12. My $300 embroidery
 
-- **Ne olduğu:** Penmo plans and creates content that helps businesses turn interest into customers. We build connected content funnels using blogs, landing pages, emails, case studies, and social posts, with human wr
-- **Neden listede:** trustmrr · skor 4.96 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 0.96, ivme 0)
-- **Ürün:** https://penmo.co
+- **Etiket:** trend
+- **Ne olduğu:** Show HN başlığı: My $300 embroidery machine needed a subscription, so I built my own app
+- **Ham başlık:** My $300 embroidery machine needed a subscription, so I built my own app
+- **Neden bu sırada:** trend 0.58 (GitHub yıldız (7g) 0.58) + ivme 0 = 0.58 · toplam 0.58
+- **Ürün:** https://github.com/simpsoka/zigzag
+- **Kaynaklar:** showhn
+- **Trend:** ivme: ilk gözlem
+  - showhn · hn_points: **743** (2026-11-12) — https://news.ycombinator.com/item?id=50470488
+  - showhn · hn_comments: **260** (2026-11-12) — https://news.ycombinator.com/item?id=50470488
+  - github · github_stars_7d: **209** (2026-11-23) — https://github.com/simpsoka/zigzag/stargazers
 - **Veri noktaları:**
-  - trustmrr · mrr_usd: **6725** (2026-11-23) — https://trustmrr.com/startup/penmo
-  - trustmrr · growth_mrr_30d_pct: **0** (2026-11-23) — https://trustmrr.com/startup/penmo
-- **Gelir kanıtı:** MRR $6725 (TrustMRR), MRR 30g büyümesi 0% — https://trustmrr.com/startup/penmo
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web SaaS için mağaza sinyali yetersiz; Penmo+ Quiet Writing Notebook (0 TR rating) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: Penmo | Penmo penmo plans. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: Penmo | Penmo penmo plans
-  - apple_tr · Penmo+ Quiet Writing Notebook (0 TR rating) — https://apps.apple.com/tr/app/penmo-quiet-writing-notebook/id6777692398?uo=4
-  - web_tr · Penmo + Sessiz Yazı Defteri Uygulaması - App Store (rating yok) — https://apps.apple.com/tr/app/penmo-sessiz-yaz%C4%B1-defteri/id6777692398?l=tr&platform=mac
-  - web_tr · Bağlantı: reddit.com (rating yok) — https://www.reddit.com/r/TheFounders/comments/1i5vnx6/introducing_penmoco_a_content_creation_platform/
+  - showhn · hn_points: **743** (2026-11-12) — https://news.ycombinator.com/item?id=50470488
+  - showhn · hn_comments: **260** (2026-11-12) — https://news.ycombinator.com/item?id=50470488
+  - github · github_stars_7d: **209** (2026-11-23) — https://github.com/simpsoka/zigzag/stargazers
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** not_found · **TR boşluğu: boş** — TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: My $300 embroidery. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: My $300 embroidery
 
-## 13. LinkPost
+## 13. game where you
 
-- **Ne olduğu:** LinkPost is part of LinkEmpire, offered as a complete portfolio for USD 79,000: three LinkedIn SaaS products (LinkPost, LinkHub, LinkMagnet), the LinkEarn self-paced course and shared distribution ass
-- **Neden listede:** trustmrr · skor 4.92 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 0.92, ivme 0)
-- **Ürün:** https://www.linkpost.gg
+- **Etiket:** trend
+- **Ne olduğu:** Show HN başlığı: I built a game where you are an LLM's subagent
+- **Ham başlık:** I built a game where you are an LLM's subagent
+- **Neden bu sırada:** trend 0.57 (GitHub yıldız (7g) 0.57) + ivme 0 = 0.57 · toplam 0.57
+- **Ürün:** https://github.com/gulivan/worker755
+- **Kaynaklar:** showhn
+- **Trend:** ivme: ilk gözlem
+  - showhn · hn_points: **331** (2026-11-22) — https://news.ycombinator.com/item?id=50599762
+  - showhn · hn_comments: **79** (2026-11-22) — https://news.ycombinator.com/item?id=50599762
+  - github · github_stars_7d: **187** (2026-11-23) — https://github.com/gulivan/worker755/stargazers
 - **Veri noktaları:**
-  - trustmrr · mrr_usd: **4730.96** (2026-11-23) — https://trustmrr.com/startup/linkpost
-  - trustmrr · growth_mrr_30d_pct: **-5.360326881167411** (2026-11-23) — https://trustmrr.com/startup/linkpost
-- **Gelir kanıtı:** MRR $4731 (TrustMRR), MRR 30g büyümesi -5.4% — https://trustmrr.com/startup/linkpost
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web SaaS için mağaza sinyali yetersiz; LinkPost (0 TR rating) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: LinkPost | LinkPost linkpost part. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: LinkPost | LinkPost linkpost part
-  - apple_tr · LinkPost (0 TR rating) — https://apps.apple.com/tr/app/linkpost/id6504302645?uo=4
-  - play_tr · LinkPost (rating yok) — https://play.google.com/store/apps/details?id=org.linkpost.app&hl=tr&gl=TR
+  - showhn · hn_points: **331** (2026-11-22) — https://news.ycombinator.com/item?id=50599762
+  - showhn · hn_comments: **79** (2026-11-22) — https://news.ycombinator.com/item?id=50599762
+  - github · github_stars_7d: **187** (2026-11-23) — https://github.com/gulivan/worker755/stargazers
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** not_found · **TR boşluğu: boş** — TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: game where you. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: game where you
 
-## 14. CanvasNinja
+## 14. Zigzag
 
-- **Ne olduğu:** CanvasNinja is a Chrome extension that students use to cheat on Canvas exams by staying undetected by Canvas's logging system. It has three main features: Privacy Guard, Answer Saver and Smart Answers
-- **Neden listede:** trustmrr · skor 4.9 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 0.9, ivme 0)
-- **Ürün:** https://www.canvasninja.app
+- **Etiket:** trend
+- **Ne olduğu:** Show HN başlığı: Zigzag, a native Mac browser for people leaving Arc
+- **Ham başlık:** Zigzag, a native Mac browser for people leaving Arc
+- **Neden bu sırada:** trend 0.57 (GitHub yıldız (7g) 0.57) + ivme 0 = 0.57 · toplam 0.57
+- **Ürün:** https://github.com/ZigaoWang/zigzag
+- **Kaynaklar:** showhn
+- **Trend:** ivme: ilk gözlem
+  - showhn · hn_points: **123** (2026-11-14) — https://news.ycombinator.com/item?id=50496787
+  - showhn · hn_comments: **76** (2026-11-14) — https://news.ycombinator.com/item?id=50496787
+  - github · github_stars_7d: **198** (2026-11-23) — https://github.com/zigaowang/zigzag/stargazers
 - **Veri noktaları:**
-  - trustmrr · mrr_usd: **1777.83** (2026-11-23) — https://trustmrr.com/startup/canvasninjaapp
-  - trustmrr · growth_mrr_30d_pct: **9.009136059844257** (2026-11-23) — https://trustmrr.com/startup/canvasninjaapp
-- **Gelir kanıtı:** MRR $1778 (TrustMRR), MRR 30g büyümesi 9% — https://trustmrr.com/startup/canvasninjaapp
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada bulunamadı; mağaza sonucu 'yok' anlamına gelmez. Web kanalı (Yandex TR) kontrol edildi, TR'ye özgü eşleşme bulunamadı. Denene(n) sorgular: CanvasNinja | CanvasNinja canvasninja chrome. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: CanvasNinja | CanvasNinja canvasninja chrome
+  - showhn · hn_points: **123** (2026-11-14) — https://news.ycombinator.com/item?id=50496787
+  - showhn · hn_comments: **76** (2026-11-14) — https://news.ycombinator.com/item?id=50496787
+  - github · github_stars_7d: **198** (2026-11-23) — https://github.com/zigaowang/zigzag/stargazers
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** found · **TR boşluğu: dolu** — TR mağazasında gerçek eşleşme: ZigZag (3537 TR rating, apple_tr). Durum: var ve çekiş var. Denene(n) sorgular: Zigzag. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: Zigzag
+  - apple_tr · ZigZag (3537 TR rating) — https://apps.apple.com/tr/app/zigzag/id951364656?uo=4
+  - apple_tr · Zigzag Delivery (0 TR rating) — https://apps.apple.com/tr/app/zigzag-delivery/id6474760766?uo=4
+  - apple_tr · ZigZag: ZTL Navigation (0 TR rating) — https://apps.apple.com/tr/app/zigzag-ztl-navigation/id6738909628?uo=4
+  - play_tr · ZIGZAG ELD (rating yok) — https://play.google.com/store/apps/details?id=com.zigzag.eld&hl=tr&gl=TR
+  - play_tr · ZigZag Delivery (rating yok) — https://play.google.com/store/apps/details?id=com.zigzag.delivery&hl=tr&gl=TR
+  - play_tr · Zigzag Care (rating yok) — https://play.google.com/store/apps/details?id=com.zigzagcare.app&hl=tr&gl=TR
 
-## 15. PDF Vault
+## 15. OmniDiff
 
-- **Ne olduğu:** PDF Vault is a done-for-you digital business-in-a-box. Members license ready-to-sell PDFs that come with a hosted sales page, and they keep 100% of their sales. It earns money two ways: one-time licen
-- **Neden listede:** trustmrr · skor 4.86 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 0.86, ivme 0)
-- **Ürün:** https://pdfvault.so
+- **Etiket:** trend
+- **Ne olduğu:** Show HN başlığı: OmniDiff – Opensource, super fast, content aware Git difftool, in Rust
+- **Ham başlık:** OmniDiff – Opensource, super fast, content aware Git difftool, in Rust
+- **Neden bu sırada:** trend 0.53 (GitHub yıldız (7g) 0.53) + ivme 0 = 0.53 · toplam 0.53
+- **Ürün:** https://github.com/ivankovic/omnidiff
+- **Kaynaklar:** showhn
+- **Trend:** ivme: ilk gözlem
+  - showhn · hn_points: **322** (2026-11-01) — https://news.ycombinator.com/item?id=50325253
+  - showhn · hn_comments: **97** (2026-11-01) — https://news.ycombinator.com/item?id=50325253
+  - github · github_stars_7d: **127** (2026-11-23) — https://github.com/ivankovic/omnidiff/stargazers
 - **Veri noktaları:**
-  - trustmrr · mrr_usd: **2295** (2026-11-23) — https://trustmrr.com/startup/pdf-vault
-  - trustmrr · growth_mrr_30d_pct: **2.4096385542168677** (2026-11-23) — https://trustmrr.com/startup/pdf-vault
-- **Gelir kanıtı:** MRR $2295 (TrustMRR), MRR 30g büyümesi 2.4% — https://trustmrr.com/startup/pdf-vault
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web SaaS için mağaza sinyali yetersiz; PDF Vault - Document App (0 TR rating) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: PDF Vault | PDF Vault vault done-for-you. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: PDF Vault | PDF Vault vault done-for-you
-  - apple_tr · PDF Vault - Document App (0 TR rating) — https://apps.apple.com/tr/app/pdf-vault-document-app/id1599303874?uo=4
-  - apple_tr · PDF Vault–Scanner & Converter (0 TR rating) — https://apps.apple.com/tr/app/pdf-vault-scanner-converter/id6820427196?uo=4
-  - play_tr · PDF Vault–Scanner & Converter (rating yok) — https://play.google.com/store/apps/details?id=com.smartsudio.pdfvault&hl=tr&gl=TR
-  - play_tr · PDF Vault Pro: PDF Reader (rating yok) — https://play.google.com/store/apps/details?id=com.pdfvaultpro.app&hl=tr&gl=TR
-  - play_tr · PDF Vault Offline: PDF Tools (rating yok) — https://play.google.com/store/apps/details?id=com.medicheckco.pdfora&hl=tr&gl=TR
+  - showhn · hn_points: **322** (2026-11-01) — https://news.ycombinator.com/item?id=50325253
+  - showhn · hn_comments: **97** (2026-11-01) — https://news.ycombinator.com/item?id=50325253
+  - github · github_stars_7d: **127** (2026-11-23) — https://github.com/ivankovic/omnidiff/stargazers
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** not_found · **TR boşluğu: boş** — TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: OmniDiff. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: OmniDiff
+
+## 16. Unref
+
+- **Etiket:** trend
+- **Ne olduğu:** Show HN başlığı: Unref – A Python dead code finder built on Ruff's parser
+- **Ham başlık:** Unref – A Python dead code finder built on Ruff's parser
+- **Neden bu sırada:** trend 0.53 (GitHub yıldız (7g) 0.53) + ivme 0 = 0.53 · toplam 0.53
+- **Ürün:** https://github.com/Apakottur/unref
+- **Kaynaklar:** showhn
+- **Trend:** ivme: ilk gözlem
+  - showhn · hn_points: **63** (2026-11-16) — https://news.ycombinator.com/item?id=50517410
+  - showhn · hn_comments: **18** (2026-11-16) — https://news.ycombinator.com/item?id=50517410
+  - github · github_stars_7d: **134** (2026-11-23) — https://github.com/apakottur/unref/stargazers
+- **Veri noktaları:**
+  - showhn · hn_points: **63** (2026-11-16) — https://news.ycombinator.com/item?id=50517410
+  - showhn · hn_comments: **18** (2026-11-16) — https://news.ycombinator.com/item?id=50517410
+  - github · github_stars_7d: **134** (2026-11-23) — https://github.com/apakottur/unref/stargazers
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** not_found · **TR boşluğu: boş** — TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Unref. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: Unref
+
+## 17. AgentRun
+
+- **Etiket:** trend
+- **Ne olduğu:** Show HN başlığı: AgentRun – open-source, Self-improving Managed Agents
+- **Ham başlık:** AgentRun – open-source, Self-improving Managed Agents
+- **Neden bu sırada:** trend 0.47 (GitHub yıldız (7g) 0.47) + ivme 0 = 0.47 · toplam 0.47
+- **Ürün:** https://github.com/Parcha-ai/agentrun/blob/main/README.md
+- **Kaynaklar:** showhn
+- **Trend:** ivme: ilk gözlem
+  - showhn · hn_points: **138** (2026-11-12) — https://news.ycombinator.com/item?id=50471650
+  - showhn · hn_comments: **41** (2026-11-12) — https://news.ycombinator.com/item?id=50471650
+  - github · github_stars_7d: **73** (2026-11-23) — https://github.com/parcha-ai/agentrun/stargazers
+- **Veri noktaları:**
+  - showhn · hn_points: **138** (2026-11-12) — https://news.ycombinator.com/item?id=50471650
+  - showhn · hn_comments: **41** (2026-11-12) — https://news.ycombinator.com/item?id=50471650
+  - github · github_stars_7d: **73** (2026-11-23) — https://github.com/parcha-ai/agentrun/stargazers
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** not_found · **TR boşluğu: boş** — TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: AgentRun. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: AgentRun
+
+## 18. ASCII cell aquarium
+
+- **Etiket:** trend
+- **Ne olduğu:** Show HN başlığı: An ASCII cell aquarium for your terminal
+- **Ham başlık:** An ASCII cell aquarium for your terminal
+- **Neden bu sırada:** trend 0.45 (GitHub yıldız (7g) 0.45) + ivme 0 = 0.45 · toplam 0.45
+- **Ürün:** https://github.com/kborer/cells/
+- **Kaynaklar:** showhn
+- **Trend:** ivme: ilk gözlem
+  - showhn · hn_points: **67** (2026-11-18) — https://news.ycombinator.com/item?id=50541047
+  - showhn · hn_comments: **22** (2026-11-18) — https://news.ycombinator.com/item?id=50541047
+  - github · github_stars_7d: **64** (2026-11-23) — https://github.com/kborer/cells/stargazers
+- **Veri noktaları:**
+  - showhn · hn_points: **67** (2026-11-18) — https://news.ycombinator.com/item?id=50541047
+  - showhn · hn_comments: **22** (2026-11-18) — https://news.ycombinator.com/item?id=50541047
+  - github · github_stars_7d: **64** (2026-11-23) — https://github.com/kborer/cells/stargazers
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** not_found · **TR boşluğu: boş** — TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: ASCII cell aquarium. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: ASCII cell aquarium
+
+## 19. Sutra-OS
+
+- **Etiket:** trend
+- **Ne olduğu:** Show HN başlığı: Sutra-OS – A self-hosted ontology platform
+- **Ham başlık:** Sutra-OS – A self-hosted ontology platform
+- **Neden bu sırada:** trend 0.44 (GitHub yıldız (7g) 0.44) + ivme 0 = 0.44 · toplam 0.44
+- **Ürün:** https://github.com/0nelight/sutra-os
+- **Kaynaklar:** showhn
+- **Trend:** ivme: ilk gözlem
+  - showhn · hn_points: **72** (2026-11-16) — https://news.ycombinator.com/item?id=50525052
+  - showhn · hn_comments: **37** (2026-11-16) — https://news.ycombinator.com/item?id=50525052
+  - github · github_stars_7d: **57** (2026-11-23) — https://github.com/0nelight/sutra-os/stargazers
+- **Veri noktaları:**
+  - showhn · hn_points: **72** (2026-11-16) — https://news.ycombinator.com/item?id=50525052
+  - showhn · hn_comments: **37** (2026-11-16) — https://news.ycombinator.com/item?id=50525052
+  - github · github_stars_7d: **57** (2026-11-23) — https://github.com/0nelight/sutra-os/stargazers
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Sutra (play_tr) eşleşti ama TR rating sayısı okunamadı; çekiş ayırt edilemiyor. Denene(n) sorgular: Sutra-OS. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: Sutra-OS
+  - play_tr · Sutra (rating yok) — https://play.google.com/store/apps/details?id=cyou.sutra.app&hl=tr&gl=TR
+  - play_tr · Sutra (rating yok) — https://play.google.com/store/apps/details?id=com.dralien.sutra&hl=tr&gl=TR
+
+## 20. Riemann Proof Handbook
+
+- **Etiket:** trend
+- **Ne olduğu:** Show HN başlığı: The Riemann Proof Handbook
+- **Ham başlık:** The Riemann Proof Handbook
+- **Neden bu sırada:** trend 0.44 (GitHub yıldız (7g) 0.44) + ivme 0 = 0.44 · toplam 0.44
+- **Ürün:** https://github.com/tamnd/riemann-handbook
+- **Kaynaklar:** showhn
+- **Trend:** ivme: ilk gözlem
+  - showhn · hn_points: **88** (2026-11-22) — https://news.ycombinator.com/item?id=50596664
+  - showhn · hn_comments: **60** (2026-11-22) — https://news.ycombinator.com/item?id=50596664
+  - github · github_stars_7d: **56** (2026-11-23) — https://github.com/tamnd/riemann-handbook/stargazers
+- **Veri noktaları:**
+  - showhn · hn_points: **88** (2026-11-22) — https://news.ycombinator.com/item?id=50596664
+  - showhn · hn_comments: **60** (2026-11-22) — https://news.ycombinator.com/item?id=50596664
+  - github · github_stars_7d: **56** (2026-11-23) — https://github.com/tamnd/riemann-handbook/stargazers
+- **Gelir kanıtı:** aranmadı
+- **TR doygunluğu:** not_found · **TR boşluğu: boş** — TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Riemann Proof Handbook. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: Riemann Proof Handbook
 

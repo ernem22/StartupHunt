@@ -46,7 +46,7 @@ const verdict = (v: TrVerdict["verdict"], ratingCount?: number): TrVerdict => ({
 
 /** Strong Reddit launches (trend) and revenue-only TrustMRR rows with very large MRR. */
 function fixture(): Candidate[] {
-  const trend = Array.from({ length: 10 }, (_, index) =>
+  const trend = Array.from({ length: 25 }, (_, index) =>
     candidate(
       `t${index}`,
       `Launch ${index}`,
@@ -90,9 +90,9 @@ test("order: no label quota; the list is ordered by global trend strength and ca
   for (let index = 1; index < ranked.length; index += 1) {
     assert.ok(ranked[index - 1]!.score.base >= ranked[index]!.score.base);
   }
-  // Only strong trend cards and revenue cards qualify; the trend launches are not padded out.
-  const trendCount = ranked.filter((entry) => entry.labels.includes("trend")).length;
-  assert.equal(trendCount, 10);
+  // Revenue-only rows have no trend number and never enter; the cap is the only limit.
+  assert.ok(ranked.every((entry) => entry.labels.includes("trend")));
+  assert.ok(ranked.every((entry) => entry.candidate.sources[0] === "reddit"));
 });
 
 test("order: a very strong trend card stays on top even if its TR market is saturated", () => {
@@ -253,7 +253,7 @@ test("momentum: first observation, unchanged, changed and no-common-metric are d
   assert.equal(noCommon.momentum, "ortak metrik yok");
 });
 
-test("momentum: a chart rank drop counts as a rise", () => {
+test("momentum: a chart rank drop counts as a rise, scaled by the places gained", () => {
   const snapshot = readSnapshot({
     candidates: [{ key: "a", dataPoints: [{ metric: "ph_feed_position", value: 8 }] }],
   });
@@ -261,54 +261,107 @@ test("momentum: a chart rank drop counts as a rise", () => {
     candidate("a", "A", ["producthunt"], [point("producthunt", "ph_feed_position", 3)]),
     snapshot,
   );
-  assert.equal(climbed.score.momentum, 0.5);
+  // 5 places: log10(6) / log10(101) = 0.39
+  assert.equal(climbed.score.momentum, 0.39);
   assert.equal(climbed.momentum, "ph_feed_position 8→3");
+  const snapshotFar = readSnapshot({
+    candidates: [{ key: "a", dataPoints: [{ metric: "ph_feed_position", value: 60 }] }],
+  });
+  const climbedFar = scoreCandidate(
+    candidate("a", "A", ["producthunt"], [point("producthunt", "ph_feed_position", 3)]),
+    snapshotFar,
+  );
+  assert.ok(climbedFar.score.momentum > climbed.score.momentum);
 });
 
-test("Product Hunt: a top-10 feed row stands alone; a lower row with one number is noise", () => {
-  const top = candidate(
+test("Product Hunt: a feed position alone is not a card; with a second source it counts", () => {
+  // The feed order is a straight line, not a trend number: a PH-only row never enters the list.
+  const alone = candidate(
     "ph1",
     "Top Launch",
     ["producthunt"],
-    [point("producthunt", "ph_feed_position", 4)],
-    {
-      url: "https://www.producthunt.com/products/top-launch",
-    },
+    [point("producthunt", "ph_feed_position", 1)],
+    { url: "https://www.producthunt.com/products/top-launch" },
   );
-  const low = candidate(
+  assert.deepEqual(selectTop([alone]), []);
+  const withReddit = candidate(
     "ph2",
-    "Low Launch",
-    ["producthunt"],
-    [point("producthunt", "ph_feed_position", 30)],
-    {
-      url: "https://www.producthunt.com/products/low-launch",
-    },
+    "Second Launch",
+    ["producthunt", "reddit"],
+    [
+      point("producthunt", "ph_feed_position", 1),
+      point("reddit", "reddit_score", 30),
+      point("reddit", "reddit_comments", 4),
+    ],
+    { url: "https://second.app" },
   );
-  assert.equal(isNoise(top), false);
-  assert.equal(isNoise(low), true);
+  const [entry] = selectTop([withReddit, alone]);
+  assert.equal(entry!.candidate.key, "ph2");
+  assert.ok(entry!.score.parts.some((part) => part.label === "PH sırası"));
+});
+
+test("tie-break: equal base scores are ordered by name; revenue never breaks a tie", () => {
+  const zed = candidate(
+    "z",
+    "Zed",
+    ["reddit"],
+    [
+      point("reddit", "reddit_score", 30),
+      point("reddit", "reddit_comments", 4),
+      point("trustmrr", "mrr_usd", 90000),
+    ],
+    { url: "https://zed.app" },
+  );
+  const alpha = candidate(
+    "a",
+    "Alpha",
+    ["reddit"],
+    [
+      point("reddit", "reddit_score", 30),
+      point("reddit", "reddit_comments", 4),
+      point("trustmrr", "mrr_usd", 9000),
+    ],
+    { url: "https://alpha.app" },
+  );
   assert.deepEqual(
-    selectTop([low, top]).map((entry) => entry.candidate.key),
-    ["ph1"],
+    selectTop([zed, alpha]).map((entry) => entry.candidate.key),
+    ["a", "z"],
   );
 });
 
-test("tie-break: equal base scores are ordered by MRR, then by name", () => {
-  const small = candidate(
-    "s",
-    "Small",
-    ["trustmrr"],
-    [point("trustmrr", "mrr_usd", 100), point("trustmrr", "growth_mrr_30d_pct", 5)],
-    { url: "https://small.app" },
+test("GitHub stars: a repo with enough new stars in 7 days is trend-led; revenue-only rows are not", () => {
+  const repo = candidate(
+    "github:acme/tool",
+    "Acme Tool",
+    ["showhn"],
+    [
+      point("showhn", "hn_points", 40),
+      point("github", "github_stars_7d", 120, "https://github.com/acme/tool/stargazers"),
+    ],
+    { url: "https://github.com/acme/tool", description: "a developer tool" },
   );
-  const big = candidate(
-    "b",
-    "Big",
-    ["trustmrr"],
-    [point("trustmrr", "mrr_usd", 9000), point("trustmrr", "growth_mrr_30d_pct", 5)],
-    { url: "https://big.app" },
+  const quiet = candidate(
+    "github:acme/quiet",
+    "Quiet",
+    ["showhn"],
+    [
+      point("showhn", "hn_points", 40),
+      point("github", "github_stars_7d", 3, "https://github.com/acme/quiet/stargazers"),
+    ],
+    { url: "https://github.com/acme/quiet", description: "a developer tool" },
   );
+  const revenue = candidate("rev.app", "Rev", ["trustmrr"], [point("trustmrr", "mrr_usd", 500)], {
+    url: "https://rev.app",
+  });
+  const ranked = selectTop([repo, quiet, revenue]);
   assert.deepEqual(
-    selectTop([small, big]).map((entry) => entry.candidate.key),
-    ["b", "s"],
+    ranked.map((entry) => entry.candidate.key),
+    ["github:acme/tool"],
+  );
+  // log10(121) / log10(10001) = 0.52; the Show HN points part is the other real number.
+  assert.ok(
+    ranked[0]!.score.parts.some(
+      (part) => part.label === "GitHub yıldız (7g)" && part.value === 0.52,
+    ),
   );
 });
