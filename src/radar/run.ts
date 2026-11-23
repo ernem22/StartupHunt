@@ -102,7 +102,7 @@ export function huggingFaceSource(collector: MomentumCollector): RadarSource {
   return { ...huggingFaceDefaults, pool: candidatePool, collector };
 }
 
-function momentum(candidate: CandidateSeries): number | null {
+export function momentum(candidate: CandidateSeries): number | null {
   // Sources without weekly history (e.g. Hugging Face) rank by their single score.
   if (candidate.score) return candidate.score.value;
   if (candidate.weeks.length < 2) return null;
@@ -148,7 +148,7 @@ export async function runRadar(
     if (ranking === "score") {
       lines.push(
         "HF API haftalık geçmiş sağlamaz: sıralama trendingScore (Hugging Face'in kendi son dönem ilgi ölçüsü) ile yapılır; haftalık artış oranı snapshot'lar biriktikten sonra değerlendirilir.",
-        `Snapshot: metric_snapshots'a ${source.metric}, son tamamlanmış hafta başlığıyla yazılır; tekrarlanan koşular ayrı kayıt bırakır.`,
+        `Snapshot: ${source.metric}, JSON çıktısında son tamamlanmış hafta başlığıyla saklanır.`,
       );
     } else {
       lines.push(

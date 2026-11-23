@@ -14,10 +14,10 @@ Radar küresel olarak yükselen **aday ürünleri** (`GLOSSARY.md`) listeler. He
 
 - **Kalite = veri ve yöntem doğruluğu.** Her kaynak için önce gerçek istek testi; listeden örnek elle kontrol.
 - **Gelir kanıtı çok kaynaklı çapraz kontroldür**, ürün türüne göre kaynak eklenir. Kanıt yoksa "yok" yazılır.
-- **TR boşluğu "yok" iddiası değildir.** Çıktı: bulundu, bulunamadı (denenen sorgular ve kataloglarla) ya da belirsiz. Aramada SearXNG (3060) ve Apple TR kataloğu kullanılır; son hüküm kullanıcıdadır. TR boşluğu aynı aday havuzunda ayrı bir görünümdür.
-- **Aday havuzu açık bir listedir** (ürün türü, trend kaynakları, gelir kaynakları, lisans notu). Dilim 1: geliştirici aracı ve yapay zekâ.
+- **TR boşluğu "yok" iddiası değildir.** Çıktı: bulundu, bulunamadı (denenen sorgular ve kataloglarla) ya da belirsiz. Aramada Apple TR ve Play TR katalogları kullanılır (web araması kanalı M3'te seçilir; bkz. `docs/plan-trend-idea-stream.md`); son hüküm kullanıcıdadır. TR boşluğu aynı aday havuzunda ayrı bir görünümdür.
+- **Aday havuzu açık bir listedir** (ürün türü, trend kaynakları, gelir kaynakları, lisans notu). Alan tek türle sınırlı değildir; geliştirici aracı ve yapay zekâ yalnızca ilk kaynak setidir (plan M1 yeni kaynak ekler).
 - Şikâyet, "alternative to X" ve fiyat itirazı çıkarıcı dilim 2'dir.
-- Kümeleme ve review kodu donuk kalır, silinmez. ADR 0001 ve 0002 bu hat için superseded.
+- Eski kümeleme/review/fırsat motoru kodu ve ADR 0001-0002 M0'da silindi (bkz. ADR 0004).
 
 ## Considered Options
 

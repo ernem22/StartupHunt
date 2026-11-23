@@ -22,7 +22,6 @@ File issues only into the user's own repo. Never file into `mattpocock/skills` (
 
 - Her değişiklik kendi branch'i + PR'ı: `feat/<konu>`, `fix/<konu>`, `chore/<konu>`; base `main`.
 - İlk commit'ten önce branch açılır; repo kuralı generic harness talimatından önce gelir. Tikete başlamadan `git status` temiz olmalı; ilgisiz değişiklikler ayrı PR'da toplanır.
-- Her anlamlı adım `LOG.md`'ye (tarih, ne, sonuç, sonraki adım) yazılır — merge öncesi dahil.
 - Plan/kapsam değişikliği gerektiren karar önce ilgili ticket/spec'e, sonra koda yazılır.
 - Commit yalnız kendi işini kapsar; secret (token/key) commit edilmez.
 - PR body: ne yapıldı + doğrulanamayan kısımlar.

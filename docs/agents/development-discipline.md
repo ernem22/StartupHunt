@@ -19,7 +19,7 @@ Kaynak: ADR 0003. Radar kişisel ve tek kullanıcılıdır.
 
 - **Kaynak aileleri ayrıdır.** HN, Product Hunt ve X aynı ilgiyi üç kez ölçebilir (aday üretici). GitHub, npm, Wikipedia ve Firefox AMO doğrulayıcıdır. İki kaynak yalnızca farklı ailelerdense bağımsız sayılır.
 - **Her dış iddia kanıt etiketi taşır:** doğrulandı, ikincil, doğrulanmadı. Doğrulanmamış iddia karara girmez.
-- **Gerçek istek testi.** Dış kaynak "çalışıyor" demeden önce gerçek isteği denenir; DB, embed ve SearXNG doğrulaması 3060'ta yapılır, koşulmayan iş PR'da "doğrulanamadı" yazılır.
+- **Gerçek istek testi.** Dış kaynak "çalışıyor" demeden önce gerçek isteği denenir; koşulmayan iş PR'da "doğrulanamadı" yazılır.
 - **Aday havuzu listesi.** Her satır: ürün türü, trend kaynakları, gelir kaynakları, lisans notu.
 - **Lisans.** Radar kişisel olduğu sürece Product Hunt ve Cloudflare Radar sorun değildir; ticari kullanıma geçilirse yeniden değerlendirilir. Kazıma yok; marka, logo ve kod kopyalanmaz. TrustMRR verisi yazılı izin gelmeden LLM'e verilmez.
 
@@ -27,7 +27,7 @@ Kaynak: ADR 0003. Radar kişisel ve tek kullanıcılıdır.
 
 | Tür | Örnek | Karar | Kayıt |
 | --- | --- | --- | --- |
-| Küçük: tek ticket, geri alınabilir | adapter düzeltmesi, eşik | Hemen uygula | Commit + kısa LOG satırı |
+| Küçük: tek ticket, geri alınabilir | adapter düzeltmesi, eşik | Hemen uygula | Commit |
 | Orta: dilim kapsamını etkiler | kaynak ekle/çıkar | Bir akşam bekle | Ticket notu + PR açıklaması |
 | Büyük: hedef, mimari, ADR | yönü değiştirmek | En az bir gün bekle, karşı argümanı yaz | ADR + spec; açık ticket'lar `needs-triage`'a döner |
 
@@ -35,12 +35,10 @@ Kaynak: ADR 0003. Radar kişisel ve tek kullanıcılıdır.
 
 ## Sürüm ve tekrarlanabilirlik
 
-- Her koşu kaynak, parametre, tohum ve commit hash'ini `stage_runs` tablosuna yazar. Ham gözlemler değiştirilemez.
-- Python bağımlılıkları kilit dosyasıyla sabitlenir.
+- Her koşu kaynak, parametre ve commit hash'ini JSON çıktısındaki `manifest` alanına yazar.
 - "Update branch" sonrası `git diff` bakılır; dal yerelde rebase edilir.
-- LOG girişi PR başına bir tane, en fazla 8 satır.
 - SemVer `0.x`; etiket yalnızca dışarı gösterilen sürümlerde: `v0.2.0` = dilim 1 listesi.
 
 ## Kırmızı bayraklar
 
-Biri 3 gün sürerse dur: LOG'da "sonraki adım" aynı kalıyor; çalışan çıktı yokken yeni araştırma notu; tek kaynak için bile ivme çıktısı yokken kaynak sayısı artıyor; `pnpm check` kırmızı ve ilgisiz işle uğraşılıyor.
+Biri 3 gün sürerse dur: "sonraki adım" aynı kalıyor; çalışan çıktı yokken yeni araştırma notu; tek kaynak için bile ivme çıktısı yokken kaynak sayısı artıyor; `pnpm check` kırmızı ve ilgisiz işle uğraşılıyor.

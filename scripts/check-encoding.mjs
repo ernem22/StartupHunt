@@ -1,7 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 
-const extensions = new Set([".md", ".sql", ".ts", ".json"]);
+const extensions = new Set([".md", ".ts", ".json"]);
 
 const files = execFileSync("git", ["ls-files"], { encoding: "utf8" })
   .split("\n")

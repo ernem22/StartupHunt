@@ -44,6 +44,8 @@ export interface MomentumCollector {
   collect(at: Date): Promise<CandidateSeries[]>;
   /** Optional count of entries dropped because they are not a product. */
   readonly excluded?: number;
+  /** Optional per-item problems (e.g. rate-limited requests) that were skipped, not fatal. */
+  readonly skipped?: string[];
 }
 
 const API = "https://api.github.com";
@@ -56,7 +58,11 @@ export function completedWeeks(at: Date): number[] {
   return Array.from({ length: 4 }, (_, i) => start.getTime() / 1000 - (4 - i) * WEEK);
 }
 
+export class GitHubRateLimitError extends Error {}
+
 export class GitHubMomentumCollector implements MomentumCollector {
+  readonly skipped: string[] = [];
+
   constructor(
     private readonly query: string,
     private readonly request: typeof fetch = fetch,
@@ -73,6 +79,20 @@ export class GitHubMomentumCollector implements MomentumCollector {
       headers,
       signal: AbortSignal.timeout(30000),
     });
+    if (response.status === 403 || response.status === 429) {
+      const remaining = response.headers.get("x-ratelimit-remaining");
+      const reset = response.headers.get("x-ratelimit-reset");
+      const retryAfter = response.headers.get("retry-after");
+      const parts = [
+        remaining !== null ? `kalan limit: ${remaining}` : null,
+        reset ? `sıfırlanma: ${new Date(Number(reset) * 1000).toISOString()}` : null,
+        retryAfter ? `Retry-After: ${retryAfter}s` : null,
+        process.env.GITHUB_TOKEN ? null : "GITHUB_TOKEN yok",
+      ].filter(Boolean);
+      throw new GitHubRateLimitError(
+        `GitHub HTTP ${response.status} (hız sınırı?): ${path} [${parts.join("; ")}]`,
+      );
+    }
     if (!response.ok) throw new Error(`GitHub HTTP ${response.status}: ${path}`);
     return response.json();
   }
@@ -97,7 +117,9 @@ export class GitHubMomentumCollector implements MomentumCollector {
       throw new Error("Invalid or incomplete GitHub Search response");
     }
     const result: CandidateSeries[] = [];
+    let rateLimited = false;
     for (const repo of search.items) {
+      if (rateLimited) continue;
       if (
         !repo ||
         typeof repo.full_name !== "string" ||
@@ -107,7 +129,18 @@ export class GitHubMomentumCollector implements MomentumCollector {
         throw new Error("Invalid GitHub repository");
       }
       const path = `/repos/${repo.full_name}/stargazers/history?per_page=5`;
-      const history = await this.json(path);
+      let history: unknown;
+      try {
+        history = await this.json(path);
+      } catch (error) {
+        if (!(error instanceof GitHubRateLimitError)) throw error;
+        // The limit is per client, not per repo: stop calling, report once, keep what we have.
+        rateLimited = true;
+        this.skipped.push(
+          `${repo.full_name} ve sonraki repolar denenmedi (${search.items.length - result.length} repo atlandı): ${error.message}`,
+        );
+        continue;
+      }
       if (
         !Array.isArray(history) ||
         history.some(
