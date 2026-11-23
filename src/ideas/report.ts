@@ -3,12 +3,14 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Candidate, DataPoint } from "../candidates/model.js";
 import { checkTrSaturation, type TrVerdict } from "../tr/check.js";
+import { shortProductName, shortTrQueries } from "./names.js";
 import { rankCandidates, readSnapshot, type RankedCandidate } from "./rank.js";
 
 export type Idea = {
   rank: number;
   key: string;
   name: string;
+  originalName: string;
   url: string;
   whatItIs: string;
   category: string | null;
@@ -72,7 +74,7 @@ export function renderMarkdown(output: IdeasOutput): string {
     "",
     `Üretim: ${output.generatedAt} · Kaynak: ${output.sourceFile} · Snapshot: ${output.snapshotFile ?? "yok"} · ${output.ideas.length} fikir`,
     "",
-    "Sıralama: kaynak sayısı (her ek kaynak +3), sinyaller (log ölçekli HN/Reddit/MRR, doğrusal büyüme ve sıra), snapshot ivmesi. TR boşluğu: dolu/zayıf/boş/belirsiz.",
+    "Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (URL/açıklama/kısa ad), sinyaller (log ölçekli HN/Reddit/MRR), snapshot ivmesi. En az 5 kart gelir kanıtlı. TR boşluğu: dolu/zayıf/boş/belirsiz.",
     "",
   ];
   for (const idea of output.ideas) {
@@ -80,7 +82,8 @@ export function renderMarkdown(output: IdeasOutput): string {
       `## ${idea.rank}. ${idea.name}`,
       "",
       `- **Ne olduğu:** ${idea.whatItIs}`,
-      `- **Neden listede:** ${idea.sources.join(" + ")} · skor ${idea.score.total} (kaynak ${idea.score.sources}, sinyal ${idea.score.signals}, ivme ${idea.score.momentum})${idea.momentum ? ` · ivme: ${idea.momentum}` : ""}`,
+      ...(idea.originalName !== idea.name ? [`- **Ham başlık:** ${idea.originalName}`] : []),
+      `- **Neden listede:** ${idea.sources.join(" + ")} · skor ${idea.score.total} (gelir ${idea.score.revenue}, kaynak ${idea.score.sources}, ürünlük ${idea.score.product}, sinyal ${idea.score.signals}, ivme ${idea.score.momentum})${idea.momentum ? ` · ivme: ${idea.momentum}` : ""}`,
       `- **Ürün:** ${idea.url}`,
     );
     lines.push("- **Veri noktaları:**");
@@ -132,18 +135,21 @@ export async function buildIdeas(dir = "data"): Promise<IdeasOutput> {
   // TR checks are sequential: the iTunes channel already spaces its own requests (3 s).
   for (const [index, entry] of ranked.entries()) {
     const candidate = entry.candidate;
+    const name = shortProductName(candidate.name);
     const verdict = await checkTrSaturation({
-      name: candidate.name,
+      name,
       ...(candidate.description ? { description: candidate.description } : {}),
       ...(candidate.url ? { url: candidate.url } : {}),
+      queries: shortTrQueries(name, candidate.description),
     });
     console.error(
-      `TR ${index + 1}/${ranked.length}: ${candidate.name} → ${verdict.verdict} (${verdict.evidence.length} kanıt)`,
+      `TR ${index + 1}/${ranked.length}: ${name} → ${verdict.verdict} (${verdict.evidence.length} kanıt)`,
     );
     ideas.push({
       rank: index + 1,
       key: candidate.key,
-      name: candidate.name,
+      name,
+      originalName: candidate.name,
       url: candidate.url,
       whatItIs: describe(candidate),
       category: candidate.category ?? null,

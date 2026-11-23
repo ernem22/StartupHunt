@@ -1,7 +1,10 @@
 import type { Candidate } from "../candidates/model.js";
+import { shortProductName } from "./names.js";
 
 export type ScoreBreakdown = {
   sources: number;
+  revenue: number;
+  product: number;
   signals: number;
   momentum: number;
   total: number;
@@ -49,11 +52,34 @@ const NOISE = [
   /\bagency\b/i,
 ];
 
+/** One-off HN jokes and non-product posts are not fast-follower ideas. */
+const NON_PRODUCT = [
+  /\bsteal my\b/i,
+  /\b(?:ask|tell) (?:hn|hacker news)\b/i,
+  /\b(?:am i the only one|anyone else|tifu|showerthought)\b/i,
+  /\b(?:meme|joke|parody|satire)\b/i,
+];
+
+/** Links to social networks, media and code hosts are not the product's own URL. */
+function hasProductUrl(candidate: Candidate): boolean {
+  try {
+    const url = new URL(candidate.url);
+    if (!/^https?:$/.test(url.protocol)) return false;
+    return !/^(?:www\.)?(?:twitter\.com|x\.com|facebook\.com|instagram\.com|linkedin\.com|reddit\.com|news\.ycombinator\.com|youtube\.com|medium\.com|substack\.com|github\.com|hackernews\.com)$/.test(
+      url.hostname,
+    );
+  } catch {
+    return false;
+  }
+}
+
 /** Giants in the top-20 of a store chart are not fast-follower ideas; neither are point-less rows. */
 export function isNoise(candidate: Candidate): boolean {
   if (NOISE.some((pattern) => pattern.test(candidate.name.trim()))) return true;
+  if (NON_PRODUCT.some((pattern) => pattern.test(candidate.name))) return true;
   const numeric = candidate.dataPoints.filter((point) => Number.isFinite(point.value));
-  if (numeric.length === 0) return true;
+  // Every idea card must be backed by at least two numeric observations.
+  if (numeric.length < 2) return true;
   const onlyApple = candidate.sources.length === 1 && candidate.sources[0] === "apple";
   return (
     onlyApple &&
@@ -74,16 +100,24 @@ export function scoreCandidate(
   snapshot: PreviousSnapshot = new Map(),
 ): RankedCandidate {
   const sourceScore = 3 * Math.max(0, candidate.sources.length - 1);
+  const hasRevenue = candidate.dataPoints.some((point) => point.metric === "mrr_usd");
+  const revenueScore = hasRevenue ? 3 : 0;
+  const productScore =
+    (hasProductUrl(candidate) ? 0.5 : -0.5) +
+    (candidate.description ? 0.5 : 0) +
+    (shortProductName(candidate.name).split(" ").length > 5 ? -0.5 : 0);
   let signals = 0;
   for (const point of candidate.dataPoints) {
     const value = point.value;
     if (!Number.isFinite(value)) continue;
     switch (point.metric) {
       case "hn_points":
-        signals += Math.min(1.5, logSignal(value, 300));
+        // HN interest alone is weak evidence; a single-source Show HN post needs other signals.
+        signals += Math.min(1, logSignal(value, 300)) * (candidate.sources.length === 1 ? 0.5 : 1);
         break;
       case "hn_comments":
-        signals += Math.min(0.5, logSignal(value, 100) * 0.5);
+        signals +=
+          Math.min(0.5, logSignal(value, 100) * 0.5) * (candidate.sources.length === 1 ? 0.5 : 1);
         break;
       case "reddit_score":
         signals += Math.min(1, logSignal(value, 100));
@@ -127,11 +161,13 @@ export function scoreCandidate(
     if (parts.length > 0) momentumDetail = parts.slice(0, 3).join(", ");
   }
 
-  const total = sourceScore + signals + momentum;
+  const total = sourceScore + revenueScore + productScore + signals + momentum;
   return {
     candidate,
     score: {
       sources: round(sourceScore),
+      revenue: round(revenueScore),
+      product: round(productScore),
       signals: round(signals),
       momentum: round(momentum),
       total: round(total),
@@ -144,20 +180,43 @@ function round(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
+function byScore(a: RankedCandidate, b: RankedCandidate): number {
+  return (
+    b.score.total - a.score.total ||
+    b.candidate.sources.length - a.candidate.sources.length ||
+    a.candidate.name.localeCompare(b.candidate.name, "en")
+  );
+}
+
+function hasRevenue(entry: RankedCandidate): boolean {
+  return entry.candidate.dataPoints.some((point) => point.metric === "mrr_usd");
+}
+
 /** Deterministic: score desc, then source count desc, then name; ties never depend on input order. */
 export function rankCandidates(
   candidates: readonly Candidate[],
   snapshot: PreviousSnapshot = new Map(),
   limit = 15,
+  minRevenue = 5,
 ): RankedCandidate[] {
-  return candidates
+  const scored = candidates
     .filter((candidate) => !isNoise(candidate))
     .map((candidate) => scoreCandidate(candidate, snapshot))
-    .sort(
-      (a, b) =>
-        b.score.total - a.score.total ||
-        b.candidate.sources.length - a.candidate.sources.length ||
-        a.candidate.name.localeCompare(b.candidate.name, "en"),
-    )
+    .sort(byScore);
+  // Revenue-backed products are the most actionable ideas: reserve at least half the list for them.
+  const revenue = scored.filter(hasRevenue);
+  const other = scored.filter((entry) => !hasRevenue(entry));
+  const chosen = [
+    ...revenue.slice(0, Math.min(revenue.length, Math.max(minRevenue, Math.ceil(limit / 2)))),
+    ...other.slice(0, limit),
+  ];
+  const seen = new Set<string>();
+  return chosen
+    .filter((entry) => {
+      if (seen.has(entry.candidate.key)) return false;
+      seen.add(entry.candidate.key);
+      return true;
+    })
+    .sort(byScore)
     .slice(0, limit);
 }

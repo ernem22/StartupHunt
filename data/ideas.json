@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-23T02:26:12.942Z",
+  "generatedAt": "2026-11-23T02:57:49.965Z",
   "sourceFile": "data\\latest.json",
   "snapshotFile": "data\\2026-11-23.json",
   "ideas": [
@@ -7,15 +7,18 @@
       "rank": 1,
       "key": "storestockchecker.com",
       "name": "Store Stock Checker",
+      "originalName": "Store Stock Checker",
       "url": "https://www.storestockchecker.com",
       "whatItIs": "Realtime Apple Store stock checking.",
       "category": "Analytics",
       "sources": ["trustmrr"],
       "score": {
         "sources": 0,
+        "revenue": 3,
+        "product": 1,
         "signals": 2.14,
         "momentum": 0,
-        "total": 2.14
+        "total": 6.14
       },
       "momentum": null,
       "dataPoints": [
@@ -37,18 +40,13 @@
       "revenueEvidence": "MRR $36005 (TrustMRR), 30g büyüme 1204.5% — https://trustmrr.com/startup/store-stock-checker",
       "tr": {
         "verdict": "uncertain",
-        "reason": "Stock Checker (play_tr) eşleşti ama TR rating sayısı okunamadı; çekiş ayırt edilemiyor. Denene(n) sorgular: Store Stock Checker | realtime apple store stock. Kanallar: apple_tr, play_tr.",
-        "queries": ["Store Stock Checker", "realtime apple store stock"],
+        "reason": "Stock Checker (play_tr) eşleşti ama TR rating sayısı okunamadı; çekiş ayırt edilemiyor. Denene(n) sorgular: Store Stock Checker | Store Stock Checker realtime apple. Kanallar: apple_tr, play_tr.",
+        "queries": ["Store Stock Checker", "Store Stock Checker realtime apple"],
         "evidence": [
           {
             "name": "Stock Checker",
             "channel": "play_tr",
             "url": "https://play.google.com/store/apps/details?id=com.amepos.stockchecker&hl=tr&gl=TR"
-          },
-          {
-            "name": "Realtime Stock Screener",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.doitnowcompany.usstockscanner&hl=tr&gl=TR"
           }
         ],
         "gapLabel": "belirsiz"
@@ -58,15 +56,18 @@
       "rank": 2,
       "key": "scalereach.ai",
       "name": "Scalereach.ai",
+      "originalName": "Scalereach.ai",
       "url": "https://scalereach.ai",
       "whatItIs": "AI video repurposing tool that turns long videos into viral short clips for TikTok, Reels and YouTube Shorts. Paste a YouTube, Twitch, Kick, Drive or Loom link and ScaleReach finds the best moments, s",
       "category": "Artificial Intelligence",
       "sources": ["trustmrr"],
       "score": {
         "sources": 0,
+        "revenue": 3,
+        "product": 1,
         "signals": 1.96,
         "momentum": 0,
-        "total": 1.96
+        "total": 5.96
       },
       "momentum": null,
       "dataPoints": [
@@ -88,65 +89,28 @@
       "revenueEvidence": "MRR $6753 (TrustMRR), 30g büyüme 5012.9% — https://trustmrr.com/startup/scalereach",
       "tr": {
         "verdict": "not_found",
-        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Scalereach.ai | yapay zeka | AI video repurposing tool. Kanallar: apple_tr, play_tr.",
-        "queries": ["Scalereach.ai", "yapay zeka", "AI video repurposing tool"],
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Scalereach.ai | Scalereach.ai video repurposing. Kanallar: apple_tr, play_tr.",
+        "queries": ["Scalereach.ai", "Scalereach.ai video repurposing"],
         "evidence": [],
         "gapLabel": "boş"
       }
     },
     {
       "rank": 3,
-      "key": "hackerbooks.org",
-      "name": "HackerBooks – HackerTube, but for books mentioned on HN",
-      "url": "https://hackerbooks.org",
-      "whatItIs": "Show HN başlığı: HackerBooks – HackerTube, but for books mentioned on HN",
-      "category": null,
-      "sources": ["showhn"],
-      "score": {
-        "sources": 0,
-        "signals": 1.82,
-        "momentum": 0,
-        "total": 1.82
-      },
-      "momentum": null,
-      "dataPoints": [
-        {
-          "source": "showhn",
-          "metric": "hn_points",
-          "value": 1870,
-          "date": "2026-11-01",
-          "url": "https://news.ycombinator.com/item?id=50326821"
-        },
-        {
-          "source": "showhn",
-          "metric": "hn_comments",
-          "value": 308,
-          "date": "2026-11-01",
-          "url": "https://news.ycombinator.com/item?id=50326821"
-        }
-      ],
-      "revenueEvidence": "aranmadı",
-      "tr": {
-        "verdict": "not_found",
-        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: HackerBooks – HackerTube, but for books mentioned on HN. Kanallar: apple_tr, play_tr.",
-        "queries": ["HackerBooks – HackerTube, but for books mentioned on HN"],
-        "evidence": [],
-        "gapLabel": "boş"
-      }
-    },
-    {
-      "rank": 4,
       "key": "appzoku.com",
       "name": "AppZoku",
+      "originalName": "AppZoku",
       "url": "https://appzoku.com",
       "whatItIs": "Appzoku is a marketing tool built for solo iOS developers and small teams who need to market like a growth team without hiring one. Scrolling, generating, editing, and rerolling concepts is free and u",
       "category": "Artificial Intelligence",
       "sources": ["trustmrr"],
       "score": {
         "sources": 0,
+        "revenue": 3,
+        "product": 1,
         "signals": 1.8,
         "momentum": 0,
-        "total": 1.8
+        "total": 5.8
       },
       "momentum": null,
       "dataPoints": [
@@ -168,25 +132,28 @@
       "revenueEvidence": "MRR $1527 (TrustMRR), 30g büyüme 1310.4% — https://trustmrr.com/startup/appzoku",
       "tr": {
         "verdict": "not_found",
-        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: AppZoku | market | appzoku is marketing tool. Kanallar: apple_tr, play_tr.",
-        "queries": ["AppZoku", "market", "appzoku is marketing tool"],
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: AppZoku | AppZoku appzoku marketing. Kanallar: apple_tr, play_tr.",
+        "queries": ["AppZoku", "AppZoku appzoku marketing"],
         "evidence": [],
         "gapLabel": "boş"
       }
     },
     {
-      "rank": 5,
+      "rank": 4,
       "key": "catalogohoy.com",
       "name": "CatalogoHoy",
+      "originalName": "CatalogoHoy",
       "url": "https://catalogohoy.com",
       "whatItIs": "Manage an online product catalog, orders, sales, customers, and store metrics from your phone.",
       "category": "E-commerce",
       "sources": ["trustmrr"],
       "score": {
         "sources": 0,
+        "revenue": 3,
+        "product": 1,
         "signals": 1.69,
         "momentum": 0,
-        "total": 1.69
+        "total": 5.69
       },
       "momentum": null,
       "dataPoints": [
@@ -208,8 +175,8 @@
       "revenueEvidence": "MRR $556 (TrustMRR), 30g büyüme 413.8% — https://trustmrr.com/startup/catalogohoy",
       "tr": {
         "verdict": "uncertain",
-        "reason": "Web SaaS için mağaza sinyali yetersiz; CatalogoHoy: Catálogo y ventas (0 TR rating) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: CatalogoHoy | manage an online product. Kanallar: apple_tr, play_tr.",
-        "queries": ["CatalogoHoy", "manage an online product"],
+        "reason": "Web SaaS için mağaza sinyali yetersiz; CatalogoHoy: Catálogo y ventas (0 TR rating) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: CatalogoHoy | CatalogoHoy manage catalog. Kanallar: apple_tr, play_tr.",
+        "queries": ["CatalogoHoy", "CatalogoHoy manage catalog"],
         "evidence": [
           {
             "name": "CatalogoHoy: Catálogo y ventas",
@@ -227,104 +194,21 @@
       }
     },
     {
-      "rank": 6,
-      "key": "github:simpsoka/zigzag",
-      "name": "My $300 embroidery machine needed a subscription, so I built my own app",
-      "url": "https://github.com/simpsoka/zigzag",
-      "whatItIs": "Show HN başlığı: My $300 embroidery machine needed a subscription, so I built my own app",
-      "category": null,
-      "sources": ["showhn"],
-      "score": {
-        "sources": 0,
-        "signals": 1.66,
-        "momentum": 0,
-        "total": 1.66
-      },
-      "momentum": null,
-      "dataPoints": [
-        {
-          "source": "showhn",
-          "metric": "hn_points",
-          "value": 743,
-          "date": "2026-11-12",
-          "url": "https://news.ycombinator.com/item?id=50470488"
-        },
-        {
-          "source": "showhn",
-          "metric": "hn_comments",
-          "value": 260,
-          "date": "2026-11-12",
-          "url": "https://news.ycombinator.com/item?id=50470488"
-        }
-      ],
-      "revenueEvidence": "aranmadı",
-      "tr": {
-        "verdict": "uncertain",
-        "reason": "Embroidery Machine Business (play_tr) eşleşti ama TR rating sayısı okunamadı; çekiş ayırt edilemiyor. Denene(n) sorgular: My $300 embroidery machine needed a subscription, so I built my own app. Kanallar: apple_tr, play_tr.",
-        "queries": ["My $300 embroidery machine needed a subscription, so I built my own app"],
-        "evidence": [
-          {
-            "name": "Embroidery Machine Business",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.lifetimeinfotech.embroideryMachineBusiness&hl=tr&gl=TR"
-          }
-        ],
-        "gapLabel": "belirsiz"
-      }
-    },
-    {
-      "rank": 7,
-      "key": "stealmybitcoin.com",
-      "name": "Steal My Bitcoin",
-      "url": "https://stealmybitcoin.com/",
-      "whatItIs": "Show HN başlığı: Steal My Bitcoin",
-      "category": null,
-      "sources": ["showhn"],
-      "score": {
-        "sources": 0,
-        "signals": 1.63,
-        "momentum": 0,
-        "total": 1.63
-      },
-      "momentum": null,
-      "dataPoints": [
-        {
-          "source": "showhn",
-          "metric": "hn_points",
-          "value": 627,
-          "date": "2026-10-24",
-          "url": "https://news.ycombinator.com/item?id=50224916"
-        },
-        {
-          "source": "showhn",
-          "metric": "hn_comments",
-          "value": 451,
-          "date": "2026-10-24",
-          "url": "https://news.ycombinator.com/item?id=50224916"
-        }
-      ],
-      "revenueEvidence": "aranmadı",
-      "tr": {
-        "verdict": "not_found",
-        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Steal My Bitcoin. Kanallar: apple_tr, play_tr.",
-        "queries": ["Steal My Bitcoin"],
-        "evidence": [],
-        "gapLabel": "boş"
-      }
-    },
-    {
-      "rank": 8,
+      "rank": 5,
       "key": "coralflavor.com",
       "name": "Coralflavor",
+      "originalName": "Coralflavor",
       "url": "https://coralflavor.com",
       "whatItIs": "Private AI chatbot with E2E encryption",
       "category": "Artificial Intelligence",
       "sources": ["trustmrr"],
       "score": {
         "sources": 0,
+        "revenue": 3,
+        "product": 1,
         "signals": 1.62,
         "momentum": 0,
-        "total": 1.62
+        "total": 5.62
       },
       "momentum": null,
       "dataPoints": [
@@ -346,25 +230,28 @@
       "revenueEvidence": "MRR $4381 (TrustMRR), 30g büyüme 70.9% — https://trustmrr.com/startup/coralflavor",
       "tr": {
         "verdict": "not_found",
-        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Coralflavor | yapay zeka | private AI chatbot e2e. Kanallar: apple_tr, play_tr.",
-        "queries": ["Coralflavor", "yapay zeka", "private AI chatbot e2e"],
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Coralflavor | Coralflavor private chatbot. Kanallar: apple_tr, play_tr.",
+        "queries": ["Coralflavor", "Coralflavor private chatbot"],
         "evidence": [],
         "gapLabel": "boş"
       }
     },
     {
-      "rank": 9,
+      "rank": 6,
       "key": "getscreeny.app",
-      "name": "Screeny: Mockup & Product Demo",
+      "name": "Screeny",
+      "originalName": "Screeny: Mockup & Product Demo",
       "url": "https://getscreeny.app",
       "whatItIs": "The simplest way to make beautiful product demos. Screeny is an iOS and macOS app that turns raw screenshots and screen recordings into polished mockups and 3D animations in seconds, ready for social",
       "category": "Mobile Apps",
       "sources": ["trustmrr"],
       "score": {
         "sources": 0,
+        "revenue": 3,
+        "product": 1,
         "signals": 1.59,
         "momentum": 0,
-        "total": 1.59
+        "total": 5.59
       },
       "momentum": null,
       "dataPoints": [
@@ -386,8 +273,8 @@
       "revenueEvidence": "MRR $489 (TrustMRR), 30g büyüme 92.2% — https://trustmrr.com/startup/screeny",
       "tr": {
         "verdict": "found",
-        "reason": "TR mağazasında gerçek eşleşme: Mockup & Demo Maker: Screeny (5 TR rating, apple_tr). Durum: var ama çekiş yok (rating <= 5). Denene(n) sorgular: Screeny: Mockup & Product Demo | simplest way to make. Kanallar: apple_tr, play_tr.",
-        "queries": ["Screeny: Mockup & Product Demo", "simplest way to make"],
+        "reason": "TR mağazasında gerçek eşleşme: Mockup & Demo Maker: Screeny (5 TR rating, apple_tr). Durum: var ama çekiş yok (rating <= 5). Denene(n) sorgular: Screeny | Screeny simplest make. Kanallar: apple_tr, play_tr.",
+        "queries": ["Screeny", "Screeny simplest make"],
         "evidence": [
           {
             "name": "Mockup & Demo Maker: Screeny",
@@ -396,67 +283,168 @@
             "url": "https://apps.apple.com/tr/app/mockup-demo-maker-screeny/id6757925827?uo=4"
           },
           {
-            "name": "Product photo editor AI mockup",
+            "name": "Screeny",
+            "channel": "apple_tr",
+            "ratingCount": 0,
+            "url": "https://apps.apple.com/tr/app/screeny/id1144250246?uo=4"
+          },
+          {
+            "name": "Screeny: Screenshot Editor",
+            "channel": "apple_tr",
+            "ratingCount": 0,
+            "url": "https://apps.apple.com/tr/app/screeny-screenshot-editor/id6758330232?uo=4"
+          },
+          {
+            "name": "Screeny: App Blocker & Focus",
+            "channel": "apple_tr",
+            "ratingCount": 0,
+            "url": "https://apps.apple.com/tr/app/screeny-app-blocker-focus/id6768062803?uo=4"
+          },
+          {
+            "name": "Screeny - Screenshot Manager",
             "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=ai.product.photoeditor&hl=tr&gl=TR"
+            "url": "https://play.google.com/store/apps/details?id=com.nxet.screenshotmanager&hl=tr&gl=TR"
+          },
+          {
+            "name": "Screeny: Ekran Süresi Sınırı",
+            "channel": "play_tr",
+            "url": "https://play.google.com/store/apps/details?id=screentime.tracker.app.usage.phone.blocker&hl=tr&gl=TR"
           }
         ],
         "gapLabel": "zayıf"
       }
     },
     {
-      "rank": 10,
-      "key": "watched.earth",
-      "name": "Every satellite that passed over any place this week, and its photos",
-      "url": "https://www.watched.earth",
-      "whatItIs": "Show HN başlığı: Every satellite that passed over any place this week, and its photos",
-      "category": null,
-      "sources": ["showhn"],
+      "rank": 7,
+      "key": "superjoin.ai",
+      "name": "Superjoin",
+      "originalName": "Superjoin",
+      "url": "https://www.superjoin.ai",
+      "whatItIs": "Superjoin brings live data from HubSpot, Salesforce and 30+ integrations into Google Sheets and Excel, with scheduled refreshes and two-way HubSpot sync. 116 paying business accounts, a HubSpot Certif",
+      "category": "Productivity",
+      "sources": ["trustmrr"],
       "score": {
         "sources": 0,
-        "signals": 1.58,
+        "revenue": 3,
+        "product": 1,
+        "signals": 1.38,
         "momentum": 0,
-        "total": 1.58
+        "total": 5.38
       },
       "momentum": null,
       "dataPoints": [
         {
-          "source": "showhn",
-          "metric": "hn_points",
-          "value": 503,
-          "date": "2026-11-09",
-          "url": "https://news.ycombinator.com/item?id=50428907"
+          "source": "trustmrr",
+          "metric": "mrr_usd",
+          "value": 96667,
+          "date": "2026-11-23",
+          "url": "https://trustmrr.com/startup/superjoin"
         },
         {
-          "source": "showhn",
-          "metric": "hn_comments",
-          "value": 89,
-          "date": "2026-11-09",
-          "url": "https://news.ycombinator.com/item?id=50428907"
+          "source": "trustmrr",
+          "metric": "growth_mrr_30d_pct",
+          "value": 13.201161674122302,
+          "date": "2026-11-23",
+          "url": "https://trustmrr.com/startup/superjoin"
         }
       ],
-      "revenueEvidence": "aranmadı",
+      "revenueEvidence": "MRR $96667 (TrustMRR), 30g büyüme 13.2% — https://trustmrr.com/startup/superjoin",
       "tr": {
         "verdict": "not_found",
-        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Every satellite that passed over any place this week, and its photos. Kanallar: apple_tr, play_tr.",
-        "queries": ["Every satellite that passed over any place this week, and its photos"],
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Superjoin | Superjoin superjoin brings. Kanallar: apple_tr, play_tr.",
+        "queries": ["Superjoin", "Superjoin superjoin brings"],
         "evidence": [],
         "gapLabel": "boş"
       }
     },
     {
-      "rank": 11,
+      "rank": 8,
+      "key": "apple:6821628909",
+      "name": "prepi",
+      "originalName": "prepi",
+      "url": "https://apps.apple.com/us/app/prepi-meal-plan-grocery/id6821628909?uo=4",
+      "whatItIs": "Creates personalized weekly meal plans and a budget-fitting grocery list based on users’ diets, allergies, tastes, and local Gulf supermarket prices.",
+      "category": "Health & Fitness",
+      "sources": ["trustmrr"],
+      "score": {
+        "sources": 0,
+        "revenue": 3,
+        "product": 1,
+        "signals": 1.32,
+        "momentum": 0,
+        "total": 5.32
+      },
+      "momentum": null,
+      "dataPoints": [
+        {
+          "source": "trustmrr",
+          "metric": "mrr_usd",
+          "value": 18.14,
+          "date": "2026-11-23",
+          "url": "https://trustmrr.com/startup/prepi"
+        },
+        {
+          "source": "trustmrr",
+          "metric": "growth_mrr_30d_pct",
+          "value": 100,
+          "date": "2026-11-23",
+          "url": "https://trustmrr.com/startup/prepi"
+        }
+      ],
+      "revenueEvidence": "MRR $18 (TrustMRR), 30g büyüme 100% — https://trustmrr.com/startup/prepi",
+      "tr": {
+        "verdict": "found",
+        "reason": "TR mağazasında gerçek eşleşme: Prepi: Meal Plan & Grocery (0 TR rating, apple_tr). Durum: var ama çekiş yok (rating <= 5). Denene(n) sorgular: prepi | prepi creates personalized. Kanallar: apple_tr, play_tr.",
+        "queries": ["prepi", "prepi creates personalized"],
+        "evidence": [
+          {
+            "name": "Prepi: Meal Plan & Grocery",
+            "channel": "apple_tr",
+            "ratingCount": 0,
+            "url": "https://apps.apple.com/tr/app/prepi-meal-plan-grocery/id6821628909?uo=4"
+          },
+          {
+            "name": "Prepi: Recipes & Meal Planner",
+            "channel": "apple_tr",
+            "ratingCount": 0,
+            "url": "https://apps.apple.com/tr/app/prepi-recipes-meal-planner/id6754535508?uo=4"
+          },
+          {
+            "name": "Prepi: Meal Planner & Recipes",
+            "channel": "apple_tr",
+            "ratingCount": 0,
+            "url": "https://apps.apple.com/tr/app/prepi-meal-planner-recipes/id6786804935?uo=4"
+          },
+          {
+            "name": "Prepi: Yemek Planı & Tarifler",
+            "channel": "play_tr",
+            "url": "https://play.google.com/store/apps/details?id=com.padoski.koku&hl=tr&gl=TR"
+          },
+          {
+            "name": "Prepi: Rezepte, Einkauf & mehr",
+            "channel": "play_tr",
+            "url": "https://play.google.com/store/apps/details?id=me.prepi&hl=tr&gl=TR"
+          }
+        ],
+        "gapLabel": "zayıf"
+      }
+    },
+    {
+      "rank": 9,
       "key": "hackertimes.ca",
-      "name": "Hacker Times, a New York Times-inspired version of Hacker News",
+      "name": "Hacker Times",
+      "originalName": "Hacker Times, a New York Times-inspired version of Hacker News",
       "url": "https://hackertimes.ca/",
       "whatItIs": "Show HN başlığı: Hacker Times, a New York Times-inspired version of Hacker News",
       "category": null,
       "sources": ["showhn"],
       "score": {
         "sources": 0,
-        "signals": 1.58,
+        "revenue": 0,
+        "product": 0.5,
+        "signals": 0.75,
         "momentum": 0,
-        "total": 1.58
+        "total": 1.25
       },
       "momentum": null,
       "dataPoints": [
@@ -477,249 +465,72 @@
       ],
       "revenueEvidence": "aranmadı",
       "tr": {
-        "verdict": "uncertain",
-        "reason": "Hacker News (play_tr) eşleşti ama TR rating sayısı okunamadı; çekiş ayırt edilemiyor. Denene(n) sorgular: Hacker Times, a New York Times-inspired version of Hacker News. Kanallar: apple_tr, play_tr.",
-        "queries": ["Hacker Times, a New York Times-inspired version of Hacker News"],
-        "evidence": [
-          {
-            "name": "Hacker News",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.emergetools.hackernews&hl=tr&gl=TR"
-          },
-          {
-            "name": "Hacker News",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.hackernews.android&hl=tr&gl=TR"
-          },
-          {
-            "name": "HACK: Hacker News Tech Reader",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.pranapps.hack&hl=tr&gl=TR"
-          },
-          {
-            "name": "NYTimes: US and Global News",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.nytimes.android&hl=tr&gl=TR"
-          },
-          {
-            "name": "Hacki for Hacker News",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.jiaqifeng.hacki&hl=tr&gl=TR"
-          },
-          {
-            "name": "HackerFlow – Surf Hacker News",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=app.hackerflow&hl=tr&gl=TR"
-          },
-          {
-            "name": "Harmonic for Hacker News",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.simon.harmonichackernews&hl=tr&gl=TR"
-          },
-          {
-            "name": "Plain Hacker News",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.itsjzt.plainhackernews&hl=tr&gl=TR"
-          },
-          {
-            "name": "Hackers",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.tricksterarts.hackers&hl=tr&gl=TR"
-          },
-          {
-            "name": "Yalnız Hacker",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.TheLonelyDeveloper.TheLonelyHacker&hl=tr&gl=TR"
-          },
-          {
-            "name": "Hacker - tap tycoon simulator",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=net.alexplay.developer&hl=tr&gl=TR"
-          },
-          {
-            "name": "Hews for Hacker News",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.leavjenn.hews&hl=tr&gl=TR"
-          }
-        ],
-        "gapLabel": "belirsiz"
-      }
-    },
-    {
-      "rank": 12,
-      "key": "github:googlechrome/modern-web-guidance",
-      "name": "Get your coding agent off ~2019 JavaScript, onto modern web primitives",
-      "url": "https://github.com/GoogleChrome/modern-web-guidance",
-      "whatItIs": "Show HN başlığı: Get your coding agent off ~2019 JavaScript, onto modern web primitives",
-      "category": null,
-      "sources": ["showhn"],
-      "score": {
-        "sources": 0,
-        "signals": 1.57,
-        "momentum": 0,
-        "total": 1.57
-      },
-      "momentum": null,
-      "dataPoints": [
-        {
-          "source": "showhn",
-          "metric": "hn_points",
-          "value": 449,
-          "date": "2026-11-10",
-          "url": "https://news.ycombinator.com/item?id=50443812"
-        },
-        {
-          "source": "showhn",
-          "metric": "hn_comments",
-          "value": 146,
-          "date": "2026-11-10",
-          "url": "https://news.ycombinator.com/item?id=50443812"
-        }
-      ],
-      "revenueEvidence": "aranmadı",
-      "tr": {
-        "verdict": "uncertain",
-        "reason": "Web SaaS için mağaza sinyali yetersiz; JavaScript Coding (rating bilinmiyor) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: Get your coding agent off ~2019 JavaScript, onto modern web primitives. Kanallar: apple_tr, play_tr.",
-        "queries": ["Get your coding agent off ~2019 JavaScript, onto modern web primitives"],
-        "evidence": [
-          {
-            "name": "JavaScript Coding",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.septudio.javascriptcoding&hl=tr&gl=TR"
-          },
-          {
-            "name": "CodeSnack IDE: AI Coding Agent",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.cloudcompilerapp&hl=tr&gl=TR"
-          },
-          {
-            "name": "JavaScript Coding Editor & IDE",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.markodevcic.js_code_pad&hl=tr&gl=TR"
-          },
-          {
-            "name": "CodeAgent: Remote AI Coding",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.codeagent.mobile&hl=tr&gl=TR"
-          },
-          {
-            "name": "Vibe Pocket: AI Coding Agents",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.vibepocket.app&hl=tr&gl=TR"
-          }
-        ],
-        "gapLabel": "belirsiz"
-      }
-    },
-    {
-      "rank": 13,
-      "key": "hackertv.org",
-      "name": "HackerTV – HN's most-recommended Youtube videos as 24/7 TV channels",
-      "url": "https://hackertv.org",
-      "whatItIs": "Show HN başlığı: HackerTV – HN's most-recommended Youtube videos as 24/7 TV channels",
-      "category": null,
-      "sources": ["showhn"],
-      "score": {
-        "sources": 0,
-        "signals": 1.57,
-        "momentum": 0,
-        "total": 1.57
-      },
-      "momentum": null,
-      "dataPoints": [
-        {
-          "source": "showhn",
-          "metric": "hn_points",
-          "value": 491,
-          "date": "2026-11-03",
-          "url": "https://news.ycombinator.com/item?id=50346755"
-        },
-        {
-          "source": "showhn",
-          "metric": "hn_comments",
-          "value": 84,
-          "date": "2026-11-03",
-          "url": "https://news.ycombinator.com/item?id=50346755"
-        }
-      ],
-      "revenueEvidence": "aranmadı",
-      "tr": {
         "verdict": "not_found",
-        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: HackerTV – HN's most-recommended Youtube videos as 24/7 TV channels. Kanallar: apple_tr, play_tr.",
-        "queries": ["HackerTV – HN's most-recommended Youtube videos as 24/7 TV channels"],
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Hacker Times. Kanallar: apple_tr, play_tr.",
+        "queries": ["Hacker Times"],
         "evidence": [],
         "gapLabel": "boş"
       }
     },
     {
-      "rank": 14,
-      "key": "titleart.dvy.io",
-      "name": "TitleArt – Make text like it's 1997",
-      "url": "https://titleart.dvy.io/",
-      "whatItIs": "Show HN başlığı: TitleArt – Make text like it's 1997",
+      "rank": 10,
+      "key": "hackerbooks.org",
+      "name": "HackerBooks",
+      "originalName": "HackerBooks – HackerTube, but for books mentioned on HN",
+      "url": "https://hackerbooks.org",
+      "whatItIs": "Show HN başlığı: HackerBooks – HackerTube, but for books mentioned on HN",
       "category": null,
       "sources": ["showhn"],
       "score": {
         "sources": 0,
-        "signals": 1.53,
+        "revenue": 0,
+        "product": 0.5,
+        "signals": 0.75,
         "momentum": 0,
-        "total": 1.53
+        "total": 1.25
       },
       "momentum": null,
       "dataPoints": [
         {
           "source": "showhn",
           "metric": "hn_points",
-          "value": 411,
-          "date": "2026-10-26",
-          "url": "https://news.ycombinator.com/item?id=50238708"
+          "value": 1870,
+          "date": "2026-11-01",
+          "url": "https://news.ycombinator.com/item?id=50326821"
         },
         {
           "source": "showhn",
           "metric": "hn_comments",
-          "value": 82,
-          "date": "2026-10-26",
-          "url": "https://news.ycombinator.com/item?id=50238708"
+          "value": 308,
+          "date": "2026-11-01",
+          "url": "https://news.ycombinator.com/item?id=50326821"
         }
       ],
       "revenueEvidence": "aranmadı",
       "tr": {
-        "verdict": "uncertain",
-        "reason": "Text Swag: Logo, AI Text Maker (play_tr) eşleşti ama TR rating sayısı okunamadı; çekiş ayırt edilemiyor. Denene(n) sorgular: TitleArt – Make text like it's 1997. Kanallar: apple_tr, play_tr.",
-        "queries": ["TitleArt – Make text like it's 1997"],
-        "evidence": [
-          {
-            "name": "Text Swag: Logo, AI Text Maker",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=wordswag.stylishfont.gwyn&hl=tr&gl=TR"
-          },
-          {
-            "name": "Office NX: TextMaker",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=softmaker.applications.office.textmaker&hl=tr&gl=TR"
-          },
-          {
-            "name": "Stylish Text Maker: Cool Fonts",
-            "channel": "play_tr",
-            "url": "https://play.google.com/store/apps/details?id=com.uprightgeeks.stylishtextmaker&hl=tr&gl=TR"
-          }
-        ],
-        "gapLabel": "belirsiz"
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: HackerBooks. Kanallar: apple_tr, play_tr.",
+        "queries": ["HackerBooks"],
+        "evidence": [],
+        "gapLabel": "boş"
       }
     },
     {
-      "rank": 15,
+      "rank": 11,
       "key": "wikihack.netlify.app",
-      "name": "Wikihack – HackerTube, but for Wikipedia articles mentioned on HN",
+      "name": "Wikihack",
+      "originalName": "Wikihack – HackerTube, but for Wikipedia articles mentioned on HN",
       "url": "https://wikihack.netlify.app",
       "whatItIs": "Show HN başlığı: Wikihack – HackerTube, but for Wikipedia articles mentioned on HN",
       "category": null,
       "sources": ["showhn"],
       "score": {
         "sources": 0,
-        "signals": 1.52,
+        "revenue": 0,
+        "product": 0.5,
+        "signals": 0.75,
         "momentum": 0,
-        "total": 1.52
+        "total": 1.25
       },
       "momentum": null,
       "dataPoints": [
@@ -741,8 +552,180 @@
       "revenueEvidence": "aranmadı",
       "tr": {
         "verdict": "not_found",
-        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Wikihack – HackerTube, but for Wikipedia articles mentioned on HN. Kanallar: apple_tr, play_tr.",
-        "queries": ["Wikihack – HackerTube, but for Wikipedia articles mentioned on HN"],
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Wikihack. Kanallar: apple_tr, play_tr.",
+        "queries": ["Wikihack"],
+        "evidence": [],
+        "gapLabel": "boş"
+      }
+    },
+    {
+      "rank": 12,
+      "key": "watched.earth",
+      "name": "Every satellite",
+      "originalName": "Every satellite that passed over any place this week, and its photos",
+      "url": "https://www.watched.earth",
+      "whatItIs": "Show HN başlığı: Every satellite that passed over any place this week, and its photos",
+      "category": null,
+      "sources": ["showhn"],
+      "score": {
+        "sources": 0,
+        "revenue": 0,
+        "product": 0.5,
+        "signals": 0.74,
+        "momentum": 0,
+        "total": 1.24
+      },
+      "momentum": null,
+      "dataPoints": [
+        {
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 503,
+          "date": "2026-11-09",
+          "url": "https://news.ycombinator.com/item?id=50428907"
+        },
+        {
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 89,
+          "date": "2026-11-09",
+          "url": "https://news.ycombinator.com/item?id=50428907"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Every satellite. Kanallar: apple_tr, play_tr.",
+        "queries": ["Every satellite"],
+        "evidence": [],
+        "gapLabel": "boş"
+      }
+    },
+    {
+      "rank": 13,
+      "key": "hackertv.org",
+      "name": "HackerTV",
+      "originalName": "HackerTV – HN's most-recommended Youtube videos as 24/7 TV channels",
+      "url": "https://hackertv.org",
+      "whatItIs": "Show HN başlığı: HackerTV – HN's most-recommended Youtube videos as 24/7 TV channels",
+      "category": null,
+      "sources": ["showhn"],
+      "score": {
+        "sources": 0,
+        "revenue": 0,
+        "product": 0.5,
+        "signals": 0.74,
+        "momentum": 0,
+        "total": 1.24
+      },
+      "momentum": null,
+      "dataPoints": [
+        {
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 491,
+          "date": "2026-11-03",
+          "url": "https://news.ycombinator.com/item?id=50346755"
+        },
+        {
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 84,
+          "date": "2026-11-03",
+          "url": "https://news.ycombinator.com/item?id=50346755"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: HackerTV. Kanallar: apple_tr, play_tr.",
+        "queries": ["HackerTV"],
+        "evidence": [],
+        "gapLabel": "boş"
+      }
+    },
+    {
+      "rank": 14,
+      "key": "titleart.dvy.io",
+      "name": "TitleArt",
+      "originalName": "TitleArt – Make text like it's 1997",
+      "url": "https://titleart.dvy.io/",
+      "whatItIs": "Show HN başlığı: TitleArt – Make text like it's 1997",
+      "category": null,
+      "sources": ["showhn"],
+      "score": {
+        "sources": 0,
+        "revenue": 0,
+        "product": 0.5,
+        "signals": 0.74,
+        "momentum": 0,
+        "total": 1.24
+      },
+      "momentum": null,
+      "dataPoints": [
+        {
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 411,
+          "date": "2026-10-26",
+          "url": "https://news.ycombinator.com/item?id=50238708"
+        },
+        {
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 82,
+          "date": "2026-10-26",
+          "url": "https://news.ycombinator.com/item?id=50238708"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: TitleArt. Kanallar: apple_tr, play_tr.",
+        "queries": ["TitleArt"],
+        "evidence": [],
+        "gapLabel": "boş"
+      }
+    },
+    {
+      "rank": 15,
+      "key": "cornholenews.news",
+      "name": "Cornhole News",
+      "originalName": "Cornhole News – A Hacker News inspired site for news across the Midwest",
+      "url": "https://cornholenews.news",
+      "whatItIs": "Show HN başlığı: Cornhole News – A Hacker News inspired site for news across the Midwest",
+      "category": null,
+      "sources": ["showhn"],
+      "score": {
+        "sources": 0,
+        "revenue": 0,
+        "product": 0.5,
+        "signals": 0.73,
+        "momentum": 0,
+        "total": 1.23
+      },
+      "momentum": null,
+      "dataPoints": [
+        {
+          "source": "showhn",
+          "metric": "hn_points",
+          "value": 237,
+          "date": "2026-11-19",
+          "url": "https://news.ycombinator.com/item?id=50561515"
+        },
+        {
+          "source": "showhn",
+          "metric": "hn_comments",
+          "value": 122,
+          "date": "2026-11-19",
+          "url": "https://news.ycombinator.com/item?id=50561515"
+        }
+      ],
+      "revenueEvidence": "aranmadı",
+      "tr": {
+        "verdict": "not_found",
+        "reason": "TR mağazalarında eşleşme bulunamadı. Denene(n) sorgular: Cornhole News. Kanallar: apple_tr, play_tr.",
+        "queries": ["Cornhole News"],
         "evidence": [],
         "gapLabel": "boş"
       }

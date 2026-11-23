@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Candidate } from "../src/candidates/model.js";
+import { shortProductName, shortTrQueries } from "../src/ideas/names.js";
 import { isNoise, rankCandidates, readSnapshot, scoreCandidate } from "../src/ideas/rank.js";
 import { describe, gapLabel, renderMarkdown, revenueEvidence } from "../src/ideas/report.js";
+import { parsePlayRating } from "../src/tr/channels.js";
 import type { TrVerdict } from "../src/tr/check.js";
 
 const point = (source: string, metric: string, value: number, url = "https://x") => ({
@@ -116,7 +118,7 @@ test("ranking: noise filter drops anonymous and store-giant rows, keeps small ap
     "z",
     "Niş uygulama",
     ["apple"],
-    [point("apple", "apple_us_top_free_rank", 80)],
+    [point("apple", "apple_us_top_free_rank", 80), point("apple", "apple_us_top_free_rank", 85)],
   );
   assert.ok(isNoise(anonymous));
   assert.ok(isNoise(giant));
@@ -128,8 +130,9 @@ test("ranking: noise filter drops anonymous and store-giant rows, keeps small ap
 });
 
 test("ranking: ties are deterministic regardless of input order", () => {
-  const a = candidate("a", "Alpha", ["reddit"], [point("reddit", "reddit_score", 10)]);
-  const b = candidate("b", "Beta", ["reddit"], [point("reddit", "reddit_score", 10)]);
+  const points = [point("reddit", "reddit_score", 10), point("reddit", "reddit_comments", 2)];
+  const a = candidate("a", "Alpha", ["reddit"], points);
+  const b = candidate("b", "Beta", ["reddit"], points);
   assert.deepEqual(
     rankCandidates([a, b]).map((entry) => entry.candidate.key),
     rankCandidates([b, a]).map((entry) => entry.candidate.key),
@@ -185,11 +188,12 @@ test("report: revenue fallback, description, TR gap labels and markdown links", 
         rank: 1,
         key: "a",
         name: "A",
+        originalName: "A",
         url: "https://x",
         whatItIs: "AI tool",
         category: null,
         sources: ["showhn"],
-        score: { sources: 0, signals: 1, momentum: 0, total: 1 },
+        score: { sources: 0, revenue: 0, product: 0, signals: 1, momentum: 0, total: 1 },
         momentum: null,
         dataPoints: [point("showhn", "hn_points", 5, "https://news.ycombinator.com/item?id=1")],
         revenueEvidence: "aranmadı",
@@ -215,3 +219,86 @@ function gapVerdict(v: TrVerdict) {
     gapLabel: gapLabel(v),
   };
 }
+
+test("names: long Show HN headlines become short product names and short TR queries", () => {
+  assert.equal(
+    shortProductName("HackerBooks – HackerTube, but for books mentioned on HN"),
+    "HackerBooks",
+  );
+  assert.equal(shortProductName("Show HN: Screeny: Mockup & Product Demo"), "Screeny");
+  assert.equal(
+    shortProductName("Every satellite that passed over any place this week, and its photos"),
+    "Every satellite",
+  );
+  const queries = shortTrQueries(
+    shortProductName("HackerBooks – HackerTube, but for books mentioned on HN"),
+    "A site that lists books mentioned on Hacker News with discussions and reviews",
+  );
+  assert.deepEqual(queries, ["HackerBooks", "HackerBooks lists books"]);
+  assert.ok(queries.every((query) => query.length < 60));
+  assert.equal(shortTrQueries("Screeny", undefined).length, 1);
+});
+
+test("ranking: revenue and product-likeness lift real products above HN-only noise", () => {
+  const joke = candidate(
+    "joke",
+    "Steal My Bitcoin",
+    ["showhn"],
+    [point("showhn", "hn_points", 500), point("showhn", "hn_comments", 200)],
+    { url: "https://news.ycombinator.com/item?id=1" },
+  );
+  const product = candidate(
+    "p",
+    "AppZoku",
+    ["trustmrr"],
+    [point("trustmrr", "mrr_usd", 1500), point("trustmrr", "growth_mrr_30d_pct", 100)],
+    { url: "https://appzoku.com", description: "marketing tool for solo iOS developers" },
+  );
+  const loudHn = candidate(
+    "hn",
+    "Show HN: A very long headline about a thing I built last week",
+    ["showhn"],
+    [point("showhn", "hn_points", 900)],
+  );
+  assert.ok(isNoise(joke));
+  const ranked = rankCandidates([joke, loudHn, product]);
+  assert.equal(ranked[0]!.candidate.key, "p");
+  assert.ok(ranked[0]!.score.revenue > 0);
+  assert.ok(ranked[0]!.score.product > 0);
+});
+
+test("ranking: at least 5 revenue-backed cards even when HN posts score higher", () => {
+  const revenue = Array.from({ length: 6 }, (_, index) =>
+    candidate(
+      `r${index}`,
+      `Revenue ${index}`,
+      ["trustmrr"],
+      [point("trustmrr", "mrr_usd", 100), point("trustmrr", "growth_mrr_30d_pct", 10)],
+      {
+        url: `https://product${index}.com`,
+        description: "a real product",
+      },
+    ),
+  );
+  const hn = Array.from({ length: 12 }, (_, index) =>
+    candidate(
+      `h${index}`,
+      `Hacker News thing ${index}`,
+      ["showhn"],
+      [point("showhn", "hn_points", 1000)],
+      { url: `https://news.ycombinator.com/item?id=${index}` },
+    ),
+  );
+  const ranked = rankCandidates([...hn, ...revenue]);
+  const withRevenue = ranked.filter((entry) =>
+    entry.candidate.dataPoints.some((point) => point.metric === "mrr_usd"),
+  );
+  assert.ok(withRevenue.length >= 5);
+});
+
+test("Play rating parser: accepts explicit counts, ignores average scores and missing data", () => {
+  assert.equal(parsePlayRating('<div itemprop="ratingCount" content="1,234"></div>'), 1234);
+  assert.equal(parsePlayRating('<span>"ratingCount":987</span>'), 987);
+  assert.equal(parsePlayRating("<span>4,3 değerlendirme</span>"), undefined);
+  assert.equal(parsePlayRating("<div>no rating here</div>"), undefined);
+});

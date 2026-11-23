@@ -2,6 +2,8 @@ export type TrCandidate = {
   name: string;
   description?: string;
   url?: string;
+  /** Explicit query list; overrides generated queries (used to keep headline text out of searches). */
+  queries?: string[];
 };
 
 export type TrChannel = "apple_tr" | "play_tr";
@@ -130,6 +132,8 @@ function stripStopwords(value: string): string[] {
 }
 
 export function buildQueries(candidate: TrCandidate): string[] {
+  if (candidate.queries?.length)
+    return [...new Set(candidate.queries.map((q) => q.trim()).filter(Boolean))];
   const name = candidate.name.trim();
   const description = (candidate.description ?? "").trim();
   const queries: string[] = [];
