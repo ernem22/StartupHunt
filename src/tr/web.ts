@@ -75,6 +75,9 @@ const NON_COMPETITOR_DOMAINS = [
   "g2.com",
   "capterra.com",
   "alternativeto.net",
+  // APK and emulator catalogs list other developers' apps (AppZoku hit "AppzOK" developer pages).
+  "apkpure.net",
+  "memuplay.com",
 ];
 
 /** Language subdomains (pt.x.com, es.x.com): a page there is not Turkish evidence. */

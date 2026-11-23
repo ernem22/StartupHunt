@@ -1,6 +1,6 @@
 # Startup fikirleri
 
-Üretim: 2026-11-23T03:18:16.689Z · Kaynak: data\latest.json · Snapshot: data\2026-11-23.json · 15 fikir
+Üretim: 2026-11-23T03:52:43.817Z · Kaynak: data\latest.json · Snapshot: data\2026-11-23.json · 15 fikir
 
 Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (URL/açıklama/kısa ad), sinyaller (log ölçekli HN/Reddit/MRR), snapshot ivmesi. En az 5 kart gelir kanıtlı. TR boşluğu: dolu/zayıf/boş/belirsiz.
 
@@ -12,7 +12,7 @@ Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (UR
 - **Veri noktaları:**
   - trustmrr · mrr_usd: **36005** (2026-11-23) — https://trustmrr.com/startup/store-stock-checker
   - trustmrr · growth_mrr_30d_pct: **1204.5289855072463** (2026-11-23) — https://trustmrr.com/startup/store-stock-checker
-- **Gelir kanıtı:** MRR $36005 (TrustMRR), 30g büyüme 1204.5% — https://trustmrr.com/startup/store-stock-checker
+- **Gelir kanıtı:** MRR $36005 (TrustMRR), MRR 30g büyümesi 1204.5% — https://trustmrr.com/startup/store-stock-checker
 - **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web SaaS için mağaza sinyali yetersiz; Stock Checker (rating bilinmiyor) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: Store Stock Checker | Store Stock Checker realtime apple. Kanallar: apple_tr, play_tr, web_tr.
   - Sorgular: Store Stock Checker | Store Stock Checker realtime apple
   - play_tr · Stock Checker (rating yok) — https://play.google.com/store/apps/details?id=com.amepos.stockchecker&hl=tr&gl=TR
@@ -25,7 +25,7 @@ Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (UR
 - **Veri noktaları:**
   - trustmrr · mrr_usd: **6752.9** (2026-11-23) — https://trustmrr.com/startup/scalereach
   - trustmrr · growth_mrr_30d_pct: **5012.9324096552255** (2026-11-23) — https://trustmrr.com/startup/scalereach
-- **Gelir kanıtı:** MRR $6753 (TrustMRR), 30g büyüme 5012.9% — https://trustmrr.com/startup/scalereach
+- **Gelir kanıtı:** MRR $6753 (TrustMRR), MRR 30g büyümesi 5012.9% — https://trustmrr.com/startup/scalereach
 - **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada bulunamadı; mağaza sonucu 'yok' anlamına gelmez. Web kanalı (Yandex TR) kontrol edildi, TR'ye özgü eşleşme bulunamadı. Denene(n) sorgular: Scalereach.ai | Scalereach.ai video repurposing | yapay zeka video aracı. Kanallar: apple_tr, play_tr, web_tr.
   - Sorgular: Scalereach.ai | Scalereach.ai video repurposing | yapay zeka video aracı
 
@@ -36,13 +36,11 @@ Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (UR
 - **Ürün:** https://appzoku.com
 - **Veri noktaları:**
   - trustmrr · mrr_usd: **1527.38** (2026-11-23) — https://trustmrr.com/startup/appzoku
-  - trustmrr · growth_mrr_30d_pct: **1310.3681581439355** (2026-11-23) — https://trustmrr.com/startup/appzoku
-- **Gelir kanıtı:** MRR $1527 (TrustMRR), 30g büyüme 1310.4% — https://trustmrr.com/startup/appzoku
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada yok; TR web kanalında yalnızca benzer ürünler bulundu (Tüm AppzOK Ücretsiz Android Uygulamaları ve Oyunları — https://apkpure.net/tr/developer/AppzOK), doğrudan rakip doğrulanamadı. Denene(n) sorgular: AppZoku | AppZoku appzoku marketing | pazarlama aracı. Kanallar: apple_tr, play_tr, web_tr.
+  - trustmrr · growth_mrr_30d_pct: **866.6947408328365** (2026-11-23) — https://trustmrr.com/startup/appzoku
+- **Gelir kanıtı:** MRR $1527 (TrustMRR), MRR 30g büyümesi 866.7% — https://trustmrr.com/startup/appzoku
+- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada yok; TR web kanalında yalnızca benzer ürünler bulundu (Bağlantı: facebook.com — https://www.facebook.com/appzok/), doğrudan rakip doğrulanamadı. Denene(n) sorgular: AppZoku | AppZoku appzoku marketing | pazarlama aracı. Kanallar: apple_tr, play_tr, web_tr.
   - Sorgular: AppZoku | AppZoku appzoku marketing | pazarlama aracı
-  - web_tr · Tüm AppzOK Ücretsiz Android Uygulamaları ve Oyunları (rating yok) — https://apkpure.net/tr/developer/AppzOK
   - web_tr · Bağlantı: facebook.com (rating yok) — https://www.facebook.com/appzok/
-  - web_tr · MEmu ile En Sevdiğin Android Uyunlarını PC&#x27;de Oyna ve En... (rating yok) — https://www.memuplay.com/tr/developer/AppzOK
 
 ## 4. CatalogoHoy
 
@@ -52,13 +50,31 @@ Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (UR
 - **Veri noktaları:**
   - trustmrr · mrr_usd: **555.5** (2026-11-23) — https://trustmrr.com/startup/catalogohoy
   - trustmrr · growth_mrr_30d_pct: **413.78098409174993** (2026-11-23) — https://trustmrr.com/startup/catalogohoy
-- **Gelir kanıtı:** MRR $556 (TrustMRR), 30g büyüme 413.8% — https://trustmrr.com/startup/catalogohoy
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web SaaS için mağaza sinyali yetersiz; CatalogoHoy: Catálogo y ventas (0 TR rating) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: CatalogoHoy | CatalogoHoy manage catalog | katalog sipariş aracı. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: CatalogoHoy | CatalogoHoy manage catalog | katalog sipariş aracı
+- **Gelir kanıtı:** MRR $556 (TrustMRR), MRR 30g büyümesi 413.8% — https://trustmrr.com/startup/catalogohoy
+- **TR doygunluğu:** found · **TR boşluğu: zayıf** — TR mağazasında gerçek eşleşme: CatalogoHoy: Catálogo y ventas (0 TR rating, apple_tr). Durum: var ama çekiş yok (rating <= 5). Denene(n) sorgular: CatalogoHoy | CatalogoHoy manage catalog. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: CatalogoHoy | CatalogoHoy manage catalog
   - apple_tr · CatalogoHoy: Catálogo y ventas (0 TR rating) — https://apps.apple.com/tr/app/catalogohoy-cat%C3%A1logo-y-ventas/id6817059692?uo=4
   - play_tr · CatalogoHoy: Catálogo y ventas (rating yok) — https://play.google.com/store/apps/details?id=com.catalogohoy.app&hl=tr&gl=TR
 
-## 5. Coralflavor
+## 5. Screeny
+
+- **Ne olduğu:** The simplest way to make beautiful product demos. Screeny is an iOS and macOS app that turns raw screenshots and screen recordings into polished mockups and 3D animations in seconds, ready for social
+- **Ham başlık:** Screeny: Mockup & Product Demo
+- **Neden listede:** trustmrr · skor 5.64 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 1.64, ivme 0)
+- **Ürün:** https://getscreeny.app
+- **Veri noktaları:**
+  - trustmrr · mrr_usd: **489.46** (2026-11-23) — https://trustmrr.com/startup/screeny
+  - trustmrr · growth_mrr_30d_pct: **96.81531223611725** (2026-11-23) — https://trustmrr.com/startup/screeny
+- **Gelir kanıtı:** MRR $489 (TrustMRR), MRR 30g büyümesi 96.8% — https://trustmrr.com/startup/screeny
+- **TR doygunluğu:** found · **TR boşluğu: zayıf** — TR mağazasında gerçek eşleşme: Screeny (0 TR rating, apple_tr). Durum: var ama çekiş yok (rating <= 5). Denene(n) sorgular: Screeny | Screeny simplest make. Kanallar: apple_tr, play_tr, web_tr.
+  - Sorgular: Screeny | Screeny simplest make
+  - apple_tr · Screeny (0 TR rating) — https://apps.apple.com/tr/app/screeny/id1144250246?uo=4
+  - apple_tr · Screeny: Screenshot Editor (0 TR rating) — https://apps.apple.com/tr/app/screeny-screenshot-editor/id6758330232?uo=4
+  - apple_tr · Screeny: App Blocker & Focus (0 TR rating) — https://apps.apple.com/tr/app/screeny-app-blocker-focus/id6768062803?uo=4
+  - play_tr · Screeny - Screenshot Manager (rating yok) — https://play.google.com/store/apps/details?id=com.nxet.screenshotmanager&hl=tr&gl=TR
+  - play_tr · Screeny: Ekran Süresi Sınırı (rating yok) — https://play.google.com/store/apps/details?id=screentime.tracker.app.usage.phone.blocker&hl=tr&gl=TR
+
+## 6. Coralflavor
 
 - **Ne olduğu:** Private AI chatbot with E2E encryption
 - **Neden listede:** trustmrr · skor 5.62 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 1.62, ivme 0)
@@ -66,29 +82,9 @@ Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (UR
 - **Veri noktaları:**
   - trustmrr · mrr_usd: **4381** (2026-11-23) — https://trustmrr.com/startup/coralflavor
   - trustmrr · growth_mrr_30d_pct: **70.86583463338533** (2026-11-23) — https://trustmrr.com/startup/coralflavor
-- **Gelir kanıtı:** MRR $4381 (TrustMRR), 30g büyüme 70.9% — https://trustmrr.com/startup/coralflavor
+- **Gelir kanıtı:** MRR $4381 (TrustMRR), MRR 30g büyümesi 70.9% — https://trustmrr.com/startup/coralflavor
 - **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada bulunamadı; mağaza sonucu 'yok' anlamına gelmez. Web kanalı (Yandex TR) kontrol edildi, TR'ye özgü eşleşme bulunamadı. Denene(n) sorgular: Coralflavor | Coralflavor private chatbot | yapay zeka sohbet botu aracı. Kanallar: apple_tr, play_tr, web_tr.
   - Sorgular: Coralflavor | Coralflavor private chatbot | yapay zeka sohbet botu aracı
-
-## 6. Screeny
-
-- **Ne olduğu:** The simplest way to make beautiful product demos. Screeny is an iOS and macOS app that turns raw screenshots and screen recordings into polished mockups and 3D animations in seconds, ready for social
-- **Ham başlık:** Screeny: Mockup & Product Demo
-- **Neden listede:** trustmrr · skor 5.59 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 1.59, ivme 0)
-- **Ürün:** https://getscreeny.app
-- **Veri noktaları:**
-  - trustmrr · mrr_usd: **489.46** (2026-11-23) — https://trustmrr.com/startup/screeny
-  - trustmrr · growth_mrr_30d_pct: **92.19833294383422** (2026-11-23) — https://trustmrr.com/startup/screeny
-- **Gelir kanıtı:** MRR $489 (TrustMRR), 30g büyüme 92.2% — https://trustmrr.com/startup/screeny
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web SaaS için mağaza sinyali yetersiz; Mockup & Demo Maker: Screeny (5 TR rating) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: Screeny | Screeny simplest make. Kanallar: apple_tr, play_tr, web_tr.
-  - Sorgular: Screeny | Screeny simplest make
-  - apple_tr · Mockup & Demo Maker: Screeny (5 TR rating) — https://apps.apple.com/tr/app/mockup-demo-maker-screeny/id6757925827?uo=4
-  - apple_tr · Screeny (0 TR rating) — https://apps.apple.com/tr/app/screeny/id1144250246?uo=4
-  - apple_tr · Screeny: Screenshot Editor (0 TR rating) — https://apps.apple.com/tr/app/screeny-screenshot-editor/id6758330232?uo=4
-  - apple_tr · Screeny: App Blocker & Focus (0 TR rating) — https://apps.apple.com/tr/app/screeny-app-blocker-focus/id6768062803?uo=4
-  - play_tr · Screeny - Screenshot Manager (rating yok) — https://play.google.com/store/apps/details?id=com.nxet.screenshotmanager&hl=tr&gl=TR
-  - play_tr · Screeny: Ekran Süresi Sınırı (rating yok) — https://play.google.com/store/apps/details?id=screentime.tracker.app.usage.phone.blocker&hl=tr&gl=TR
-  - web_tr · Screeny — Screen Time - Windows’ta Ücretsiz İndir ve Yükle (rating yok) — https://apps.microsoft.com/detail/9p2xx9pjm3sr?hl=tr-TR&gl=TR
 
 ## 7. Superjoin
 
@@ -97,15 +93,14 @@ Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (UR
 - **Ürün:** https://www.superjoin.ai
 - **Veri noktaları:**
   - trustmrr · mrr_usd: **96667** (2026-11-23) — https://trustmrr.com/startup/superjoin
-  - trustmrr · growth_mrr_30d_pct: **13.201161674122302** (2026-11-23) — https://trustmrr.com/startup/superjoin
-- **Gelir kanıtı:** MRR $96667 (TrustMRR), 30g büyüme 13.2% — https://trustmrr.com/startup/superjoin
+  - trustmrr · growth_mrr_30d_pct: **13.033056208416646** (2026-11-23) — https://trustmrr.com/startup/superjoin
+- **Gelir kanıtı:** MRR $96667 (TrustMRR), MRR 30g büyümesi 13% — https://trustmrr.com/startup/superjoin
 - **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada yok; TR web kanalında yalnızca benzer ürünler bulundu (Tablo Grafikler: Ücretsiz Online Tablo Oluşturma | Canva — https://www.canva.com/tr_tr/sema/tablo/), doğrudan rakip doğrulanamadı. Denene(n) sorgular: Superjoin | Superjoin superjoin brings | tablo aracı. Kanallar: apple_tr, play_tr, web_tr.
   - Sorgular: Superjoin | Superjoin superjoin brings | tablo aracı
   - web_tr · Tablo Grafikler: Ücretsiz Online Tablo Oluşturma | Canva (rating yok) — https://www.canva.com/tr_tr/sema/tablo/
   - web_tr · Ücretsiz Online Tablo Oluşturucu | Jotform (rating yok) — https://www.jotform.com/tr/online-table-maker/
   - web_tr · Tablohane&#x27;de Fotoğraflarınız ile Tablo Tasarlayabilirsiniz. (rating yok) — https://www.tablohane.com/sen-tasarla
   - web_tr · Tablo Grafik Oluşturucu | Creately (rating yok) — https://creately.com/tr/lp/tablo-olu%C5%9Fturucu/
-  - web_tr · Excel Sayfalarını Düzenlemek İçin En İyi Ücretsiz Elektronik... (rating yok) — https://www.wps.com/tr-TR/office/spreadsheet/
   - web_tr · Google E- Tablolar : Online E- Tablolar ve Şablonlar (rating yok) — https://workspace.google.com/intl/tr/products/sheets/
   - web_tr · Tablo Oluşturucu - Ücretsiz Online | QuickTableConvert (rating yok) — https://quicktableconvert.com/tr/tools/table-generator/
   - web_tr · Harika E- Tablolar İçin Yapay Zeka Excel Agent | Kimi Sheets (rating yok) — https://www.kimi.ai/tr/features/sheets
@@ -118,7 +113,7 @@ Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (UR
 - **Veri noktaları:**
   - trustmrr · mrr_usd: **18.14** (2026-11-23) — https://trustmrr.com/startup/prepi
   - trustmrr · growth_mrr_30d_pct: **100** (2026-11-23) — https://trustmrr.com/startup/prepi
-- **Gelir kanıtı:** MRR $18 (TrustMRR), 30g büyüme 100% — https://trustmrr.com/startup/prepi
+- **Gelir kanıtı:** MRR $18 (TrustMRR), MRR 30g büyümesi 100% — https://trustmrr.com/startup/prepi
 - **TR doygunluğu:** found · **TR boşluğu: zayıf** — TR mağazasında gerçek eşleşme: Prepi: Meal Plan & Grocery (0 TR rating, apple_tr). Durum: var ama çekiş yok (rating <= 5). Denene(n) sorgular: prepi | prepi creates personalized. Kanallar: apple_tr, play_tr, web_tr.
   - Sorgular: prepi | prepi creates personalized
   - apple_tr · Prepi: Meal Plan & Grocery (0 TR rating) — https://apps.apple.com/tr/app/prepi-meal-plan-grocery/id6821628909?uo=4
@@ -135,14 +130,9 @@ Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (UR
 - **Veri noktaları:**
   - trustmrr · mrr_usd: **19125.81** (2026-11-23) — https://trustmrr.com/startup/getfunneled
   - trustmrr · growth_mrr_30d_pct: **8.105954698329223** (2026-11-23) — https://trustmrr.com/startup/getfunneled
-- **Gelir kanıtı:** MRR $19126 (TrustMRR), 30g büyüme 8.1% — https://trustmrr.com/startup/getfunneled
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada yok; TR web kanalında yalnızca benzer ürünler bulundu (En İyi 21 Yapay Zeka Aracı — Chatbotlar, Form Oluşturanlar... — https://www.jotform.com/tr/blog/en-iyi-yapay-zeka-araclari/), doğrudan rakip doğrulanamadı. Denene(n) sorgular: Get Funneled | Get Funneled native post | yapay zeka aracı. Kanallar: apple_tr, play_tr, web_tr.
+- **Gelir kanıtı:** MRR $19126 (TrustMRR), MRR 30g büyümesi 8.1% — https://trustmrr.com/startup/getfunneled
+- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada bulunamadı; mağaza sonucu 'yok' anlamına gelmez. Web kanalı (Yandex TR) kontrol edildi, TR'ye özgü eşleşme bulunamadı. Denene(n) sorgular: Get Funneled | Get Funneled native post | yapay zeka aracı. Kanallar: apple_tr, play_tr, web_tr.
   - Sorgular: Get Funneled | Get Funneled native post | yapay zeka aracı
-  - web_tr · En İyi 21 Yapay Zeka Aracı — Chatbotlar, Form Oluşturanlar... (rating yok) — https://www.jotform.com/tr/blog/en-iyi-yapay-zeka-araclari/
-  - web_tr · 2026&#x27;nın En İyi 20 Yapay Zeka Aracı : Kapsamlı Rehber (rating yok) — https://aidarsi.com/tr/blog/ai-tools-2026/
-  - web_tr · En İyi Yapay Zeka Uygulamaları | Coderspace Blog (rating yok) — https://coderspace.io/blog/en-iyi-yapay-zeka-uygulamalari/
-  - web_tr · En İyi 20 Yapay Zeka Uygulaması | Bulutistan Blog (rating yok) — https://bulutistan.com/blog/en-iyi-20-yapay-zeka-uygulamasi/
-  - web_tr · 2026’nın En İyi 20 Yapay Zekâ Aracı (Tam Kılavuz) (rating yok) — https://www.datacamp.com/tr/blog/best-ai-tools
 
 ## 10. Landy AI
 
@@ -151,12 +141,11 @@ Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (UR
 - **Ürün:** https://landy-ai.com
 - **Veri noktaları:**
   - trustmrr · mrr_usd: **8328** (2026-11-23) — https://trustmrr.com/startup/landy
-  - trustmrr · growth_mrr_30d_pct: **-13.627878033602986** (2026-11-23) — https://trustmrr.com/startup/landy
-- **Gelir kanıtı:** MRR $8328 (TrustMRR), 30g büyüme -13.6% — https://trustmrr.com/startup/landy
+  - trustmrr · growth_mrr_30d_pct: **-12.896140571069973** (2026-11-23) — https://trustmrr.com/startup/landy
+- **Gelir kanıtı:** MRR $8328 (TrustMRR), MRR 30g büyümesi -12.9% — https://trustmrr.com/startup/landy
 - **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web SaaS için mağaza sinyali yetersiz; Landy (rating bilinmiyor) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: Landy AI | Landy AI landing builder | yapay zeka aracı. Kanallar: apple_tr, play_tr, web_tr.
   - Sorgular: Landy AI | Landy AI landing builder | yapay zeka aracı
   - play_tr · Landy (rating yok) — https://play.google.com/store/apps/details?id=com.limbo.landy&hl=tr&gl=TR
-  - web_tr · Bağlantı: landy . ai (rating yok) — http://landy.ai/
 
 ## 11. ReplyCurrent
 
@@ -166,9 +155,17 @@ Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (UR
 - **Veri noktaları:**
   - trustmrr · mrr_usd: **303** (2026-11-23) — https://trustmrr.com/startup/replycurrent
   - trustmrr · growth_mrr_30d_pct: **34.66666666666667** (2026-11-23) — https://trustmrr.com/startup/replycurrent
-- **Gelir kanıtı:** MRR $303 (TrustMRR), 30g büyüme 34.7% — https://trustmrr.com/startup/replycurrent
-- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada bulunamadı; mağaza sonucu 'yok' anlamına gelmez. Web kanalı (Yandex TR) kontrol edildi, TR'ye özgü eşleşme bulunamadı. Denene(n) sorgular: ReplyCurrent | ReplyCurrent replycurrent customer | yapay zeka sohbet botu aracı. Kanallar: apple_tr, play_tr, web_tr.
+- **Gelir kanıtı:** MRR $303 (TrustMRR), MRR 30g büyümesi 34.7% — https://trustmrr.com/startup/replycurrent
+- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada yok; TR web kanalında yalnızca benzer ürünler bulundu (Daha Akıllı İş Akışları İçin 10 Verimli Yapay Zekâ Sohbet Botu — https://www.kimi.ai/tr/resources/best-ai-chatbot), doğrudan rakip doğrulanamadı. Denene(n) sorgular: ReplyCurrent | ReplyCurrent replycurrent customer | yapay zeka sohbet botu aracı. Kanallar: apple_tr, play_tr, web_tr.
   - Sorgular: ReplyCurrent | ReplyCurrent replycurrent customer | yapay zeka sohbet botu aracı
+  - web_tr · Daha Akıllı İş Akışları İçin 10 Verimli Yapay Zekâ Sohbet Botu (rating yok) — https://www.kimi.ai/tr/resources/best-ai-chatbot
+  - web_tr · Görmezden Gelemeyeceğiniz 10 İnanılmaz Yapay Zeka ... (rating yok) — https://www.arkthinker.com/tr/ai-tools/top-ai-chatbot/
+  - web_tr · Ücretsiz AI Sohbet — Akıllı Asistan, Anlık Yanıtlar 2026 (rating yok) — https://get-tools.com/tr/tools/ai/ai-chatbot
+  - web_tr · AI Bot Oluşturucu · Ücretsiz AI Mini Uygulama (rating yok) — https://miniapps.ai/tr/Bot-Studio
+  - web_tr · Çeşitli Yapay Zekalarla Hepsi Bir Arada Ücretsiz Çevrimiçi... (rating yok) — https://sider.ai/tr/products/chat-with-bots
+  - web_tr · Web Siteleri İçin Yapay Zeka Sohbet Botu — Kendi Yapay ... (rating yok) — https://tr.fastbots.ai/
+  - web_tr · Yapay Zeka Asistanları ve Sohbet Botları : 181 Araç (2026) (rating yok) — https://www.yapayzeka.ai/kategoriler/asistanlar/
+  - web_tr · Yapay Zekaya Soru Sor — Ücretsiz AI ile Konuş, Anında Yanıt (rating yok) — https://homiwork.com/tr/app/chat
 
 ## 12. Penmo
 
@@ -178,7 +175,7 @@ Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (UR
 - **Veri noktaları:**
   - trustmrr · mrr_usd: **6725** (2026-11-23) — https://trustmrr.com/startup/penmo
   - trustmrr · growth_mrr_30d_pct: **0** (2026-11-23) — https://trustmrr.com/startup/penmo
-- **Gelir kanıtı:** MRR $6725 (TrustMRR), 30g büyüme 0% — https://trustmrr.com/startup/penmo
+- **Gelir kanıtı:** MRR $6725 (TrustMRR), MRR 30g büyümesi 0% — https://trustmrr.com/startup/penmo
 - **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web SaaS için mağaza sinyali yetersiz; Penmo+ Quiet Writing Notebook (0 TR rating) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: Penmo | Penmo penmo plans. Kanallar: apple_tr, play_tr, web_tr.
   - Sorgular: Penmo | Penmo penmo plans
   - apple_tr · Penmo+ Quiet Writing Notebook (0 TR rating) — https://apps.apple.com/tr/app/penmo-quiet-writing-notebook/id6777692398?uo=4
@@ -193,7 +190,7 @@ Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (UR
 - **Veri noktaları:**
   - trustmrr · mrr_usd: **4730.96** (2026-11-23) — https://trustmrr.com/startup/linkpost
   - trustmrr · growth_mrr_30d_pct: **-5.360326881167411** (2026-11-23) — https://trustmrr.com/startup/linkpost
-- **Gelir kanıtı:** MRR $4731 (TrustMRR), 30g büyüme -5.4% — https://trustmrr.com/startup/linkpost
+- **Gelir kanıtı:** MRR $4731 (TrustMRR), MRR 30g büyümesi -5.4% — https://trustmrr.com/startup/linkpost
 - **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web SaaS için mağaza sinyali yetersiz; LinkPost (0 TR rating) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: LinkPost | LinkPost linkpost part. Kanallar: apple_tr, play_tr, web_tr.
   - Sorgular: LinkPost | LinkPost linkpost part
   - apple_tr · LinkPost (0 TR rating) — https://apps.apple.com/tr/app/linkpost/id6504302645?uo=4
@@ -202,12 +199,12 @@ Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (UR
 ## 14. CanvasNinja
 
 - **Ne olduğu:** CanvasNinja is a Chrome extension that students use to cheat on Canvas exams by staying undetected by Canvas's logging system. It has three main features: Privacy Guard, Answer Saver and Smart Answers
-- **Neden listede:** trustmrr · skor 4.89 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 0.89, ivme 0)
+- **Neden listede:** trustmrr · skor 4.9 (kalite 4: gelir 3, kaynak 0, ürünlük 1; sinyal 0.9, ivme 0)
 - **Ürün:** https://www.canvasninja.app
 - **Veri noktaları:**
   - trustmrr · mrr_usd: **1777.83** (2026-11-23) — https://trustmrr.com/startup/canvasninjaapp
-  - trustmrr · growth_mrr_30d_pct: **7.885235058165289** (2026-11-23) — https://trustmrr.com/startup/canvasninjaapp
-- **Gelir kanıtı:** MRR $1778 (TrustMRR), 30g büyüme 7.9% — https://trustmrr.com/startup/canvasninjaapp
+  - trustmrr · growth_mrr_30d_pct: **9.009136059844257** (2026-11-23) — https://trustmrr.com/startup/canvasninjaapp
+- **Gelir kanıtı:** MRR $1778 (TrustMRR), MRR 30g büyümesi 9% — https://trustmrr.com/startup/canvasninjaapp
 - **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web ürünü: mağazada bulunamadı; mağaza sonucu 'yok' anlamına gelmez. Web kanalı (Yandex TR) kontrol edildi, TR'ye özgü eşleşme bulunamadı. Denene(n) sorgular: CanvasNinja | CanvasNinja canvasninja chrome. Kanallar: apple_tr, play_tr, web_tr.
   - Sorgular: CanvasNinja | CanvasNinja canvasninja chrome
 
@@ -219,24 +216,12 @@ Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (UR
 - **Veri noktaları:**
   - trustmrr · mrr_usd: **2295** (2026-11-23) — https://trustmrr.com/startup/pdf-vault
   - trustmrr · growth_mrr_30d_pct: **2.4096385542168677** (2026-11-23) — https://trustmrr.com/startup/pdf-vault
-- **Gelir kanıtı:** MRR $2295 (TrustMRR), 30g büyüme 2.4% — https://trustmrr.com/startup/pdf-vault
-- **TR doygunluğu:** found · **TR boşluğu: dolu** — TR mağazasında gerçek eşleşme: Scanner Vault: PDF & OCR Scan (17 TR rating, apple_tr). Durum: var ve çekiş var. Denene(n) sorgular: PDF Vault | PDF Vault vault done-for-you. Kanallar: apple_tr, play_tr, web_tr.
+- **Gelir kanıtı:** MRR $2295 (TrustMRR), MRR 30g büyümesi 2.4% — https://trustmrr.com/startup/pdf-vault
+- **TR doygunluğu:** uncertain · **TR boşluğu: belirsiz** — Web SaaS için mağaza sinyali yetersiz; PDF Vault - Document App (0 TR rating) benzeri bir uygulama. Asıl rakipler mağaza aramasında görünmez olabilir. Denene(n) sorgular: PDF Vault | PDF Vault vault done-for-you. Kanallar: apple_tr, play_tr, web_tr.
   - Sorgular: PDF Vault | PDF Vault vault done-for-you
   - apple_tr · PDF Vault - Document App (0 TR rating) — https://apps.apple.com/tr/app/pdf-vault-document-app/id1599303874?uo=4
   - apple_tr · PDF Vault–Scanner & Converter (0 TR rating) — https://apps.apple.com/tr/app/pdf-vault-scanner-converter/id6820427196?uo=4
-  - apple_tr · PDFVault - Private PDF Scanner (0 TR rating) — https://apps.apple.com/tr/app/pdfvault-private-pdf-scanner/id6771575421?uo=4
-  - apple_tr · PdfVault (0 TR rating) — https://apps.apple.com/tr/app/pdfvault/id6767415480?uo=4
-  - apple_tr · MyGallery: Photo & PDF & Vault (7 TR rating) — https://apps.apple.com/tr/app/mygallery-photo-pdf-vault/id6815251991?uo=4
-  - apple_tr · Scanner Vault: PDF & OCR Scan (17 TR rating) — https://apps.apple.com/tr/app/scanner-vault-pdf-ocr-scan/id1402847779?uo=4
-  - play_tr · Note Vault: Offline Notes AI (rating yok) — https://play.google.com/store/apps/details?id=io.cyberfly.edgedox&hl=tr&gl=TR
-  - play_tr · VaultPDF: Offline PDF Editor (rating yok) — https://play.google.com/store/apps/details?id=com.securepdfeditor.pro&hl=tr&gl=TR
   - play_tr · PDF Vault–Scanner & Converter (rating yok) — https://play.google.com/store/apps/details?id=com.smartsudio.pdfvault&hl=tr&gl=TR
   - play_tr · PDF Vault Pro: PDF Reader (rating yok) — https://play.google.com/store/apps/details?id=com.pdfvaultpro.app&hl=tr&gl=TR
   - play_tr · PDF Vault Offline: PDF Tools (rating yok) — https://play.google.com/store/apps/details?id=com.medicheckco.pdfora&hl=tr&gl=TR
-  - play_tr · Document Vault: PDF Scanner (rating yok) — https://play.google.com/store/apps/details?id=com.springdesign.documentvault&hl=tr&gl=TR
-  - play_tr · ReaderVault: PDF&Media&etc (rating yok) — https://play.google.com/store/apps/details?id=com.cipher.lock&hl=tr&gl=TR
-  - play_tr · PDFVault (rating yok) — https://play.google.com/store/apps/details?id=com.pdfvault&hl=tr&gl=TR
-  - play_tr · DocVault: PDF Scanner App (rating yok) — https://play.google.com/store/apps/details?id=com.nuvoralabs.docvault&hl=tr&gl=TR
-  - play_tr · ScanVault: PDF Scanner & Vault (rating yok) — https://play.google.com/store/apps/details?id=com.scanvault.pdf.app&hl=tr&gl=TR
-  - play_tr · DocuSafe: Scanner, PDF & Vault (rating yok) — https://play.google.com/store/apps/details?id=com.santhoshkumr96.docvault&hl=tr&gl=TR
 

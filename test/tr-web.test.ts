@@ -69,6 +69,8 @@ test("denylist covers subdomains of scanner, whois, review and ranking domains",
   assert.equal(isNonCompetitorHost("www.whois.com"), true);
   assert.equal(isNonCompetitorHost("www.similarweb.com"), true);
   assert.equal(isNonCompetitorHost("www.trustpilot.com"), true);
+  assert.equal(isNonCompetitorHost("apkpure.net"), true);
+  assert.equal(isNonCompetitorHost("www.memuplay.com"), true);
   assert.equal(isNonCompetitorHost("www.virustotal.com"), true);
   // Substring matches must not hit unrelated domains.
   assert.equal(isNonCompetitorHost("notgridinsoft.com"), false);

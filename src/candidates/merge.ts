@@ -34,6 +34,7 @@ export function mergeCandidates(raw: readonly RawCandidate[]): Candidate[] {
     );
     const described = ordered.find((c) => c.description);
     const categorized = ordered.find((c) => c.category);
+    const storeFlag = ordered.find((c) => c.isMobileApp !== undefined)?.isMobileApp;
     merged.push({
       key,
       name: primary.name,
@@ -42,6 +43,7 @@ export function mergeCandidates(raw: readonly RawCandidate[]): Candidate[] {
       dataPoints,
       ...(described?.description ? { description: described.description } : {}),
       ...(categorized?.category ? { category: categorized.category } : {}),
+      ...(storeFlag === undefined ? {} : { isMobileApp: storeFlag }),
     });
   }
 
