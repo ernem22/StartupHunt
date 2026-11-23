@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>StartupHunt — Fikir listesi</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>StartupHunt: fikir listesi</h1>
+      <p id="meta">Veri yükleniyor…</p>
+    </header>
+    <main>
+      <nav class="filters" aria-label="TR boşluğu filtresi">
+        <span>TR boşluğu:</span>
+        <button type="button" data-filter="tümü" aria-pressed="true">tümü</button>
+        <button type="button" data-filter="boş" aria-pressed="false">boş</button>
+        <button type="button" data-filter="zayıf" aria-pressed="false">zayıf</button>
+        <button type="button" data-filter="dolu" aria-pressed="false">dolu</button>
+        <button type="button" data-filter="belirsiz" aria-pressed="false">belirsiz</button>
+      </nav>
+      <p id="status" role="status"></p>
+      <section id="ideas" aria-live="polite"></section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
