@@ -16,6 +16,8 @@ export interface RawCandidate {
   url: string;
   source: string;
   dataPoints: DataPoint[];
+  description?: string;
+  category?: string;
 }
 
 /** A product merged across sources by its canonical key. */
@@ -25,6 +27,8 @@ export interface Candidate {
   url: string;
   sources: string[];
   dataPoints: DataPoint[];
+  description?: string;
+  category?: string;
 }
 
 export interface ProducerError {

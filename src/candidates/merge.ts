@@ -32,7 +32,17 @@ export function mergeCandidates(raw: readonly RawCandidate[]): Candidate[] {
         return true;
       }),
     );
-    merged.push({ key, name: primary.name, url: primary.url, sources, dataPoints });
+    const described = ordered.find((c) => c.description);
+    const categorized = ordered.find((c) => c.category);
+    merged.push({
+      key,
+      name: primary.name,
+      url: primary.url,
+      sources,
+      dataPoints,
+      ...(described?.description ? { description: described.description } : {}),
+      ...(categorized?.category ? { category: categorized.category } : {}),
+    });
   }
 
   return merged.sort(

@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-11-23T02:11:30.267Z",
-  "commit": "e0871f8f5b5455b0bf4bc8ace18db049b4c63211",
+  "generatedAt": "2026-11-23T02:21:39.396Z",
+  "commit": "d2b33d5a3268554e857ef787f34f3e928488b51d",
   "errors": [
     {
       "source": "github",
-      "message": "atlandı: bladeacer/adacovex ve sonraki repolar denenmedi (30 repo atlandı): GitHub HTTP 403 (hız sınırı?): /repos/bladeacer/adacovex/stargazers/history?per_page=5 [kalan limit: 0; sıfırlanma: 2026-11-23T02:33:01.000Z; GITHUB_TOKEN yok]"
+      "message": "atlandı: MichinaoShimizu/kiroku ve sonraki repolar denenmedi (30 repo atlandı): GitHub HTTP 403 (hız sınırı?): /repos/MichinaoShimizu/kiroku/stargazers/history?per_page=5 [kalan limit: 0; sıfırlanma: 2026-11-23T02:33:01.000Z; GITHUB_TOKEN yok]"
     }
   ],
   "sources": [
@@ -30,10 +30,10 @@
           ],
           "discoveryLimit": 30,
           "weeks": 4,
-          "at": "2026-11-23T02:11:30.267Z"
+          "at": "2026-11-23T02:21:39.396Z"
         },
         "seed": 0,
-        "commitHash": "e0871f8f5b5455b0bf4bc8ace18db049b4c63211"
+        "commitHash": "d2b33d5a3268554e857ef787f34f3e928488b51d"
       },
       "status": "completed",
       "candidates": [],
@@ -62,10 +62,10 @@
           ],
           "discoveryLimit": 1000,
           "weeks": 4,
-          "at": "2026-11-23T02:11:30.267Z"
+          "at": "2026-11-23T02:21:39.396Z"
         },
         "seed": 0,
-        "commitHash": "e0871f8f5b5455b0bf4bc8ace18db049b4c63211"
+        "commitHash": "d2b33d5a3268554e857ef787f34f3e928488b51d"
       },
       "status": "completed",
       "candidates": [
@@ -10770,10 +10770,10 @@
           ],
           "discoveryLimit": 30,
           "weeks": 4,
-          "at": "2026-11-23T02:11:30.267Z"
+          "at": "2026-11-23T02:21:39.396Z"
         },
         "seed": 0,
-        "commitHash": "e0871f8f5b5455b0bf4bc8ace18db049b4c63211"
+        "commitHash": "d2b33d5a3268554e857ef787f34f3e928488b51d"
       },
       "status": "completed",
       "candidates": [
@@ -10785,16 +10785,16 @@
           "weeks": [
             {
               "week": 1794700800,
-              "total": 933.5
+              "total": 934
             }
           ],
           "metric": "hf_trending_score",
           "score": {
-            "value": 933.5,
+            "value": 934,
             "label": "trendingScore",
             "evidence": "Hugging Face'in kendi son dönem ilgi ölçüsü"
           },
-          "momentum": 933.5
+          "momentum": 934
         },
         {
           "name": "unsloth/Inkling-2-Mini-GGUF",
@@ -10804,16 +10804,16 @@
           "weeks": [
             {
               "week": 1794700800,
-              "total": 807
+              "total": 809
             }
           ],
           "metric": "hf_trending_score",
           "score": {
-            "value": 807,
+            "value": 809,
             "label": "trendingScore",
             "evidence": "Hugging Face'in kendi son dönem ilgi ölçüsü"
           },
-          "momentum": 807
+          "momentum": 809
         },
         {
           "name": "inworld/voice-isolator",
@@ -10842,16 +10842,16 @@
           "weeks": [
             {
               "week": 1794700800,
-              "total": 423
+              "total": 424
             }
           ],
           "metric": "hf_trending_score",
           "score": {
-            "value": 423,
+            "value": 424,
             "label": "trendingScore",
             "evidence": "Hugging Face'in kendi son dönem ilgi ölçüsü"
           },
-          "momentum": 423
+          "momentum": 424
         },
         {
           "name": "harness-hub/Qwen3.8-27B-pi-adapted",
@@ -10861,16 +10861,16 @@
           "weeks": [
             {
               "week": 1794700800,
-              "total": 332
+              "total": 332.5
             }
           ],
           "metric": "hf_trending_score",
           "score": {
-            "value": 332,
+            "value": 332.5,
             "label": "trendingScore",
             "evidence": "Hugging Face'in kendi son dönem ilgi ölçüsü"
           },
-          "momentum": 332
+          "momentum": 332.5
         },
         {
           "name": "AtomicChat/Inkling-2-Mini-Uncensored-GGUF",
@@ -10880,16 +10880,16 @@
           "weeks": [
             {
               "week": 1794700800,
-              "total": 298.2
+              "total": 300.29999999999995
             }
           ],
           "metric": "hf_trending_score",
           "score": {
-            "value": 298.2,
+            "value": 300.29999999999995,
             "label": "trendingScore",
             "evidence": "Hugging Face'in kendi son dönem ilgi ölçüsü"
           },
-          "momentum": 298.2
+          "momentum": 300.29999999999995
         },
         {
           "name": "higurashi-ai/Haru-4B",
@@ -10937,16 +10937,16 @@
           "weeks": [
             {
               "week": 1794700800,
-              "total": 201.5
+              "total": 202
             }
           ],
           "metric": "hf_trending_score",
           "score": {
-            "value": 201.5,
+            "value": 202,
             "label": "trendingScore",
             "evidence": "Hugging Face'in kendi son dönem ilgi ölçüsü"
           },
-          "momentum": 201.5
+          "momentum": 202
         },
         {
           "name": "sensenova/SenseNova-Loop-9B",
@@ -11184,16 +11184,16 @@
           "weeks": [
             {
               "week": 1794700800,
-              "total": 91.30000000000001
+              "total": 91.5
             }
           ],
           "metric": "hf_trending_score",
           "score": {
-            "value": 91.30000000000001,
+            "value": 91.5,
             "label": "trendingScore",
             "evidence": "Hugging Face'in kendi son dönem ilgi ölçüsü"
           },
-          "momentum": 91.30000000000001
+          "momentum": 91.5
         },
         {
           "name": "facebook/sam3",
@@ -11203,16 +11203,16 @@
           "weeks": [
             {
               "week": 1794700800,
-              "total": 89
+              "total": 89.5
             }
           ],
           "metric": "hf_trending_score",
           "score": {
-            "value": 89,
+            "value": 89.5,
             "label": "trendingScore",
             "evidence": "Hugging Face'in kendi son dönem ilgi ölçüsü"
           },
-          "momentum": 89
+          "momentum": 89.5
         },
         {
           "name": "unsloth/Qwen3.8-27B-GGUF",
@@ -11222,16 +11222,16 @@
           "weeks": [
             {
               "week": 1794700800,
-              "total": 88.5
+              "total": 88
             }
           ],
           "metric": "hf_trending_score",
           "score": {
-            "value": 88.5,
+            "value": 88,
             "label": "trendingScore",
             "evidence": "Hugging Face'in kendi son dönem ilgi ölçüsü"
           },
-          "momentum": 88.5
+          "momentum": 88
         },
         {
           "name": "thinkingmachines/Inkling-2-Small",
@@ -11362,11 +11362,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 23,
+          "value": 20,
           "date": "2026-11-20",
           "url": "https://www.producthunt.com/products/30yr-uptime"
         }
-      ]
+      ],
+      "description": "Claude Code mod for taking care of your body"
     },
     {
       "key": "apple:6762023973",
@@ -11392,7 +11393,7 @@
         {
           "source": "showhn",
           "metric": "hn_points",
-          "value": 171,
+          "value": 172,
           "date": "2026-11-10",
           "url": "https://news.ycombinator.com/item?id=50439000"
         },
@@ -11638,7 +11639,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/ace-pitcher"
         }
-      ]
+      ],
+      "description": "Ace Pitcher is a personalized training app that helps baseball players, especially pitchers, throw harder. Users get custom velocity programs built around their age, level, and goals, plus in-season a",
+      "category": "Health & Fitness"
     },
     {
       "key": "adrs.systems",
@@ -11752,11 +11755,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 27,
+          "value": 31,
           "date": "2026-11-09",
           "url": "https://www.producthunt.com/products/ai-context-flow"
         }
-      ]
+      ],
+      "description": "Memory you control, synced to every agent, tool and team"
     },
     {
       "key": "aircad.com",
@@ -11800,7 +11804,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/airix"
         }
-      ]
+      ],
+      "description": "AIRIX is an AI visibility platform for small and local businesses, and for the agencies that serve them. People increasingly ask AI chatbots for recommendations (\"best dentist in Leeds\", \"top accounta",
+      "category": "Artificial Intelligence"
     },
     {
       "key": "apple:503451073",
@@ -11867,7 +11873,8 @@
           "date": "2026-11-17",
           "url": "https://www.producthunt.com/products/alter-contacts-ai-client-relationships"
         }
-      ]
+      ],
+      "description": "AI client relationship assistant that thinks and does ahead"
     },
     {
       "key": "apple:545519333",
@@ -11977,7 +11984,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/actionclip"
         }
-      ]
+      ],
+      "description": "The iPhone text selection menu, built for your Mac, with 10x more power.",
+      "category": "Artificial Intelligence"
     },
     {
       "key": "trustmrr:stealth-venture-73",
@@ -11999,7 +12008,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/stealth-venture-73"
         }
-      ]
+      ],
+      "description": "Automated Niche Digital Product, only requires an hour or so of customer support, a growing market and a well-defined audience. Organic Growth.",
+      "category": "Entertainment"
     },
     {
       "key": "trustmrr:hidden-business-90",
@@ -12021,7 +12032,8 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/hidden-business-90"
         }
-      ]
+      ],
+      "description": "Not an AI wrapper. This is a niche app built for combat-sports athletes, and it ranks #1 in its category. Real users, a loyal audience that comes back every season, and almost no running costs. Not in"
     },
     {
       "key": "trustmrr:private-enterprise-92",
@@ -12043,7 +12055,8 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/private-enterprise-92"
         }
-      ]
+      ],
+      "description": "An app for content creators: upload a video and get a score and report on how viral it could be. Steady new users every month, low running costs, and plenty of room to grow with better marketing. Not"
     },
     {
       "key": "trustmrr:startup-c9231495860e",
@@ -12065,7 +12078,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/startup-c9231495860e"
         }
-      ]
+      ],
+      "description": "This saas analyzes text to determine whether it was written by AI - such as ChatGPT, Claude, Gemini, or any other LLM. It’s also the perfect tool to humanize AI-generated content, making it read compl",
+      "category": "Artificial Intelligence"
     },
     {
       "key": "producthunt:anyprofile",
@@ -12080,7 +12095,8 @@
           "date": "2026-11-14",
           "url": "https://www.producthunt.com/products/anyprofile"
         }
-      ]
+      ],
+      "description": "Free open-source antidetect browser for Mac & Windows"
     },
     {
       "key": "appzoku.com",
@@ -12102,7 +12118,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/appzoku"
         }
-      ]
+      ],
+      "description": "Appzoku is a marketing tool built for solo iOS developers and small teams who need to market like a growth team without hiring one. Scrolling, generating, editing, and rerolling concepts is free and u",
+      "category": "Artificial Intelligence"
     },
     {
       "key": "apron.chat",
@@ -12161,7 +12179,8 @@
           "date": "2026-11-19",
           "url": "https://www.producthunt.com/products/backspin"
         }
-      ]
+      ],
+      "description": "Learn to DJ in your browser, on real vinyl decks"
     },
     {
       "key": "apple:1256027729",
@@ -12191,7 +12210,8 @@
           "date": "2026-11-15",
           "url": "https://www.producthunt.com/products/beat-watcher"
         }
-      ]
+      ],
+      "description": "Fast Apple Watch heart rate alerts you can share with family"
     },
     {
       "key": "apple:603336861",
@@ -12243,7 +12263,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/bettter-app"
         }
-      ]
+      ],
+      "description": "User feedback tool, customer feedback platform and product roadmap tool.",
+      "category": "SaaS"
     },
     {
       "key": "apple:6448849666",
@@ -12280,7 +12302,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/bidbetter"
         }
-      ]
+      ],
+      "description": "BidBetter is a gamified digital advertising and discovery platform for modern internet businesses and creators. Customers purchase promotional ranking slots on our public leaderboard to showcase their",
+      "category": "Marketplace"
     },
     {
       "key": "github:adrbn/bo2-mac",
@@ -12391,7 +12415,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/canvasninjaapp"
         }
-      ]
+      ],
+      "description": "CanvasNinja is a Chrome extension that students use to cheat on Canvas exams by staying undetected by Canvas's logging system. It has three main features: Privacy Guard, Answer Saver and Smart Answers",
+      "category": "Education"
     },
     {
       "key": "capacitytrack.com",
@@ -12413,7 +12439,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/capacity-track"
         }
-      ]
+      ],
+      "description": "Helps Minnesota families and care professionals find licensed residential care providers and current openings, then contact selected providers with one inquiry.",
+      "category": "Marketplace"
     },
     {
       "key": "apple:1500855883",
@@ -12524,7 +12552,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/catalogohoy"
         }
-      ]
+      ],
+      "description": "Manage an online product catalog, orders, sales, customers, and store metrics from your phone.",
+      "category": "E-commerce"
     },
     {
       "key": "apple:1539508996",
@@ -12576,7 +12606,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/chalkie"
         }
-      ]
+      ],
+      "description": "Darts scoring and training app for iOS, Android and Apple Watch in 10 languages: X01, Cricket, checkout coach, human-like DartBot, voice score entry, stats and tournaments.",
+      "category": "Utilities"
     },
     {
       "key": "apple:6448311069",
@@ -12687,7 +12719,8 @@
           "date": "2026-11-14",
           "url": "https://www.producthunt.com/products/codemany"
         }
-      ]
+      ],
+      "description": "Run GitHub Actions 3x faster"
     },
     {
       "key": "github:hedgerow-dev/coldframe",
@@ -12724,7 +12757,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/contentskeeper-home-inventory"
         }
-      ]
+      ],
+      "description": "ContentsKeeper helps you catalog your home and home contents on iPhone, iPad and Mac. Photograph a room and private, on-device AI lists what it sees and reads receipts and serial numbers. You confirm",
+      "category": "Mobile Apps"
     },
     {
       "key": "apple:6761228537",
@@ -12746,7 +12781,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/controldopamine"
         }
-      ]
+      ],
+      "description": "ControlDopamine is a great acquisition opportunity in the growing digital wellness market. The app is already developed and available on the App Store, with subscription monetization and multiple usef",
+      "category": "Productivity"
     },
     {
       "key": "producthunt:copy-haste",
@@ -12757,11 +12794,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 3,
+          "value": 8,
           "date": "2026-11-15",
           "url": "https://www.producthunt.com/products/copy-haste"
         }
-      ]
+      ],
+      "description": "Your clipboard, sorted into Text, Code, Links, Media & more"
     },
     {
       "key": "coralflavor.com",
@@ -12783,7 +12821,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/coralflavor"
         }
-      ]
+      ],
+      "description": "Private AI chatbot with E2E encryption",
+      "category": "Artificial Intelligence"
     },
     {
       "key": "cornholenews.news",
@@ -12846,11 +12886,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 12,
+          "value": 9,
           "date": "2026-11-20",
           "url": "https://www.producthunt.com/products/creavit-studio"
         }
-      ]
+      ],
+      "description": "Screen recording, iPhone camera and cinematic demos for Mac"
     },
     {
       "key": "producthunt:croon",
@@ -12865,7 +12906,8 @@
           "date": "2026-11-18",
           "url": "https://www.producthunt.com/products/croon"
         }
-      ]
+      ],
+      "description": "Live dubbing for whatever's playing on your iPhone"
     },
     {
       "key": "producthunt:daymaker",
@@ -12876,11 +12918,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 1,
+          "value": 7,
           "date": "2026-10-19",
           "url": "https://www.producthunt.com/products/daymaker"
         }
-      ]
+      ],
+      "description": "Gifts so personal, your prospects take the meeting."
     },
     {
       "key": "apple:6745274862",
@@ -12962,7 +13005,8 @@
           "date": "2026-11-19",
           "url": "https://www.producthunt.com/products/denotch"
         }
-      ]
+      ],
+      "description": "Hide the MacBook notch and tame your menu bar"
     },
     {
       "key": "apple:518684914",
@@ -13033,11 +13077,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 20,
+          "value": 23,
           "date": "2026-11-17",
           "url": "https://www.producthunt.com/products/do-it-for-them-wallpaper-maker"
         }
-      ]
+      ],
+      "description": "Photo wallpapers for the people you do it for"
     },
     {
       "key": "apple:6499423131",
@@ -13067,7 +13112,8 @@
           "date": "2026-11-19",
           "url": "https://www.producthunt.com/products/doddle-3"
         }
-      ]
+      ],
+      "description": "Draw on what your videos for 3D effects"
     },
     {
       "key": "apple:1127881507",
@@ -13312,7 +13358,8 @@
           "date": "2026-11-18",
           "url": "https://www.producthunt.com/products/exa-ai"
         }
-      ]
+      ],
+      "description": "Build custom datasets from the live web, 4x faster"
     },
     {
       "key": "exitpath-ruddy.vercel.app",
@@ -13459,7 +13506,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/figmentor"
         }
-      ]
+      ],
+      "description": "The #1 plugin that transforms Figma frames into fully importable Elementor JSON files with pixel-perfect accuracy and SEO optimization. The business has 6,335 registered users, approximately 6,400 Fig",
+      "category": "Design Tools"
     },
     {
       "key": "firenook.dev",
@@ -13577,7 +13626,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/foundgpt"
         }
-      ]
+      ],
+      "description": "FoundGPT is a Shopify app that shows merchants whether ChatGPT, Gemini, Perplexity, Claude and Google AI Mode recommend their store or a competitor, and then helps fix the gaps. Auto-Fix rewrites prod",
+      "category": "E-commerce"
     },
     {
       "key": "apple:1673567402",
@@ -13703,7 +13754,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/getfunneled"
         }
-      ]
+      ],
+      "description": "AI Native post click funnel experience for D2C brands Productized service offering that AI does 97% of the work for",
+      "category": "Marketing"
     },
     {
       "key": "github:googlechrome/modern-web-guidance",
@@ -13814,7 +13867,8 @@
           "date": "2026-11-20",
           "url": "https://www.producthunt.com/products/gitroots"
         }
-      ]
+      ],
+      "description": "Path-level GitHub access for developers and AI agents"
     },
     {
       "key": "producthunt:glassmail",
@@ -13825,11 +13879,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 26,
+          "value": 25,
           "date": "2026-11-14",
           "url": "https://www.producthunt.com/products/glassmail"
         }
-      ]
+      ],
+      "description": "A fast Mac email app with AI that never leaves your Mac"
     },
     {
       "key": "apple:422689480",
@@ -14228,7 +14283,8 @@
           "date": "2026-11-17",
           "url": "https://www.producthunt.com/products/hollr-3"
         }
-      ]
+      ],
+      "description": "Push-to-talk for your family, on iPhone and Apple Watch"
     },
     {
       "key": "apple:983886691",
@@ -14258,7 +14314,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/humanise"
         }
-      ]
+      ],
+      "description": "ot an essay to finish? A paragraph that just doesn't sound right? HUMANISE helps turn awkward, robotic writing into clear, natural-sounding text. Less overthinking, better writing, and words that actu",
+      "category": "Education"
     },
     {
       "key": "huggingface.co",
@@ -14291,7 +14349,7 @@
         {
           "source": "showhn",
           "metric": "hn_points",
-          "value": 274,
+          "value": 275,
           "date": "2026-11-22",
           "url": "https://news.ycombinator.com/item?id=50599762"
         },
@@ -14892,7 +14950,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/landy"
         }
-      ]
+      ],
+      "description": "AI landing page builder. Users describe their business in a few sentences and AI agents research the audience, write the copy, build the page and publish it on their own domain in minutes, with lead c",
+      "category": "Artificial Intelligence"
     },
     {
       "key": "apple:806222359",
@@ -14918,11 +14978,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 8,
+          "value": 12,
           "date": "2026-11-16",
           "url": "https://www.producthunt.com/products/leapdeck"
         }
-      ]
+      ],
+      "description": "Leap to any Mac Space from a key or your iPhone"
     },
     {
       "key": "apple:986339882",
@@ -14959,7 +15020,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/letslaunch"
         }
-      ]
+      ],
+      "description": "LetsLaunch is a free product launch directory for indie makers and SaaS founders. Makers pick a launch week (20 free spots per week) and get a product page built for Google and AI search (Markdown cop",
+      "category": "Marketplace"
     },
     {
       "key": "apple:384830320",
@@ -14996,7 +15059,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/linkpost"
         }
-      ]
+      ],
+      "description": "LinkPost is part of LinkEmpire, offered as a complete portfolio for USD 79,000: three LinkedIn SaaS products (LinkPost, LinkHub, LinkMagnet), the LinkEarn self-paced course and shared distribution ass",
+      "category": "Artificial Intelligence"
     },
     {
       "key": "grounds.top",
@@ -15033,7 +15098,8 @@
           "date": "2026-11-06",
           "url": "https://www.producthunt.com/products/loudflow"
         }
-      ]
+      ],
+      "description": "We taught text to speech to think"
     },
     {
       "key": "lounasmodels.com",
@@ -15055,7 +15121,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/lounasmodels"
         }
-      ]
+      ],
+      "description": "Louna’s Models (lounasmodels.com) is a talent management agency for independent adult content creators on subscription platforms such as OnlyFans. With 10,000+ creator leads and new model applications",
+      "category": "Marketing"
     },
     {
       "key": "apple:457954781",
@@ -15092,7 +15160,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/lumosim"
         }
-      ]
+      ],
+      "description": "LumoSIM helps travelers stay connected abroad with fast, affordable mobile data in more than 190 countries and regions. Travelers can use a prepaid eSIM instead of buying a physical SIM card or paying",
+      "category": "Travel"
     },
     {
       "key": "apple:529379082",
@@ -15196,7 +15266,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/maxforms-inc"
         }
-      ]
+      ],
+      "description": "Maxforms is an AI-powered online form builder. Create forms from a prompt, a template, or a drag-and-drop editor. Use conditional logic and multi-step forms, collect file uploads and e-signatures, acc",
+      "category": "SaaS"
     },
     {
       "key": "apple:922103212",
@@ -15289,11 +15361,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 9,
+          "value": 4,
           "date": "2026-11-17",
           "url": "https://www.producthunt.com/products/meshlive"
         }
-      ]
+      ],
+      "description": "Offline video calls and livestreams over Bluetooth mesh"
     },
     {
       "key": "apple:1558240027",
@@ -15356,11 +15429,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 6,
+          "value": 2,
           "date": "2026-11-20",
           "url": "https://www.producthunt.com/products/mockreel"
         }
-      ]
+      ],
+      "description": "your screen recording, but in a 3D phone. free, no signup"
     },
     {
       "key": "apple:6760173601",
@@ -15557,11 +15631,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 11,
+          "value": 3,
           "date": "2026-11-21",
           "url": "https://www.producthunt.com/products/omi-cli"
         }
-      ]
+      ],
+      "description": "AI coding agents that work while you're away."
     },
     {
       "key": "github:ivankovic/omnidiff",
@@ -15609,11 +15684,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 5,
+          "value": 10,
           "date": "2026-11-21",
           "url": "https://www.producthunt.com/products/oovi"
         }
-      ]
+      ],
+      "description": "Your own team of AI on your desktop"
     },
     {
       "key": "github:aryamandarda/tamserve",
@@ -15672,7 +15748,8 @@
           "date": "2026-11-16",
           "url": "https://www.producthunt.com/products/openvorld"
         }
-      ]
+      ],
+      "description": "Give your AI agents a home and a Vorld."
     },
     {
       "key": "apple:530168168",
@@ -15739,7 +15816,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/pdf-vault"
         }
-      ]
+      ],
+      "description": "PDF Vault is a done-for-you digital business-in-a-box. Members license ready-to-sell PDFs that come with a hosted sales page, and they keep 100% of their sales. It earns money two ways: one-time licen",
+      "category": "Marketplace"
     },
     {
       "key": "penmo.co",
@@ -15761,7 +15840,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/penmo"
         }
-      ]
+      ],
+      "description": "Penmo plans and creates content that helps businesses turn interest into customers. We build connected content funnels using blogs, landing pages, emails, case studies, and social posts, with human wr",
+      "category": "Content Creation"
     },
     {
       "key": "apple:6717610298",
@@ -15909,7 +15990,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/prepi"
         }
-      ]
+      ],
+      "description": "Creates personalized weekly meal plans and a budget-fitting grocery list based on users’ diets, allergies, tastes, and local Gulf supermarket prices.",
+      "category": "Health & Fitness"
     },
     {
       "key": "prismai.news",
@@ -15931,7 +16014,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/prism"
         }
-      ]
+      ],
+      "description": "Prism is a premium AI news digest built for people who value clarity over noise.",
+      "category": "News & Magazines"
     },
     {
       "key": "producthunt:prompt-puncher",
@@ -15946,7 +16031,8 @@
           "date": "2026-11-17",
           "url": "https://www.producthunt.com/products/prompt-puncher"
         }
-      ]
+      ],
+      "description": "The AI CEO Fighting Game"
     },
     {
       "key": "producthunt:publicit",
@@ -15961,7 +16047,8 @@
           "date": "2026-11-18",
           "url": "https://www.producthunt.com/products/publicit"
         }
-      ]
+      ],
+      "description": "Omnichannel ad infrastructure for marketers and AI agents"
     },
     {
       "key": "producthunt:pushback-flight-tracker",
@@ -15976,7 +16063,8 @@
           "date": "2026-11-19",
           "url": "https://www.producthunt.com/products/pushback-flight-tracker"
         }
-      ]
+      ],
+      "description": "The flight tracker that knows which lounge you can use"
     },
     {
       "key": "apple:739655617",
@@ -16036,7 +16124,8 @@
           "date": "2026-11-19",
           "url": "https://www.producthunt.com/products/raccoon-kids"
         }
-      ]
+      ],
+      "description": "Gamify Chores for Kids: no more nagging, just a cute raccoon"
     },
     {
       "key": "producthunt:rankhog",
@@ -16047,11 +16136,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 24,
+          "value": 22,
           "date": "2026-11-19",
           "url": "https://www.producthunt.com/products/rankhog"
         }
-      ]
+      ],
+      "description": "Get customers from Reddit on autopilot"
     },
     {
       "key": "apple:6760256602",
@@ -16073,7 +16163,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/receeto"
         }
-      ]
+      ],
+      "description": "The AI receipt scanner that works 100% offline on iPhone. Snap a receipt photo, auto-extract details on-device, and never lose a receipt again.",
+      "category": "Fintech"
     },
     {
       "key": "apple:6742024490",
@@ -16125,7 +16217,8 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/private-venture-113"
         }
-      ]
+      ],
+      "description": "Detective Murder Mystery Games"
     },
     {
       "key": "apple:1636235979",
@@ -16169,7 +16262,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/replycurrent"
         }
-      ]
+      ],
+      "description": "ReplyCurrent is an AI customer support SaaS I built to help businesses answer customer questions automatically. You connect your website, help center, or documents, and it creates an AI chatbot that a",
+      "category": "Artificial Intelligence"
     },
     {
       "key": "producthunt:resurf-2",
@@ -16184,7 +16279,8 @@
           "date": "2026-11-21",
           "url": "https://www.producthunt.com/products/resurf-2"
         }
-      ]
+      ],
+      "description": "Personal Knowledge Base & Bookmark Manager for Mac"
     },
     {
       "key": "apple:6754755473",
@@ -16300,11 +16396,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 46,
+          "value": 48,
           "date": "2026-11-19",
           "url": "https://www.producthunt.com/products/saparo"
         }
-      ]
+      ],
+      "description": "Muse for shopping with deals stacks"
     },
     {
       "key": "scalereach.ai",
@@ -16326,7 +16423,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/scalereach"
         }
-      ]
+      ],
+      "description": "AI video repurposing tool that turns long videos into viral short clips for TikTok, Reels and YouTube Shorts. Paste a YouTube, Twitch, Kick, Drive or Loom link and ScaleReach finds the best moments, s",
+      "category": "Artificial Intelligence"
     },
     {
       "key": "getscreeny.app",
@@ -16348,7 +16447,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/screeny"
         }
-      ]
+      ],
+      "description": "The simplest way to make beautiful product demos. Screeny is an iOS and macOS app that turns raw screenshots and screen recordings into polished mockups and 3D animations in seconds, ready for social",
+      "category": "Mobile Apps"
     },
     {
       "key": "apple:393328150",
@@ -16389,11 +16490,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 25,
+          "value": 28,
           "date": "2026-11-16",
           "url": "https://www.producthunt.com/products/shipyard"
         }
-      ]
+      ],
+      "description": "MCP for Claude, Cursor and Codex to Automate Integrations"
     },
     {
       "key": "apple:1223471316",
@@ -16460,7 +16562,8 @@
           "date": "2026-11-09",
           "url": "https://www.producthunt.com/products/slotify-2"
         }
-      ]
+      ],
+      "description": "Schedule game nights without leaving Discord"
     },
     {
       "key": "apple:1222822904",
@@ -16486,11 +16589,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 28,
+          "value": 27,
           "date": "2026-11-20",
           "url": "https://www.producthunt.com/products/smorza"
         }
-      ]
+      ],
+      "description": "Every Mac app gets its own volume and output"
     },
     {
       "key": "apple:447188370",
@@ -16604,11 +16708,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 13,
+          "value": 6,
           "date": "2026-11-10",
           "url": "https://www.producthunt.com/products/squint"
         }
-      ]
+      ],
+      "description": "Explains whatever you're looking at, now on Mac"
     },
     {
       "key": "apple:6830140849",
@@ -16693,11 +16798,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 31,
+          "value": 26,
           "date": "2026-11-20",
           "url": "https://www.producthunt.com/products/stitch-loop"
         }
-      ]
+      ],
+      "description": "Google’s AI agent that ships fixes and watches the metric"
     },
     {
       "key": "storestockchecker.com",
@@ -16719,7 +16825,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/store-stock-checker"
         }
-      ]
+      ],
+      "description": "Realtime Apple Store stock checking.",
+      "category": "Analytics"
     },
     {
       "key": "producthunt:storiara",
@@ -16730,11 +16838,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 48,
+          "value": 47,
           "date": "2026-11-17",
           "url": "https://www.producthunt.com/products/storiara"
         }
-      ]
+      ],
+      "description": "AI producers that find real savings in your film budget"
     },
     {
       "key": "github:aggib/stroq",
@@ -16778,7 +16887,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/superjoin"
         }
-      ]
+      ],
+      "description": "Superjoin brings live data from HubSpot, Salesforce and 30+ integrations into Google Sheets and Excel, with scheduled refreshes and two-way HubSpot sync. 116 paying business accounts, a HubSpot Certif",
+      "category": "Productivity"
     },
     {
       "key": "producthunt:supermailbox",
@@ -16793,7 +16904,8 @@
           "date": "2026-11-14",
           "url": "https://www.producthunt.com/products/supermailbox"
         }
-      ]
+      ],
+      "description": "Your email in one inbox, ready for AI"
     },
     {
       "key": "supermailbox.app",
@@ -16808,7 +16920,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/supermailbox"
         }
-      ]
+      ],
+      "description": "SuperMailbox brings Gmail, iCloud Mail, Outlook, Yahoo Mail, Fastmail and other IMAP accounts into one inbox and connects them to ChatGPT, Claude and other compatible AI assistants through MCP. Find e",
+      "category": "Productivity"
     },
     {
       "key": "superpowerforai.com",
@@ -16830,7 +16944,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/superpower-for-ai"
         }
-      ]
+      ],
+      "description": "5 chrome extensions that add missing power-user features to the major AI chat tools: Superpower for Gemini, Superpower for Claude, Superpower for NotebookLM, Superpower for Grok and Workbench for Chat",
+      "category": "Artificial Intelligence"
     },
     {
       "key": "apple:1531476341",
@@ -16915,11 +17031,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 50,
+          "value": 46,
           "date": "2026-11-19",
           "url": "https://www.producthunt.com/products/tamekoshi"
         }
-      ]
+      ],
+      "description": "A Tamagotchi-style AI companion that does real work"
     },
     {
       "key": "apple:297430070",
@@ -16949,7 +17066,8 @@
           "date": "2026-11-19",
           "url": "https://www.producthunt.com/products/teaserkit"
         }
-      ]
+      ],
+      "description": "your coding agent directs your launch video"
     },
     {
       "key": "apple:724839784",
@@ -17016,7 +17134,8 @@
           "date": "2026-11-12",
           "url": "https://www.producthunt.com/products/tensorviz"
         }
-      ]
+      ],
+      "description": "Let your coding agent see inside your PyTorch model"
     },
     {
       "key": "apple:342527639",
@@ -17308,11 +17427,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 47,
+          "value": 50,
           "date": "2026-11-17",
           "url": "https://www.producthunt.com/products/tripps"
         }
-      ]
+      ],
+      "description": "Plan a group trip with one link, no account needed"
     },
     {
       "key": "apple:496489138",
@@ -17427,11 +17547,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 10,
+          "value": 5,
           "date": "2026-11-17",
           "url": "https://www.producthunt.com/products/ulika"
         }
-      ]
+      ],
+      "description": "Visual editor for sites built with Claude, Cursor, or Codex"
     },
     {
       "key": "uncracked.city",
@@ -17512,7 +17633,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/usagebar"
         }
-      ]
+      ],
+      "description": "Track Claude Code Usage from your Menu Bar. Organic traffic of 40k developers per quarter.",
+      "category": "Developer Tools"
     },
     {
       "key": "tinyvalencia.com",
@@ -17582,11 +17705,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 22,
+          "value": 21,
           "date": "2026-11-21",
           "url": "https://www.producthunt.com/products/verge-corner-controls"
         }
-      ]
+      ],
+      "description": "Swipe a screen corner to set brightness, volume and more"
     },
     {
       "key": "videobgremover.com",
@@ -17608,7 +17732,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/hidden-business-108"
         }
-      ]
+      ],
+      "description": "AI tool that removes the background from videos in the browser and through an API, running since September 2024. About 940k people have used it and 76k registered with email. About 43k monthly visitor",
+      "category": "Artificial Intelligence"
     },
     {
       "key": "apple:632064380",
@@ -17675,7 +17801,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/volumebooster"
         }
-      ]
+      ],
+      "description": "Volume Booster helps you make quiet videos and audio files louder directly on your iPhone or iPad. | About 3,000 downloads a month from App Store search. We have never spent money on ads. | No servers",
+      "category": "Productivity"
     },
     {
       "key": "apple:1370293473",
@@ -17712,7 +17840,8 @@
           "date": "2026-11-20",
           "url": "https://www.producthunt.com/products/waitfeed-2"
         }
-      ]
+      ],
+      "description": "Tech feed inside agent wait time"
     },
     {
       "key": "apple:338137227",
@@ -17834,11 +17963,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 2,
+          "value": 1,
           "date": "2026-11-07",
           "url": "https://www.producthunt.com/products/webless"
         }
-      ]
+      ],
+      "description": "Agents you want to put in front of customers"
     },
     {
       "key": "apple:1488269261",
@@ -17890,7 +18020,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/whispa"
         }
-      ]
+      ],
+      "description": "Whispa is a simple and fun way to get anonymous messages and honest feedback from your friends.",
+      "category": "Mobile Apps"
     },
     {
       "key": "wikihack.netlify.app",
@@ -17923,11 +18055,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 4,
+          "value": 13,
           "date": "2026-11-05",
           "url": "https://www.producthunt.com/products/wispim-online-teleprompter"
         }
-      ]
+      ],
+      "description": "The teleprompter that follows your voice"
     },
     {
       "key": "apple:333903271",
@@ -18012,11 +18145,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 7,
+          "value": 11,
           "date": "2026-11-06",
           "url": "https://www.producthunt.com/products/yoroll"
         }
-      ]
+      ],
+      "description": "Build playable stories without a game engine"
     },
     {
       "key": "apple:544007664",
@@ -18083,7 +18217,9 @@
           "date": "2026-11-23",
           "url": "https://trustmrr.com/startup/zapstart"
         }
-      ]
+      ],
+      "description": "Helping founders start, operate and grow their startup through one platform it is a business OS for founders which can be converted and expanded for any country.",
+      "category": "SaaS"
     },
     {
       "key": "producthunt:zapyso",
@@ -18094,11 +18230,12 @@
         {
           "source": "producthunt",
           "metric": "ph_feed_position",
-          "value": 21,
+          "value": 24,
           "date": "2026-11-17",
           "url": "https://www.producthunt.com/products/zapyso"
         }
-      ]
+      ],
+      "description": "Free meeting notes and dictation that stay on your Mac"
     },
     {
       "key": "apple:547951480",
