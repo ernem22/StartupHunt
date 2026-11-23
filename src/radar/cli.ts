@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { enrichGithubStars } from "../candidates/github-stars.js";
 import { collectCandidates } from "../candidates/run.js";
 import { PRODUCERS } from "../candidates/sources.js";
 import { candidatePool, GitHubMomentumCollector, type MomentumCollector } from "./github.js";
@@ -56,7 +57,13 @@ async function main(): Promise<void> {
   }
   console.error(`ham aday: ${JSON.stringify(candidateRun.rawCounts)}`);
   console.error(`birleştirilmiş aday: ${candidateRun.candidates.length}`);
-  const files = await store.write("data", at, commit, candidateRun.candidates);
+  // GitHub repo links get a 7-day star count; GITHUB_TOKEN raises the anonymous rate limit.
+  const stars = await enrichGithubStars(candidateRun.candidates, at, process.env.GITHUB_TOKEN);
+  for (const message of stars.skipped) {
+    store.addError("github", message);
+    console.error(message);
+  }
+  const files = await store.write("data", at, commit, stars.candidates);
   console.log(outputs.join("\n\n"));
   console.error(`JSON: ${files.join(", ")}`);
 }

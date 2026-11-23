@@ -7,10 +7,14 @@ export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function fetchResponse(url: string, accept: string): Promise<Response> {
+export async function fetchResponse(
+  url: string,
+  accept: string,
+  extraHeaders: Record<string, string> = {},
+): Promise<Response> {
   const attempt = () =>
     fetch(url, {
-      headers: { "User-Agent": USER_AGENT, accept },
+      headers: { "User-Agent": USER_AGENT, accept, ...extraHeaders },
       signal: AbortSignal.timeout(30000),
     });
   let response: Response;
