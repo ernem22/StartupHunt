@@ -52,11 +52,68 @@ export function webQueries(name: string, description?: string): string[] {
   return queries;
 }
 
+/**
+ * Scanner, whois, review and ranking sites mention product names but are never TR competitors.
+ * Matched on the registrable domain and its subdomains (pt.gridinsoft.com → gridinsoft.com).
+ */
+const NON_COMPETITOR_DOMAINS = [
+  "gridinsoft.com",
+  "virustotal.com",
+  "urlvoid.com",
+  "scamadviser.com",
+  "sucuri.net",
+  "urlscan.io",
+  "whois.com",
+  "who.is",
+  "domaintools.com",
+  "similarweb.com",
+  "semrush.com",
+  "ahrefs.com",
+  "alexa.com",
+  "trustpilot.com",
+  "sitejabber.com",
+  "g2.com",
+  "capterra.com",
+  "alternativeto.net",
+];
+
+/** Language subdomains (pt.x.com, es.x.com): a page there is not Turkish evidence. */
+const FOREIGN_LOCALE_LABELS = new Set([
+  "pt",
+  "es",
+  "de",
+  "fr",
+  "it",
+  "ru",
+  "ar",
+  "nl",
+  "pl",
+  "ja",
+  "zh",
+  "ko",
+  "hi",
+  "vi",
+  "id",
+  "th",
+]);
+
+export function isNonCompetitorHost(host: string): boolean {
+  const lowerHost = host.toLowerCase();
+  return NON_COMPETITOR_DOMAINS.some(
+    (domain) => lowerHost === domain || lowerHost.endsWith(`.${domain}`),
+  );
+}
+
+export function isForeignLocaleHost(host: string): boolean {
+  const labels = host.toLowerCase().split(".");
+  return labels.length >= 3 && FOREIGN_LOCALE_LABELS.has(labels[0]!);
+}
+
 /** Directory/roundup pages are not competitors; they must not create a "found" verdict. */
 export function isDirectoryResult(host: string, title: string): boolean {
   return (
     /\b(?:en iyi|top \d|\d+ (?:iyi|en iyi)|araçları|araçlar|listesi|dizin|directory|roundup|kataloğu)\b/i.test(
-      title,
+      title.toLocaleLowerCase("tr-TR"),
     ) || /(?:^|\.)(?:unite\.ai|blackseaai|toolify|there's an ai for that|taaft)\b/i.test(host)
   );
 }
@@ -64,6 +121,7 @@ export function isDirectoryResult(host: string, title: string): boolean {
 /** True when a Yandex result is TR-localized (domain, path or explicitly Turkish title). */
 export function isTrLocalResult(host: string, title: string): boolean {
   const lowerHost = host.toLowerCase();
+  if (isForeignLocaleHost(lowerHost)) return false;
   if (lowerHost.endsWith(".com.tr") || lowerHost.endsWith(".tr")) return true;
   if (/(^|\/)(tr|tr-tr|tr_TR)(\/|$)/i.test(lowerHost + title)) return true;
   return /[\u011f\u0131\u015f\u00fc\u00f6\u00e7\u011e\u0130\u015e\u00dc\u00d6\u00c7]|\b(yapay zeka|aracı|ücretsiz|için|nasıl|hakkında|klip|yemek|pazarlama)\b/i.test(
@@ -100,7 +158,6 @@ export function parseYandexHtml(html: string): { name: string; url: string }[] {
   return results;
 }
 
-/** Yandex TR HTML search. Keeps only TR-localized pages as evidence. */
 function titleHasName(title: string, name: string): boolean {
   const normalize = (value: string) =>
     value
@@ -110,6 +167,36 @@ function titleHasName(title: string, name: string): boolean {
       .trim();
   const short = normalize(name).split(" ").slice(0, 2).join(" ");
   return short.length >= 3 && normalize(title).includes(short);
+}
+
+/**
+ * Turns one Yandex TR page into web evidence. Only TR-localized, non-directory, non-scanner pages
+ * survive. A "found" (exact) match needs the first query and a title naming the product.
+ */
+export function webEvidenceFromHtml(
+  name: string,
+  html: string,
+  isFirstQuery: boolean,
+): TrEvidence[] {
+  const evidence: TrEvidence[] = [];
+  for (const result of parseYandexHtml(html)) {
+    let host: string;
+    try {
+      host = new URL(result.url).hostname;
+    } catch {
+      continue;
+    }
+    if (isNonCompetitorHost(host)) continue;
+    if (!isTrLocalResult(host, result.name) || isDirectoryResult(host, result.name)) continue;
+    const exact = isFirstQuery && titleHasName(result.name, name);
+    evidence.push({
+      channel: "web_tr",
+      name: result.name,
+      id: exact ? host : `similar:${host}`,
+      url: result.url,
+    });
+  }
+  return evidence;
 }
 
 export async function collectWeb(
@@ -125,22 +212,7 @@ export async function collectWeb(
         signal: AbortSignal.timeout(15000),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      for (const result of parseYandexHtml(await response.text())) {
-        let host = "";
-        try {
-          host = new URL(result.url).hostname;
-        } catch {
-          continue;
-        }
-        if (!isTrLocalResult(host, result.name) || isDirectoryResult(host, result.name)) continue;
-        const exact = index === 0 && titleHasName(result.name, name);
-        evidence.push({
-          channel: "web_tr",
-          name: result.name,
-          id: exact ? host : `similar:${host}`,
-          url: result.url,
-        });
-      }
+      evidence.push(...webEvidenceFromHtml(name, await response.text(), index === 0));
     } catch (error) {
       errors.push(`${query}: ${error instanceof Error ? error.message : "unknown error"}`);
     }
