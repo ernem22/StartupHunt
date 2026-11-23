@@ -1,10 +1,16 @@
 import { execFileSync } from "node:child_process";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Candidate, DataPoint } from "../candidates/model.js";
 import { checkTrSaturation, type TrVerdict } from "../tr/check.js";
 import { shortProductName, shortTrQueries } from "./names.js";
-import { rankCandidates, readSnapshot, type RankedCandidate } from "./rank.js";
+import {
+  rankCandidates,
+  readSnapshot,
+  trendSignals,
+  type Label,
+  type RankedCandidate,
+} from "./rank.js";
 
 export type Idea = {
   rank: number;
@@ -14,10 +20,16 @@ export type Idea = {
   url: string;
   whatItIs: string;
   category: string | null;
+  /** "trend" (trend-led), "gelir" (revenue-led) or both. */
+  labels: Label[];
   sources: string[];
   score: RankedCandidate["score"];
-  weakSignal: boolean;
-  momentum: string | null;
+  trend: {
+    /** Trend observations only (PH rank, Apple ranks, HN points/comments with the Show HN date, Reddit score/comments). */
+    signals: DataPoint[];
+    /** "ilk gözlem" when no earlier snapshot holds the product; otherwise the changed metrics. */
+    momentum: string;
+  };
   dataPoints: DataPoint[];
   revenueEvidence: string;
   tr: {
@@ -42,16 +54,35 @@ const TR_LABEL: Record<TrVerdict["verdict"], string> = {
   uncertain: "belirsiz",
 };
 
-/** One line, only from fields already in the candidate. No invented prose. */
+const REDDIT_PREFIX = /^I (?:built|made|created|wrote|launched)\s+(?:a|an|my|the)?\s*/i;
+
+/**
+ * One line, only from fields already in the candidate. No LLM and no translation:
+ * a Reddit or Show HN title is shown as written, with the product's host.
+ */
 export function describe(candidate: Candidate): string {
   const description = candidate.description?.replace(/\s+/g, " ").trim();
   if (description) return description.slice(0, 220);
+  const title = candidate.name.replace(/\s+/g, " ").trim();
   if (candidate.sources.includes("showhn")) {
-    return `Show HN başlığı: ${candidate.name.replace(/\s+/g, " ").trim().slice(0, 220)}`;
+    return `Show HN başlığı: ${title.slice(0, 220)}`;
+  }
+  if (candidate.sources.includes("reddit")) {
+    const host = hostOf(candidate.url);
+    const text = title.replace(REDDIT_PREFIX, "").slice(0, 200);
+    return `Reddit başlığı: ${text}${host ? ` (${host})` : ""}`;
   }
   const points = candidate.dataPoints.map((point) => `${point.metric}=${point.value}`).join(", ");
   const category = candidate.category ? `${candidate.category}; ` : "";
   return `${category}${candidate.sources.join(" + ")} sinyalı: ${points}`;
+}
+
+function hostOf(url: string): string | null {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return null;
+  }
 }
 
 export function revenueEvidence(candidate: Candidate): string {
@@ -70,24 +101,46 @@ export function gapLabel(verdict: TrVerdict): string {
   return strong ? "dolu" : "zayıf";
 }
 
+/**
+ * Picks the snapshot to measure momentum against: the newest data/YYYY-MM-DD.json strictly older
+ * than the run's own date. The run's own file is the same data as latest.json, so it never counts.
+ */
+export function previousSnapshotFile(files: readonly string[], runDate: string): string | null {
+  const earlier = files
+    .filter((file) => /^\d{4}-\d{2}-\d{2}\.json$/.test(file) && file.slice(0, 10) < runDate)
+    .sort();
+  return earlier.at(-1) ?? null;
+}
+
 export function renderMarkdown(output: IdeasOutput): string {
+  const trendCount = output.ideas.filter((idea) => idea.labels.includes("trend")).length;
+  const revenueCount = output.ideas.filter((idea) => idea.labels.includes("gelir")).length;
   const lines: string[] = [
     "# Startup fikirleri",
     "",
-    `Üretim: ${output.generatedAt} · Kaynak: ${output.sourceFile} · Snapshot: ${output.snapshotFile ?? "yok"} · ${output.ideas.length} fikir`,
+    `Üretim: ${output.generatedAt} · Kaynak: ${output.sourceFile} · Snapshot: ${output.snapshotFile ?? "yok (ilk gözlem)"} · ${output.ideas.length} fikir`,
     "",
-    "Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (URL/açıklama/kısa ad), sinyaller (log ölçekli HN/Reddit/MRR), snapshot ivmesi. En az 5 kart gelir kanıtlı. TR boşluğu: dolu/zayıf/boş/belirsiz.",
+    `Kota: trend ${trendCount} (en az 8), gelir ${revenueCount} (en az 8). Etiket: **trend** = çoklu kaynak veya güçlü HN/Reddit/PH/Apple sinyali, ürün URL'si var; **gelir** = TrustMRR MRR kanıtı.`,
+    "",
+    "Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (URL/açıklama/kısa ad), sinyaller (log ölçekli HN/Reddit/MRR), ivme (önceki günlük snapshot'a göre). TR boşluğu: dolu/zayıf/boş/belirsiz.",
     "",
   ];
   for (const idea of output.ideas) {
     lines.push(
       `## ${idea.rank}. ${idea.name}`,
       "",
+      `- **Etiket:** ${idea.labels.join(" + ")}`,
       `- **Ne olduğu:** ${idea.whatItIs}`,
       ...(idea.originalName !== idea.name ? [`- **Ham başlık:** ${idea.originalName}`] : []),
-      `- **Neden listede:** ${idea.sources.join(" + ")} · skor ${idea.score.total} (kalite ${idea.score.quality}: gelir ${idea.score.revenue}, kaynak ${idea.score.sources}, ürünlük ${idea.score.product}; sinyal ${idea.score.signals}, ivme ${idea.score.momentum})${idea.weakSignal ? " · **zayıf sinyal**" : ""}${idea.momentum ? ` · ivme: ${idea.momentum}` : ""}`,
+      `- **Neden listede:** ${idea.sources.join(" + ")} · skor ${idea.score.total} (kalite ${idea.score.quality}: gelir ${idea.score.revenue}, kaynak ${idea.score.sources}, ürünlük ${idea.score.product}; sinyal ${idea.score.signals}, ivme ${idea.score.momentum})`,
       `- **Ürün:** ${idea.url}`,
+      `- **Trend:** kaynaklar ${idea.sources.join(" + ")} · ivme: ${idea.trend.momentum}`,
     );
+    for (const point of idea.trend.signals) {
+      lines.push(
+        `  - ${point.source} · ${point.metric}: **${point.value}** (${point.date}) — ${point.url}`,
+      );
+    }
     lines.push("- **Veri noktaları:**");
     for (const point of idea.dataPoints) {
       lines.push(
@@ -109,26 +162,21 @@ export function renderMarkdown(output: IdeasOutput): string {
   return `${lines.join("\n")}\n`;
 }
 
-async function exists(file: string): Promise<boolean> {
-  try {
-    await readFile(file);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 export async function buildIdeas(dir = "data"): Promise<IdeasOutput> {
   const sourceFile = path.join(dir, "latest.json");
   if (!(await exists(sourceFile))) {
     console.error("data/latest.json yok, pnpm radar çalıştırılıyor");
     execFileSync("pnpm", ["radar"], { stdio: "inherit" });
   }
-  const raw = JSON.parse(await readFile(sourceFile, "utf8")) as unknown;
-  const candidates = (raw as { candidates?: Candidate[] }).candidates ?? [];
-  const today = new Date().toISOString().slice(0, 10);
-  const snapshotFile = path.join(dir, `${today}.json`);
-  const snapshot = (await exists(snapshotFile))
+  const raw = JSON.parse(await readFile(sourceFile, "utf8")) as {
+    generatedAt?: unknown;
+    candidates?: Candidate[];
+  };
+  const candidates = raw.candidates ?? [];
+  const runDate = typeof raw.generatedAt === "string" ? raw.generatedAt.slice(0, 10) : "";
+  const snapshotName = previousSnapshotFile(await readdir(dir), runDate);
+  const snapshotFile = snapshotName ? path.join(dir, snapshotName) : null;
+  const snapshot = snapshotFile
     ? readSnapshot(JSON.parse(await readFile(snapshotFile, "utf8")) as unknown)
     : new Map();
 
@@ -158,10 +206,10 @@ export async function buildIdeas(dir = "data"): Promise<IdeasOutput> {
       url: candidate.url,
       whatItIs: describe(candidate),
       category: candidate.category ?? null,
+      labels: entry.labels,
       sources: candidate.sources,
       score: entry.score,
-      weakSignal: entry.weakSignal,
-      momentum: entry.momentumDetail,
+      trend: { signals: trendSignals(candidate), momentum: entry.momentum },
       dataPoints: candidate.dataPoints,
       revenueEvidence: revenueEvidence(candidate),
       tr: {
@@ -182,11 +230,20 @@ export async function buildIdeas(dir = "data"): Promise<IdeasOutput> {
   const output: IdeasOutput = {
     generatedAt: new Date().toISOString(),
     sourceFile,
-    snapshotFile: (await exists(snapshotFile)) ? snapshotFile : null,
+    snapshotFile,
     ideas,
   };
   await mkdir(dir, { recursive: true });
   await writeFile(path.join(dir, "ideas.json"), `${JSON.stringify(output, null, 2)}\n`);
   await writeFile(path.join(dir, "ideas.md"), renderMarkdown(output));
   return output;
+}
+
+async function exists(file: string): Promise<boolean> {
+  try {
+    await readFile(file);
+    return true;
+  } catch {
+    return false;
+  }
 }

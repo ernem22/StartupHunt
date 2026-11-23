@@ -103,6 +103,12 @@ a {
 .gap-belirsiz {
   color: var(--muted);
 }
+.label-trend {
+  color: #0969da;
+}
+.label-gelir {
+  color: #8250df;
+}
 ul {
   padding-left: 18px;
   margin: 4px 0;

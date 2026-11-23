@@ -1,5 +1,7 @@
-import type { Candidate } from "../candidates/model.js";
+import type { Candidate, DataPoint } from "../candidates/model.js";
 import { shortProductName } from "./names.js";
+
+export type Label = "trend" | "gelir";
 
 export type ScoreBreakdown = {
   sources: number;
@@ -14,11 +16,27 @@ export type ScoreBreakdown = {
 export type RankedCandidate = {
   candidate: Candidate;
   score: ScoreBreakdown;
-  momentumDetail: string | null;
-  weakSignal: boolean;
+  labels: Label[];
+  /** "ilk gözlem" when no earlier snapshot holds this product; otherwise the metric changes. */
+  momentum: string;
 };
 
+export type Quota = { limit: number; minTrend: number; minRevenue: number };
+
+export const DEFAULT_QUOTA: Quota = { limit: 20, minTrend: 8, minRevenue: 8 };
+
 export type PreviousSnapshot = Map<string, Map<string, number>>;
+
+/** Metrics that describe trend interest (rank, points, score). Revenue metrics are not trend signals. */
+export const TREND_METRICS: readonly string[] = [
+  "ph_feed_position",
+  "apple_us_top_free_rank",
+  "apple_tr_top_free_rank",
+  "hn_points",
+  "hn_comments",
+  "reddit_score",
+  "reddit_comments",
+];
 
 /** Loads numeric points from a previous data/YYYY-MM-DD.json snapshot, keyed by candidate key then metric. */
 export function readSnapshot(value: unknown): PreviousSnapshot {
@@ -63,7 +81,7 @@ const NON_PRODUCT = [
 ];
 
 /** Links to social networks, media and code hosts are not the product's own URL. */
-function hasProductUrl(candidate: Candidate): boolean {
+export function hasProductUrl(candidate: Candidate): boolean {
   try {
     const url = new URL(candidate.url);
     if (!/^https?:$/.test(url.protocol)) return false;
@@ -93,6 +111,45 @@ export function isNoise(candidate: Candidate): boolean {
   );
 }
 
+/** A single observation strong enough to make a one-source product a trend card. */
+function isStrongSignal(point: DataPoint): boolean {
+  switch (point.metric) {
+    case "hn_points":
+      return point.value >= 100;
+    case "reddit_score":
+      return point.value >= 20;
+    // PH feed order is the only PH number (no vote counts): the top 10 of the feed.
+    case "ph_feed_position":
+      return point.value <= 10;
+    // Apple ranks alone are not strong: ranks 21-50 of top-free are mostly big brands (Gmail, Amazon).
+    // A single top-20 Apple row is already dropped as noise, so Apple counts only with another source.
+    default:
+      return false;
+  }
+}
+
+export function trendSignals(candidate: Candidate): DataPoint[] {
+  return candidate.dataPoints.filter((point) => TREND_METRICS.includes(point.metric));
+}
+
+/** Trend-led: a real product URL plus either several sources or one strong trend observation. */
+export function isTrendLed(candidate: Candidate): boolean {
+  if (!hasProductUrl(candidate)) return false;
+  if (candidate.sources.length >= 2) return true;
+  return candidate.dataPoints.some(isStrongSignal);
+}
+
+export function isRevenueLed(candidate: Candidate): boolean {
+  return candidate.dataPoints.some((point) => point.metric === "mrr_usd");
+}
+
+export function labelsOf(candidate: Candidate): Label[] {
+  return [
+    ...(isTrendLed(candidate) ? (["trend"] as const) : []),
+    ...(isRevenueLed(candidate) ? (["gelir"] as const) : []),
+  ];
+}
+
 function logSignal(value: number, scale: number): number {
   return Math.log10(1 + Math.max(0, value)) / Math.log10(1 + scale);
 }
@@ -102,8 +159,7 @@ export function scoreCandidate(
   snapshot: PreviousSnapshot = new Map(),
 ): RankedCandidate {
   const sourceScore = 3 * Math.max(0, candidate.sources.length - 1);
-  const hasRevenue = candidate.dataPoints.some((point) => point.metric === "mrr_usd");
-  const revenueScore = hasRevenue ? 3 : 0;
+  const revenueScore = isRevenueLed(candidate) ? 3 : 0;
   const productScore =
     (hasProductUrl(candidate) ? 0.5 : -0.5) +
     (candidate.description ? 0.5 : 0) +
@@ -144,29 +200,39 @@ export function scoreCandidate(
   }
 
   let momentum = 0;
-  let momentumDetail: string | null = null;
+  let momentumText: string;
   const previous = snapshot.get(candidate.key);
-  if (previous) {
+  if (!previous) {
+    momentumText = "ilk gözlem";
+  } else {
     const parts: string[] = [];
+    let compared = 0;
     for (const point of candidate.dataPoints) {
       const before = previous.get(point.metric);
-      if (before === undefined || !Number.isFinite(before) || before === point.value) continue;
+      if (before === undefined) continue;
+      compared += 1;
+      if (before === point.value) continue;
+      parts.push(`${point.metric} ${before}→${point.value}`);
       const delta = point.value - before;
       if (point.metric === "ph_feed_position" || point.metric.endsWith("_rank")) {
+        // A lower rank number is a rise in the chart.
         if (delta < 0) momentum += 0.5;
-        parts.push(`${point.metric} ${before}→${point.value}`);
       } else if (delta > 0) {
         momentum += Math.min(1, logSignal(delta, Math.max(1, Math.abs(before))));
-        parts.push(`${point.metric} ${before}→${point.value}`);
       }
     }
-    if (parts.length > 0) momentumDetail = parts.slice(0, 3).join(", ");
+    momentumText =
+      compared === 0
+        ? "ortak metrik yok"
+        : parts.length === 0
+          ? "değişim yok"
+          : parts.slice(0, 3).join(", ");
   }
 
   const total = sourceScore + revenueScore + productScore + signals + momentum;
   return {
     candidate,
-    weakSignal: false,
+    labels: labelsOf(candidate),
     score: {
       sources: round(sourceScore),
       revenue: round(revenueScore),
@@ -176,7 +242,7 @@ export function scoreCandidate(
       momentum: round(momentum),
       total: round(total),
     },
-    momentumDetail,
+    momentum: momentumText,
   };
 }
 
@@ -192,45 +258,38 @@ function byScore(a: RankedCandidate, b: RankedCandidate): number {
   );
 }
 
-function hasRevenue(entry: RankedCandidate): boolean {
-  return entry.candidate.dataPoints.some((point) => point.metric === "mrr_usd");
+/**
+ * Quota: the top `limit` must hold at least `minTrend` trend-led and `minRevenue` revenue-led
+ * cards. The best of each kind are reserved first (a card can count for both), the rest fill by score.
+ * A kind with fewer candidates than its minimum is simply short; the caller reports the counts.
+ */
+export function selectWithQuota(
+  sorted: readonly RankedCandidate[],
+  quota: Quota,
+): RankedCandidate[] {
+  const trend = sorted.filter((entry) => entry.labels.includes("trend"));
+  const revenue = sorted.filter((entry) => entry.labels.includes("gelir"));
+  const chosen = new Set<RankedCandidate>([
+    ...trend.slice(0, quota.minTrend),
+    ...revenue.slice(0, quota.minRevenue),
+  ]);
+  for (const entry of sorted) {
+    if (chosen.size >= quota.limit) break;
+    chosen.add(entry);
+  }
+  return sorted.filter((entry) => chosen.has(entry)).slice(0, quota.limit);
 }
 
 /** Deterministic: score desc, then source count desc, then name; ties never depend on input order. */
 export function rankCandidates(
   candidates: readonly Candidate[],
   snapshot: PreviousSnapshot = new Map(),
-  limit = 15,
-  minRevenue = 5,
+  quota: Quota = DEFAULT_QUOTA,
 ): RankedCandidate[] {
-  const scored = candidates
-    .filter((candidate) => !isNoise(candidate))
-    .map((candidate) => scoreCandidate(candidate, snapshot))
-    .sort(byScore);
-  // Do not fill the tail with HN one-offs: require revenue, multiple sources or product metadata.
-  const thresholds = [3, 2.5, 2, 1.5, 0.5];
-  const threshold =
-    thresholds.find(
-      (value) =>
-        scored.filter((entry) => entry.score.quality >= value).length >= Math.min(limit, 10),
-    ) ?? thresholds[thresholds.length - 1]!;
-  const eligible = scored
-    .filter((entry) => entry.score.quality >= threshold)
-    .map((entry) => ({ ...entry, weakSignal: threshold < 3 }));
-  // Revenue-backed products are the most actionable ideas: reserve at least half the list for them.
-  const revenue = eligible.filter(hasRevenue);
-  const other = eligible.filter((entry) => !hasRevenue(entry));
-  const chosen = [
-    ...revenue.slice(0, Math.min(revenue.length, Math.max(minRevenue, limit))),
-    ...other.slice(0, limit),
-  ];
-  const seen = new Set<string>();
-  return chosen
-    .filter((entry) => {
-      if (seen.has(entry.candidate.key)) return false;
-      seen.add(entry.candidate.key);
-      return true;
-    })
-    .sort(byScore)
-    .slice(0, limit);
+  // Low-signal rows (neither trend-led nor revenue-led) never reach the list.
+  const eligible = candidates.filter(
+    (candidate) => !isNoise(candidate) && labelsOf(candidate).length > 0,
+  );
+  const sorted = eligible.map((candidate) => scoreCandidate(candidate, snapshot)).sort(byScore);
+  return selectWithQuota(sorted, quota);
 }

@@ -1,10 +1,14 @@
 # Fikir sıralaması (M4)
 
-1. Gürültü filtresi: adı "Anonymous startup" / "stealth" / "agency" olanlar, HN esprisi kalıpları ("Steal my ..."), ikiden az sayısal veri noktası olanlar (kart başına en az 2 gözlem şartı) ve yalnız Apple ilk-20 listesinden gelen dev uygulamalar elenir.
-2. Kaynak + gelir + ürünlük puanı: her ek kaynak +3; TrustMRR gelir kanıtı varsa +3; ürünün kendi URL'si varsa +0.5, yoksa −0.5; açıklaması varsa +0.5; başlık 5 kelimeden uzunsa −0.5.
-3. Sinyal puanı: HN puanı (log300, tek kaynaklıysa yarılanır) ve yorumları, Reddit skor/yorum, MRR (log10000), 30g MRR büyüme, PH feed sırası, Apple sırası; `logN = log10(1+değer)/log10(1+N)`, negatifler 0 sayılır.
-4. İvme puanı: aynı günlük snapshot'ta aynı metriğin değişimi; sıra düşüşü +0.5, diğer artışlar log oranıyla (en fazla 1).
-5. Toplam = kaynak + gelir + ürünlük + sinyal + ivme. Kalite eşiği (kaynak + gelir + ürünlük) en az 3; en az 10 aday kalmazsa eşik 2.5/2/1.5'e indirilir ve o kartlar "zayıf sinyal" etiketlenir. Eşik altındaki tek kaynaklı HN gönderileri listeye doldurulmaz; eşik üstü gelir kanıtlı adayların tamamı (en az 5) listeye alınır, sonra puana göre ilk 15 seçilir.
+1. Gürültü filtresi: adı "Anonymous startup" / "stealth" / "agency" olanlar, HN esprisi kalıpları ("Steal my ..."), ikiden az sayısal veri noktası olanlar elenir. Tek kaynaklı Apple satırı, sıra ilk 20 ise de elenir.
+2. Etiket (her kart en az birini taşır, ikisi birden olabilir):
+   - **trend**: ürün URL'si var VE (en az iki kaynak VEYA güçlü tek sinyal: HN puanı ≥100, Reddit skoru ≥20, PH feed sırası ≤10). Apple sırası tek başına güçlü sayılmaz (21-50 sırası büyük markalardır: Gmail, Amazon).
+   - **gelir**: TrustMRR MRR kanıtı var.
+   - Diğer satırlar (ne trend ne gelir) listeye girmez.
+3. Kota (üst 20): en az 8 trend ve en az 8 gelir. Her grubun en iyi 8'i (puana göre) önce ayrılır, kalan yerler puana göre dolar. Bir grup 8'den azsa liste o kadar kısa kalır ve kota sonucu markdown başında yazılır.
+4. Puan: kaynak (her ek kaynak +3), gelir (+3), ürünlük (URL/açıklama/kısa ad), sinyal (log ölçekli HN/Reddit/MRR, PH sırası, Apple sırası), ivme. `logN = log10(1+değer)/log10(1+N)`.
+5. İvme: en yeni `data/YYYY-MM-DD.json` snapshot'ı, koşunun kendi tarihinden önceki günden alınır (koşunun kendi dosyası latest.json ile aynıdır ve sayılmaz). Snapshot yoksa ya da ürün snapshot'ta yoksa ivme "ilk gözlem" yazılır; ortak metrik yoksa "ortak metrik yok", değişmediyse "değişim yok".
+6. Ne olduğu: açıklama varsa o; Show HN ve Reddit başlıkları olduğu gibi ("I built a ..." öneki kaldırılarak, alan adıyla) gösterilir. Çeviri ya da LLM kullanılmaz.
 
 TR kartları: Show HN başlıklarından kısa ürün adı çıkarılır (Show HN:, tire/iki nokta/parantez öncesi); TR sorgusu yalnızca kısa ad ve en fazla iki anahtar kelimeden oluşur, uzun başlık asla sorgu değildir. Play arama HTML'sinde rating varsa okunur, yoksa detay sayfası denenir; ikisi de yoksa rating bilinmiyor kalır. Mobil uygulama=None mağaza hükmü değişmez: eşleşme yoksa `not_found`. Web ürünü (TrustMRR/PH alan adı, açıklamada web/platform/tool sinyali) için mağazada eşleşme yoksa asla `not_found` yazılmaz: Yandex TR (`yandex.com.tr`, lr=213) web kanalı denenir; ürün adıyla TR'de eşleşme varsa kanıt linkiyle `found`, yalnızca kategori benzeri (dizin/yuvarlama sayfaları elenir) varsa kanıtlı `uncertain`, hiç sonuç yoksa `uncertain` + "mağazada yok, web kanalı kontrol edildi" gerekçesi yazılır.
 

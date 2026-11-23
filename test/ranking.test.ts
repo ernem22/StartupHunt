@@ -103,7 +103,12 @@ test("ranking: momentum from previous snapshot rewards rank drops and metric gro
   );
   assert.ok(improved.score.momentum > 0);
   assert.equal(declined.score.momentum, 0);
-  assert.match(improved.momentumDetail!, /apple_us_top_free_rank 40→20/);
+  assert.match(improved.momentum, /apple_us_top_free_rank 40→20/);
+  assert.equal(declined.momentum, "reddit_score 100→50");
+  assert.equal(
+    scoreCandidate(candidate("c", "C", ["reddit"], [point("reddit", "reddit_score", 1)])).momentum,
+    "ilk gözlem",
+  );
 });
 
 test("ranking: noise filter drops anonymous and store-giant rows, keeps small apps", () => {
@@ -117,8 +122,13 @@ test("ranking: noise filter drops anonymous and store-giant rows, keeps small ap
   const small = candidate(
     "z",
     "Niş uygulama",
-    ["apple"],
-    [point("apple", "apple_us_top_free_rank", 80), point("apple", "apple_us_top_free_rank", 85)],
+    ["apple", "trustmrr"],
+    [
+      point("apple", "apple_us_top_free_rank", 30),
+      point("apple", "apple_us_top_free_rank", 35),
+      point("trustmrr", "mrr_usd", 100),
+    ],
+    { url: "https://small.app" },
   );
   assert.ok(isNoise(anonymous));
   assert.ok(isNoise(giant));
@@ -130,7 +140,7 @@ test("ranking: noise filter drops anonymous and store-giant rows, keeps small ap
 });
 
 test("ranking: ties are deterministic regardless of input order", () => {
-  const points = [point("reddit", "reddit_score", 10), point("reddit", "reddit_comments", 2)];
+  const points = [point("reddit", "reddit_score", 50), point("reddit", "reddit_comments", 2)];
   const a = candidate("a", "Alpha", ["reddit"], points);
   const b = candidate("b", "Beta", ["reddit"], points);
   assert.deepEqual(
@@ -202,8 +212,8 @@ test("report: revenue fallback, description, TR gap labels and markdown links", 
           momentum: 0,
           total: 1,
         },
-        weakSignal: false,
-        momentum: null,
+        labels: ["trend"],
+        trend: { signals: [], momentum: "ilk gözlem" },
         dataPoints: [point("showhn", "hn_points", 5, "https://news.ycombinator.com/item?id=1")],
         revenueEvidence: "aranmadı",
         tr: { ...gapVerdict(verdict("not_found")), queries: ["sorgu"], evidence: [] },
@@ -276,35 +286,6 @@ test("ranking: revenue and product-likeness lift real products above HN-only noi
   assert.ok(ranked[0]!.score.product > 0);
 });
 
-test("ranking: at least 5 revenue-backed cards even when HN posts score higher", () => {
-  const revenue = Array.from({ length: 6 }, (_, index) =>
-    candidate(
-      `r${index}`,
-      `Revenue ${index}`,
-      ["trustmrr"],
-      [point("trustmrr", "mrr_usd", 100), point("trustmrr", "growth_mrr_30d_pct", 10)],
-      {
-        url: `https://product${index}.com`,
-        description: "a real product",
-      },
-    ),
-  );
-  const hn = Array.from({ length: 12 }, (_, index) =>
-    candidate(
-      `h${index}`,
-      `Hacker News thing ${index}`,
-      ["showhn"],
-      [point("showhn", "hn_points", 1000)],
-      { url: `https://news.ycombinator.com/item?id=${index}` },
-    ),
-  );
-  const ranked = rankCandidates([...hn, ...revenue]);
-  const withRevenue = ranked.filter((entry) =>
-    entry.candidate.dataPoints.some((point) => point.metric === "mrr_usd"),
-  );
-  assert.ok(withRevenue.length >= 5);
-});
-
 test("Play rating parser: accepts explicit counts, ignores average scores and missing data", () => {
   assert.equal(parsePlayRating('<div itemprop="ratingCount" content="1,234"></div>'), 1234);
   assert.equal(parsePlayRating('<span>"ratingCount":987</span>'), 987);
@@ -312,7 +293,7 @@ test("Play rating parser: accepts explicit counts, ignores average scores and mi
   assert.equal(parsePlayRating("<div>no rating here</div>"), undefined);
 });
 
-test("ranking: low-quality HN one-offs are excluded when enough good candidates exist", () => {
+test("ranking: low-signal HN posts (under the trend threshold, no revenue) are excluded", () => {
   const good = Array.from({ length: 12 }, (_, index) =>
     candidate(
       `g${index}`,
@@ -322,16 +303,18 @@ test("ranking: low-quality HN one-offs are excluded when enough good candidates 
       { url: `https://product${index}.com`, description: "a real web product" },
     ),
   );
+  // Below the trend threshold (100 points) and without revenue: low signal, never listed.
   const weak = Array.from({ length: 6 }, (_, index) =>
     candidate(
       `w${index}`,
       `Wikihack ${index}`,
       ["showhn"],
-      [point("showhn", "hn_points", 500), point("showhn", "hn_comments", 50)],
+      [point("showhn", "hn_points", 20), point("showhn", "hn_comments", 5)],
+      { url: `https://wiki${index}.example` },
     ),
   );
   const ranked = rankCandidates([...weak, ...good]);
   assert.equal(ranked.length, 12);
   assert.ok(ranked.every((entry) => entry.candidate.key.startsWith("g")));
-  assert.ok(ranked.every((entry) => entry.score.quality >= 3 && !entry.weakSignal));
+  assert.ok(ranked.every((entry) => entry.labels.includes("gelir")));
 });
