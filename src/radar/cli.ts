@@ -1,4 +1,6 @@
 import { execFileSync } from "node:child_process";
+import { collectCandidates } from "../candidates/run.js";
+import { PRODUCERS } from "../candidates/sources.js";
 import { candidatePool, GitHubMomentumCollector, type MomentumCollector } from "./github.js";
 import { HackerNewsMomentumCollector } from "./hackernews.js";
 import { HFMomentumCollector } from "./hf.js";
@@ -46,7 +48,15 @@ async function main(): Promise<void> {
       console.error(`${source.source} atlandı: ${skipped}`);
     }
   }
-  const files = await store.write("data", at, commit);
+  // Candidate producers: each failure is isolated and recorded in the JSON errors list.
+  const candidateRun = await collectCandidates(PRODUCERS, at);
+  for (const error of candidateRun.errors) {
+    store.addError(error.source, error.message);
+    console.error(`${error.source}: ${error.message}`);
+  }
+  console.error(`ham aday: ${JSON.stringify(candidateRun.rawCounts)}`);
+  console.error(`birleştirilmiş aday: ${candidateRun.candidates.length}`);
+  const files = await store.write("data", at, commit, candidateRun.candidates);
   console.log(outputs.join("\n\n"));
   console.error(`JSON: ${files.join(", ")}`);
 }
