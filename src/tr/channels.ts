@@ -50,6 +50,39 @@ function decode(value: string): string {
     .trim();
 }
 
+/** Play sometimes renders rating text next to a result; when it doesn't, ratingCount stays unknown. */
+export function parsePlayRating(html: string): number | undefined {
+  const patterns = [
+    { pattern: /itemprop="ratingCount"[^>]*content="([\d.,]+)"/i, ambiguous: false },
+    { pattern: /"ratingCount"\s*:\s*"?(\d+)"?/i, ambiguous: false },
+    {
+      pattern: /([\d.,]+)\s*(?:TR\s*)?(?:değerlendirme|ratings?|reviews?|yorum|评价)/i,
+      ambiguous: true,
+    },
+    {
+      pattern: /aria-label="[^"]*?([\d.,]+)\s*(?:yıldız|stars?|değerlendirme)[^"]*"/i,
+      ambiguous: true,
+    },
+  ];
+  for (const { pattern, ambiguous } of patterns) {
+    const match = pattern.exec(html);
+    if (!match?.[1]) continue;
+    const raw = match[1];
+    const normalized = raw.includes(",")
+      ? raw
+          .replace(/\./g, "")
+          .replace(/,(\d{3})$/, "$1")
+          .replace(/,(\d+)$/, ".$1")
+      : raw.replace(/\./g, "");
+    const value = Number(normalized);
+    if (!Number.isFinite(value) || value < 0) continue;
+    // "4,3 değerlendirme" is an average score, not a count; only explicit count fields are safe.
+    if (ambiguous && value < 5) continue;
+    return Math.round(value);
+  }
+  return undefined;
+}
+
 function parsePlayHtml(html: string): TrEvidence[] {
   const items: TrEvidence[] = [];
   const blocks = html.split('role="listitem"').slice(1);
@@ -58,10 +91,12 @@ function parsePlayHtml(html: string): TrEvidence[] {
     const nameMatch = /class="DdYX5"[^>]*>([^<]+)<\/span>/.exec(block);
     if (!idMatch || !nameMatch) continue;
     const id = idMatch[1]!;
+    const ratingCount = parsePlayRating(block);
     items.push({
       channel: "play_tr",
       name: decode(nameMatch[1]!),
       id,
+      ...(ratingCount === undefined ? {} : { ratingCount }),
       url: `https://play.google.com/store/apps/details?id=${id}&hl=tr&gl=TR`,
     });
     if (items.length >= 20) break;
@@ -69,9 +104,29 @@ function parsePlayHtml(html: string): TrEvidence[] {
   return items;
 }
 
+const PLAY_DETAILS_PER_QUERY = 3;
+let lastPlayDetailRequest = 0;
+
 async function fetchPlay(term: string): Promise<TrEvidence[]> {
   const url = `https://play.google.com/store/search?q=${encodeURIComponent(term)}&c=apps&hl=tr&gl=TR`;
-  return parsePlayHtml(await fetchText(url));
+  const results = parsePlayHtml(await fetchText(url));
+  // Rating text is usually absent from search HTML; try the first few detail pages, spaced out.
+  for (const item of results.slice(0, PLAY_DETAILS_PER_QUERY)) {
+    if (item.ratingCount !== undefined) continue;
+    const elapsed = Date.now() - lastPlayDetailRequest;
+    if (lastPlayDetailRequest && elapsed < 700) {
+      await new Promise((resolve) => setTimeout(resolve, 700 - elapsed));
+    }
+    lastPlayDetailRequest = Date.now();
+    try {
+      const html = await fetchText(item.url);
+      const ratingCount = parsePlayRating(html);
+      if (ratingCount !== undefined) item.ratingCount = ratingCount;
+    } catch {
+      // A detail-page failure keeps the rating unknown; the verdict becomes uncertain, never "found".
+    }
+  }
+  return results;
 }
 
 export type ChannelResult = {
