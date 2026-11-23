@@ -6,6 +6,7 @@
   "description": "StartupHunt — küresel yükselen ürünleri veriyle listeleyen trend radarı (JSON çıktı)",
   "scripts": {
     "radar": "tsx src/radar/cli.ts",
+    "tr-check": "tsx src/tr/cli.ts",
     "test": "node --import tsx --test \"test/**/*.test.ts\"",
     "typecheck": "tsc -p tsconfig.test.json",
     "check:encoding": "node scripts/check-encoding.mjs",
