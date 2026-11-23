@@ -1,14 +1,12 @@
 # Fikir sıralaması (M4)
 
-1. Gürültü filtresi: adı "Anonymous startup" / "stealth" / "agency" olanlar, HN esprisi kalıpları ("Steal my ..."), ikiden az sayısal veri noktası olanlar elenir. Tek kaynaklı Apple satırı, sıra ilk 20 ise de elenir.
-2. Etiket (her kart en az birini taşır, ikisi birden olabilir):
-   - **trend**: ürün URL'si var VE (en az iki kaynak VEYA güçlü tek sinyal: HN puanı ≥100, Reddit skoru ≥20, PH feed sırası ≤10). Apple sırası tek başına güçlü sayılmaz (21-50 sırası büyük markalardır: Gmail, Amazon).
-   - **gelir**: TrustMRR MRR kanıtı var.
-   - Diğer satırlar (ne trend ne gelir) listeye girmez.
-3. Kota (üst 20): en az 8 trend ve en az 8 gelir. Her grubun en iyi 8'i (puana göre) önce ayrılır, kalan yerler puana göre dolar. Bir grup 8'den azsa liste o kadar kısa kalır ve kota sonucu markdown başında yazılır.
-4. Puan: kaynak (her ek kaynak +3), gelir (+3), ürünlük (URL/açıklama/kısa ad), sinyal (log ölçekli HN/Reddit/MRR, PH sırası, Apple sırası), ivme. `logN = log10(1+değer)/log10(1+N)`.
-5. İvme: en yeni `data/YYYY-MM-DD.json` snapshot'ı, koşunun kendi tarihinden önceki günden alınır (koşunun kendi dosyası latest.json ile aynıdır ve sayılmaz). Snapshot yoksa ya da ürün snapshot'ta yoksa ivme "ilk gözlem" yazılır; ortak metrik yoksa "ortak metrik yok", değişmediyse "değişim yok".
-6. Ne olduğu: açıklama varsa o; Show HN ve Reddit başlıkları olduğu gibi ("I built a ..." öneki kaldırılarak, alan adıyla) gösterilir. Çeviri ya da LLM kullanılmaz.
+1. Gürültü filtresi: adı "Anonymous startup" / "stealth" / "agency" olanlar, HN esprisi kalıpları ("Steal my ...") ve Show HN oyuncakları ("but for", "X-for-Y", HackerTube/TV/Times/Books) elenir. Tek kaynaklı Apple satırı, sıra ilk 20 ise ve uygulama 365 günden eskiyse elenir. İki sayısal gözlemi olmayan satır elenir; tek istisna Product Hunt feed sırası ilk 10 olan satırdır (ürün bağlantısı ve sırası zaten kaynaklı).
+2. Trend-led (kart ancak ürün URL'si varsa): çoklu kaynak; ya da Apple US top-free sırası ≤50 ve uygulama 365 günden yeni; ya da Product Hunt feed sırası ≤10; ya da Reddit skoru ≥20. Show HN yalnızca kendi ürün açıklaması varsa ve HN puanı ≥100 ise trend sayılır; yalnız başlık yetmez.
+3. Gelir-led: TrustMRR MRR kanıtı var. Etiket (trend / gelir / ikisi) yalnızca gösterim içindir; seçimi veya sıralamayı belirlemez.
+4. Sıralama yalnızca küresel trend gücüyle yapılır. Trend gücü: çoklu kaynak (+1 her ek kaynak), PH sırası (1-20 arası lineer), Apple US sırası (1-100), uygulama yaşı (≤30 gün +1, ≤180 +0,5, ≤365 +0,25), Show HN puanı/yorumu (yalnız açıklamalıysa), Reddit skoru/yorumu. Gelir kanıtı +0,25 (küçük ek). İvme (önceki gün snapshot'ı): sıra düşüşü +0,5, artışlar log oranı. Eşitlikte MRR büyük olan önce gelir.
+   Snapshot: en yeni `data/YYYY-MM-DD.json`, koşunun kendi tarihinden önceki gün; koşunun kendi dosyası (latest.json ile aynı) sayılmaz. Snapshot yoksa ivme "ilk gözlem" yazılır.
+5. TR durumu sıralamaya GİRMEZ. Seçilen 20 kartın her biri için TR kontrolü bağımsız yapılır ve ayrı alan olarak yazılır: boş, belirsiz, zayıf, dolu. Dolu olanlar da listede kalır (site filtresiyle ayrıştırılır). Apple TR sırası (varsa) veri noktası olarak gösterilir ama trend gücüne eklenmez.
+6. Liste 20'ye kadar; havuz yetmezse kısa kalır, espriyle doldurulmaz. Ne olduğu: açıklama varsa o; Show HN ve Reddit başlıkları olduğu gibi ("I built a ..." öneki kaldırılarak, alan adıyla). Çeviri ya da LLM kullanılmaz.
 
 TR kartları: Show HN başlıklarından kısa ürün adı çıkarılır (Show HN:, tire/iki nokta/parantez öncesi); TR sorgusu yalnızca kısa ad ve en fazla iki anahtar kelimeden oluşur, uzun başlık asla sorgu değildir. Play arama HTML'sinde rating varsa okunur, yoksa detay sayfası denenir; ikisi de yoksa rating bilinmiyor kalır. Mobil uygulama=None mağaza hükmü değişmez: eşleşme yoksa `not_found`. Web ürünü (TrustMRR/PH alan adı, açıklamada web/platform/tool sinyali) için mağazada eşleşme yoksa asla `not_found` yazılmaz: Yandex TR (`yandex.com.tr`, lr=213) web kanalı denenir; ürün adıyla TR'de eşleşme varsa kanıt linkiyle `found`, yalnızca kategori benzeri (dizin/yuvarlama sayfaları elenir) varsa kanıtlı `uncertain`, hiç sonuç yoksa `uncertain` + "mağazada yok, web kanalı kontrol edildi" gerekçesi yazılır.
 

@@ -5,10 +5,12 @@ import type { Candidate, DataPoint } from "../candidates/model.js";
 import { checkTrSaturation, type TrVerdict } from "../tr/check.js";
 import { shortProductName, shortTrQueries } from "./names.js";
 import {
-  rankCandidates,
+  LIST_SIZE,
   readSnapshot,
+  selectTop,
   trendSignals,
   type Label,
+  type PreviousSnapshot,
   type RankedCandidate,
 } from "./rank.js";
 
@@ -20,18 +22,21 @@ export type Idea = {
   url: string;
   whatItIs: string;
   category: string | null;
-  /** "trend" (trend-led), "gelir" (revenue-led) or both. */
+  /** Display labels: "trend" (trend-led), "gelir" (revenue-led) or both. Nothing is selected by them. */
   labels: Label[];
   sources: string[];
-  score: RankedCandidate["score"];
+  score: { trend: number; momentum: number; revenue: number; total: number };
+  /** "Neden bu sırada": the global factors that set the order. TR is not one of them. */
+  reason: string;
   trend: {
-    /** Trend observations only (PH rank, Apple ranks, HN points/comments with the Show HN date, Reddit score/comments). */
+    /** Trend observations only (PH rank, Apple ranks and release age, HN/Reddit numbers with the Show HN date). */
     signals: DataPoint[];
     /** "ilk gözlem" when no earlier snapshot holds the product; otherwise the changed metrics. */
     momentum: string;
   };
   dataPoints: DataPoint[];
   revenueEvidence: string;
+  /** Checked after the order is fixed; it never changes the rank or the selection. */
   tr: {
     verdict: TrVerdict["verdict"];
     reason: string;
@@ -112,29 +117,32 @@ export function previousSnapshotFile(files: readonly string[], runDate: string):
   return earlier.at(-1) ?? null;
 }
 
+/** "Neden bu sırada": the global factors that set the order. */
+export function reasonLine(entry: RankedCandidate): string {
+  const { trend, momentum, revenue, base } = entry.score;
+  return `trend ${trend} + ivme ${momentum} + gelir ${revenue} = ${base}`;
+}
+
 export function renderMarkdown(output: IdeasOutput): string {
-  const trendCount = output.ideas.filter((idea) => idea.labels.includes("trend")).length;
-  const revenueCount = output.ideas.filter((idea) => idea.labels.includes("gelir")).length;
   const lines: string[] = [
     "# Startup fikirleri",
     "",
     `Üretim: ${output.generatedAt} · Kaynak: ${output.sourceFile} · Snapshot: ${output.snapshotFile ?? "yok (ilk gözlem)"} · ${output.ideas.length} fikir`,
     "",
-    `Kota: trend ${trendCount} (en az 8), gelir ${revenueCount} (en az 8). Etiket: **trend** = çoklu kaynak veya güçlü HN/Reddit/PH/Apple sinyali, ürün URL'si var; **gelir** = TrustMRR MRR kanıtı.`,
-    "",
-    "Sıralama: gelir kanıtı +3, kaynak sayısı (her ek kaynak +3), ürünlük (URL/açıklama/kısa ad), sinyaller (log ölçekli HN/Reddit/MRR), ivme (önceki günlük snapshot'a göre). TR boşluğu: dolu/zayıf/boş/belirsiz.",
+    "Sıralama yalnızca küresel trend gücüyle yapılır: çoklu kaynak, PH/Apple US sırası, uygulama yaşı, HN/Reddit puanları ve ivme; gelir kanıtı küçük bir ek terimdir (+0,25). TR durumu sıralamaya girmez; her kartta ayrı TR alanı olarak yazılır (dolu olanlar da listede kalır).",
     "",
   ];
   for (const idea of output.ideas) {
     lines.push(
       `## ${idea.rank}. ${idea.name}`,
       "",
-      `- **Etiket:** ${idea.labels.join(" + ")}`,
+      `- **Etiket:** ${idea.labels.join(" + ") || "yok"}`,
       `- **Ne olduğu:** ${idea.whatItIs}`,
       ...(idea.originalName !== idea.name ? [`- **Ham başlık:** ${idea.originalName}`] : []),
-      `- **Neden listede:** ${idea.sources.join(" + ")} · skor ${idea.score.total} (kalite ${idea.score.quality}: gelir ${idea.score.revenue}, kaynak ${idea.score.sources}, ürünlük ${idea.score.product}; sinyal ${idea.score.signals}, ivme ${idea.score.momentum})`,
+      `- **Neden bu sırada:** ${idea.reason} · toplam ${idea.score.total}`,
       `- **Ürün:** ${idea.url}`,
-      `- **Trend:** kaynaklar ${idea.sources.join(" + ")} · ivme: ${idea.trend.momentum}`,
+      `- **Kaynaklar:** ${idea.sources.join(" + ")}`,
+      `- **Trend:** ivme: ${idea.trend.momentum}`,
     );
     for (const point of idea.trend.signals) {
       lines.push(
@@ -162,6 +170,44 @@ export function renderMarkdown(output: IdeasOutput): string {
   return `${lines.join("\n")}\n`;
 }
 
+/** One card: the order comes from `entry`; the TR verdict only fills the TR fields. */
+export function toIdea(entry: RankedCandidate, rank: number, verdict: TrVerdict): Idea {
+  const candidate = entry.candidate;
+  return {
+    rank,
+    key: candidate.key,
+    name: shortProductName(candidate.name),
+    originalName: candidate.name,
+    url: candidate.url,
+    whatItIs: describe(candidate),
+    category: candidate.category ?? null,
+    labels: entry.labels,
+    sources: candidate.sources,
+    score: {
+      trend: entry.score.trend,
+      momentum: entry.score.momentum,
+      revenue: entry.score.revenue,
+      total: entry.score.base,
+    },
+    reason: reasonLine(entry),
+    trend: { signals: trendSignals(candidate), momentum: entry.momentum },
+    dataPoints: candidate.dataPoints,
+    revenueEvidence: revenueEvidence(candidate),
+    tr: {
+      verdict: verdict.verdict,
+      reason: verdict.reason,
+      queries: verdict.queries,
+      evidence: verdict.evidence.map((evidence) => ({
+        name: evidence.name,
+        channel: evidence.channel,
+        ...(evidence.ratingCount === undefined ? {} : { ratingCount: evidence.ratingCount }),
+        url: evidence.url,
+      })),
+      gapLabel: gapLabel(verdict),
+    },
+  };
+}
+
 export async function buildIdeas(dir = "data"): Promise<IdeasOutput> {
   const sourceFile = path.join(dir, "latest.json");
   if (!(await exists(sourceFile))) {
@@ -176,14 +222,15 @@ export async function buildIdeas(dir = "data"): Promise<IdeasOutput> {
   const runDate = typeof raw.generatedAt === "string" ? raw.generatedAt.slice(0, 10) : "";
   const snapshotName = previousSnapshotFile(await readdir(dir), runDate);
   const snapshotFile = snapshotName ? path.join(dir, snapshotName) : null;
-  const snapshot = snapshotFile
+  const snapshot: PreviousSnapshot = snapshotFile
     ? readSnapshot(JSON.parse(await readFile(snapshotFile, "utf8")) as unknown)
     : new Map();
 
-  const ranked = rankCandidates(candidates, snapshot);
+  // The order is fixed by trend strength; TR is checked afterwards for the chosen cards only.
+  const top = selectTop(candidates, snapshot, LIST_SIZE);
   const ideas: Idea[] = [];
   // TR checks are sequential: the iTunes channel already spaces its own requests (3 s).
-  for (const [index, entry] of ranked.entries()) {
+  for (const [index, entry] of top.entries()) {
     const candidate = entry.candidate;
     const name = shortProductName(candidate.name);
     const verdict = await checkTrSaturation({
@@ -196,35 +243,9 @@ export async function buildIdeas(dir = "data"): Promise<IdeasOutput> {
       ...(candidate.isMobileApp === undefined ? {} : { webProduct: !candidate.isMobileApp }),
     });
     console.error(
-      `TR ${index + 1}/${ranked.length}: ${name} → ${verdict.verdict} (${verdict.evidence.length} kanıt)`,
+      `TR ${index + 1}/${top.length}: ${name} → ${verdict.verdict} (${verdict.evidence.length} kanıt)`,
     );
-    ideas.push({
-      rank: index + 1,
-      key: candidate.key,
-      name,
-      originalName: candidate.name,
-      url: candidate.url,
-      whatItIs: describe(candidate),
-      category: candidate.category ?? null,
-      labels: entry.labels,
-      sources: candidate.sources,
-      score: entry.score,
-      trend: { signals: trendSignals(candidate), momentum: entry.momentum },
-      dataPoints: candidate.dataPoints,
-      revenueEvidence: revenueEvidence(candidate),
-      tr: {
-        verdict: verdict.verdict,
-        reason: verdict.reason,
-        queries: verdict.queries,
-        evidence: verdict.evidence.map((item) => ({
-          name: item.name,
-          channel: item.channel,
-          ...(item.ratingCount === undefined ? {} : { ratingCount: item.ratingCount }),
-          url: item.url,
-        })),
-        gapLabel: gapLabel(verdict),
-      },
-    });
+    ideas.push(toIdea(entry, index + 1, verdict));
   }
 
   const output: IdeasOutput = {

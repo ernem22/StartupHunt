@@ -60,6 +60,7 @@ function card(idea) {
       "muted",
     ),
   );
+  if (idea.reason) article.append(el("p", `Neden bu sırada: ${idea.reason}`, "muted"));
 
   article.append(el("div", "Trend", "section-title"));
   article.append(el("p", `İvme: ${idea.trend?.momentum ?? "ilk gözlem"}`, "muted"));
