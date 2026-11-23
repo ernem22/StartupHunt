@@ -50,12 +50,23 @@ export function parseProductHuntFeed(xml: string): RawCandidate[] {
     const key = canonicalKey(url);
     if (!key) return;
     const date = isoDay(published);
+    const description = /<content[^>]*>([\s\S]*?)<\/content>/.exec(entry)?.[1];
+    const firstParagraph = description
+      ? /<p>([\s\S]*?)<\/p>/.exec(decodeEntities(description))?.[1]
+      : undefined;
+    const summary = firstParagraph
+      ? decodeEntities(firstParagraph)
+          .replace(/<[^>]+>/g, " ")
+          .replace(/\s+/g, " ")
+          .trim()
+      : "";
     result.push({
       name: decodeEntities(title).trim(),
       key,
       url,
       source: "producthunt",
       dataPoints: point("producthunt", "ph_feed_position", index + 1, date, url),
+      ...(summary ? { description: summary.slice(0, 300) } : {}),
     });
   });
   return result;
@@ -250,6 +261,8 @@ interface TrustMrrStartup {
   slug: string;
   url: string;
   website?: string | null;
+  description?: string | null;
+  category?: string | null;
   revenue?: { mrr?: unknown };
   growthMRR30d?: unknown;
 }
@@ -283,6 +296,8 @@ export class TrustMrrProducer implements CandidateProducer {
           ...point("trustmrr", "mrr_usd", finite(item.revenue?.mrr), date, item.url),
           ...point("trustmrr", "growth_mrr_30d_pct", finite(item.growthMRR30d), date, item.url),
         ],
+        ...(item.description ? { description: item.description.trim().slice(0, 300) } : {}),
+        ...(item.category ? { category: item.category.trim() } : {}),
       });
     }
     return { candidates, skipped: [] };
