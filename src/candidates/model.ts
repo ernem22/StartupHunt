@@ -18,6 +18,8 @@ export interface RawCandidate {
   dataPoints: DataPoint[];
   description?: string;
   category?: string;
+  /** Store-app flag from the producer; false/undefined does not mean web. */
+  isMobileApp?: boolean;
 }
 
 /** A product merged across sources by its canonical key. */
@@ -29,6 +31,7 @@ export interface Candidate {
   dataPoints: DataPoint[];
   description?: string;
   category?: string;
+  isMobileApp?: boolean;
 }
 
 export interface ProducerError {

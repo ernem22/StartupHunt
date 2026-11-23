@@ -23,15 +23,27 @@ test("sorgu uretimi: ad + TR + EN anahtar kelime sorgulari (fixtures)", () => {
 });
 
 test("eslesme: gercek benzerlik ve anahtar kelime cakismasi", () => {
-  assert.equal(isRealMatch("Bubilet", "Bubilet: Konser & Tiyatro", "Bubilet"), true);
-  assert.equal(
-    isRealMatch("ContentsKeeper", "Sigorta Policesi", "ev eşyası envanteri sigorta"),
-    false,
-  );
-  assert.equal(
-    isRealMatch("prepi", "Haftalık Yemek Planı", "haftalık yemek planı market listesi"),
-    false,
-  );
+  assert.equal(isRealMatch("Bubilet", "Bubilet: Konser & Tiyatro"), true);
+  assert.equal(isRealMatch("ContentsKeeper", "Sigorta Policesi"), false);
+  assert.equal(isRealMatch("prepi", "Haftalık Yemek Planı"), false);
+});
+
+test("eslesme: ortak tek kelime yetmez (PDF Vault != Scanner Vault)", () => {
+  assert.equal(isRealMatch("PDF Vault", "Scanner Vault: PDF & OCR Scan"), false);
+  assert.equal(isRealMatch("PDF Vault", "Mockup Vault PDF Maker"), false);
+  // A product name followed by a subtitle is still the same name.
+  assert.equal(isRealMatch("PDF Vault", "PDF Vault - Document App"), true);
+});
+
+test("web sinifi: TrustMRR isMobileApp bayragi ozel alan adini ezer (Screeny)", () => {
+  const screeny: TrCandidate = {
+    name: "Screeny",
+    url: "https://getscreeny.app",
+    sources: ["trustmrr"],
+  };
+  // Custom domain + TrustMRR alone reads as web SaaS; the store-app flag must override it.
+  assert.equal(classifyWebProduct(screeny), true);
+  assert.equal(classifyWebProduct({ ...screeny, webProduct: false }), false);
 });
 
 test("hukum mantigi: kaydedilmis fixture ciktilari", () => {

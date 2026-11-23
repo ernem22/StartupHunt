@@ -263,6 +263,7 @@ interface TrustMrrStartup {
   website?: string | null;
   description?: string | null;
   category?: string | null;
+  isMobileApp?: boolean;
   revenue?: { mrr?: unknown };
   growthMRR30d?: unknown;
 }
@@ -298,6 +299,7 @@ export class TrustMrrProducer implements CandidateProducer {
         ],
         ...(item.description ? { description: item.description.trim().slice(0, 300) } : {}),
         ...(item.category ? { category: item.category.trim() } : {}),
+        ...(typeof item.isMobileApp === "boolean" ? { isMobileApp: item.isMobileApp } : {}),
       });
     }
     return { candidates, skipped: [] };

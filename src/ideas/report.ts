@@ -58,7 +58,8 @@ export function revenueEvidence(candidate: Candidate): string {
   const mrr = candidate.dataPoints.find((point) => point.metric === "mrr_usd");
   if (!mrr) return "aranmadı";
   const growth = candidate.dataPoints.find((point) => point.metric === "growth_mrr_30d_pct");
-  const growthText = growth ? `, 30g büyüme ${Math.round(growth.value * 10) / 10}%` : "";
+  // TrustMRR "MRR growth, last 30 days" (API growthMRR30d); not the "Revenue growth" field.
+  const growthText = growth ? `, MRR 30g büyümesi ${Math.round(growth.value * 10) / 10}%` : "";
   return `MRR $${Math.round(mrr.value)} (TrustMRR)${growthText} — ${mrr.url}`;
 }
 
@@ -143,6 +144,8 @@ export async function buildIdeas(dir = "data"): Promise<IdeasOutput> {
       ...(candidate.url ? { url: candidate.url } : {}),
       queries: shortTrQueries(name, candidate.description),
       sources: candidate.sources,
+      // A store-app flag from TrustMRR decides web vs app; without it the TR check infers from text.
+      ...(candidate.isMobileApp === undefined ? {} : { webProduct: !candidate.isMobileApp }),
     });
     console.error(
       `TR ${index + 1}/${ranked.length}: ${name} → ${verdict.verdict} (${verdict.evidence.length} kanıt)`,

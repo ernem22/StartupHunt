@@ -68,6 +68,20 @@ test("merge joins the same product across sources and keeps the most authoritati
   assert.equal(merged[0]!.key, "landy-ai.com");
 });
 
+test("merge keeps the TrustMRR store-app flag so a mobile app is not judged as web SaaS", () => {
+  const [merged] = mergeCandidates([
+    {
+      name: "Screeny: Mockup & Product Demo",
+      key: "domain:getscreeny.app",
+      url: "https://getscreeny.app",
+      source: "trustmrr",
+      dataPoints: [],
+      isMobileApp: true,
+    },
+  ]);
+  assert.equal(merged?.isMobileApp, true);
+});
+
 test("merge drops a duplicate data point (same source, metric, link) but keeps distinct ones", () => {
   const point = {
     source: "apple",

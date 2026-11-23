@@ -151,7 +151,7 @@ test("report: revenue fallback, description, TR gap labels and markdown links", 
     { description: "AI marketing tool for solo developers" },
   );
   assert.equal(describe(c), "AI marketing tool for solo developers");
-  assert.match(revenueEvidence(c), /MRR \$1527.*30g büyüme 30%.*trustmrr\.com/);
+  assert.match(revenueEvidence(c), /MRR \$1527.*MRR 30g büyümesi 30%.*trustmrr\.com/);
   assert.equal(
     revenueEvidence(candidate("b", "B", ["showhn"], [point("showhn", "hn_points", 4)])),
     "aranmadı",

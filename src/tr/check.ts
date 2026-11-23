@@ -23,7 +23,7 @@ export async function checkTrSaturation(candidate: TrCandidate): Promise<TrVerdi
   ]);
 
   const evidence = [...apple.evidence, ...play.evidence].filter((item) =>
-    queries.some((query) => isRealMatch(candidate.name, item.name, query)),
+    isRealMatch(candidate.name, item.name),
   );
 
   const seen = new Set<string>();

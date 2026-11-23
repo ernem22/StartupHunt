@@ -221,15 +221,13 @@ function similarity(a: string, b: string): number {
   return shared / Math.max(xWords.size, yWords.size);
 }
 
-export function isRealMatch(candidateName: string, resultName: string, query: string): boolean {
-  if (similarity(candidateName, resultName) >= 0.65) return true;
-  const keywords = stripStopwords(candidateName).filter((word) => word.length > 2);
-  if (keywords.length === 0) return false;
-  const hits = keywords.filter((word) => normalize(resultName).includes(word)).length;
-  if (hits >= 2) return true;
-  const queryWords = stripStopwords(query).filter((word) => word.length > 3);
-  const queryHits = queryWords.filter((word) => normalize(resultName).includes(word)).length;
-  return queryWords.length >= 2 && queryHits >= 2 && hits >= 1;
+/**
+ * Store result is the same product only when the full names overlap (token overlap or the result
+ * is the candidate name plus a subtitle). Sharing one or two words inside a longer title is not
+ * enough: "PDF Vault" must not match "Scanner Vault: PDF & OCR Scan".
+ */
+export function isRealMatch(candidateName: string, resultName: string): boolean {
+  return similarity(candidateName, resultName) >= 0.65;
 }
 
 export type VerdictInput = {
