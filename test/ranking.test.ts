@@ -2,8 +2,14 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Candidate } from "../src/candidates/model.js";
 import { shortProductName, shortTrQueries } from "../src/ideas/names.js";
-import { isNoise, rankCandidates, readSnapshot, scoreCandidate } from "../src/ideas/rank.js";
-import { describe, gapLabel, renderMarkdown, revenueEvidence } from "../src/ideas/report.js";
+import { isNoise, readSnapshot, scoreCandidate, selectTop } from "../src/ideas/rank.js";
+import {
+  describe,
+  gapLabel,
+  renderMarkdown,
+  revenueEvidence,
+  toIdea,
+} from "../src/ideas/report.js";
 import { parsePlayRating } from "../src/tr/channels.js";
 import type { TrVerdict } from "../src/tr/check.js";
 
@@ -27,52 +33,67 @@ test("ranking: cross-source presence outweighs any single-source signal", () => 
   const multi = candidate(
     "a",
     "Multi",
-    ["trustmrr", "showhn", "reddit"],
+    ["trustmrr", "producthunt", "reddit"],
     [
       point("trustmrr", "mrr_usd", 1000),
-      point("showhn", "hn_points", 10),
+      point("producthunt", "ph_feed_position", 30),
       point("reddit", "reddit_score", 5),
     ],
+    { url: "https://multi.app" },
   );
-  const loudSingle = candidate(
+  const strongSingle = candidate(
     "b",
-    "Loud",
-    ["showhn"],
-    [point("showhn", "hn_points", 500), point("showhn", "hn_comments", 100)],
+    "Strong",
+    ["reddit"],
+    [point("reddit", "reddit_score", 90), point("reddit", "reddit_comments", 40)],
+    { url: "https://strong.app" },
   );
-  const ranked = rankCandidates([loudSingle, multi]);
+  const ranked = selectTop([strongSingle, multi]);
   assert.deepEqual(
     ranked.map((entry) => entry.candidate.key),
     ["a", "b"],
   );
-  assert.ok(ranked[0]!.score.sources >= 6);
+  assert.ok(ranked[0]!.score.trend >= 2);
 });
 
-test("ranking: MRR growth and PH position are normalized, negative growth adds nothing", () => {
-  const growing = scoreCandidate(
+test("ranking: top PH feed position outranks a low one", () => {
+  const top = scoreCandidate(
+    candidate("p1", "Top", ["producthunt"], [point("producthunt", "ph_feed_position", 1)], {
+      url: "https://top.app",
+    }),
+  );
+  const bottom = scoreCandidate(
+    candidate("p2", "Bottom", ["producthunt"], [point("producthunt", "ph_feed_position", 9)], {
+      url: "https://bottom.app",
+    }),
+  );
+  assert.ok(top.score.trend > bottom.score.trend);
+});
+
+test("ranking: revenue is a small term and cannot outrank a real trend signal", () => {
+  const revenue = scoreCandidate(
     candidate(
       "g",
       "Growing",
       ["trustmrr"],
-      [point("trustmrr", "mrr_usd", 1000), point("trustmrr", "growth_mrr_30d_pct", 100)],
+      [point("trustmrr", "mrr_usd", 1000000), point("trustmrr", "growth_mrr_30d_pct", 900)],
+      { url: "https://growing.app" },
     ),
   );
-  const shrinking = scoreCandidate(
+  const trend = scoreCandidate(
     candidate(
-      "s",
-      "Shrinking",
-      ["trustmrr"],
-      [point("trustmrr", "mrr_usd", 1000), point("trustmrr", "growth_mrr_30d_pct", -100)],
+      "t",
+      "Trend",
+      ["reddit"],
+      [point("reddit", "reddit_score", 25), point("reddit", "reddit_comments", 3)],
+      {
+        url: "https://trend.app",
+      },
     ),
   );
-  assert.ok(growing.score.signals > shrinking.score.signals);
-  const top = scoreCandidate(
-    candidate("p1", "Top", ["producthunt"], [point("producthunt", "ph_feed_position", 1)]),
-  );
-  const bottom = scoreCandidate(
-    candidate("p2", "Bottom", ["producthunt"], [point("producthunt", "ph_feed_position", 50)]),
-  );
-  assert.ok(top.score.signals > bottom.score.signals);
+  assert.equal(revenue.score.trend, 0);
+  assert.equal(revenue.score.revenue, 0.25);
+  assert.ok(trend.score.base > revenue.score.base);
 });
 
 test("ranking: momentum from previous snapshot rewards rank drops and metric growth", () => {
@@ -103,7 +124,12 @@ test("ranking: momentum from previous snapshot rewards rank drops and metric gro
   );
   assert.ok(improved.score.momentum > 0);
   assert.equal(declined.score.momentum, 0);
-  assert.match(improved.momentumDetail!, /apple_us_top_free_rank 40→20/);
+  assert.match(improved.momentum, /apple_us_top_free_rank 40→20/);
+  assert.equal(declined.momentum, "reddit_score 100→50");
+  assert.equal(
+    scoreCandidate(candidate("c", "C", ["reddit"], [point("reddit", "reddit_score", 1)])).momentum,
+    "ilk gözlem",
+  );
 });
 
 test("ranking: noise filter drops anonymous and store-giant rows, keeps small apps", () => {
@@ -113,29 +139,43 @@ test("ranking: noise filter drops anonymous and store-giant rows, keeps small ap
     ["trustmrr"],
     [point("trustmrr", "mrr_usd", 1)],
   );
-  const giant = candidate("y", "ChatGPT", ["apple"], [point("apple", "apple_us_top_free_rank", 2)]);
+  const giant = candidate(
+    "y",
+    "ChatGPT",
+    ["apple"],
+    [
+      point("apple", "apple_us_top_free_rank", 2),
+      point("apple", "apple_us_days_since_release", 4000),
+    ],
+    { url: "https://apps.apple.com/y" },
+  );
   const small = candidate(
     "z",
     "Niş uygulama",
-    ["apple"],
-    [point("apple", "apple_us_top_free_rank", 80), point("apple", "apple_us_top_free_rank", 85)],
+    ["apple", "trustmrr"],
+    [
+      point("apple", "apple_us_top_free_rank", 30),
+      point("apple", "apple_us_days_since_release", 90),
+      point("trustmrr", "mrr_usd", 100),
+    ],
+    { url: "https://small.app" },
   );
   assert.ok(isNoise(anonymous));
   assert.ok(isNoise(giant));
   assert.equal(isNoise(small), false);
   assert.deepEqual(
-    rankCandidates([anonymous, giant, small]).map((entry) => entry.candidate.key),
+    selectTop([anonymous, giant, small]).map((entry) => entry.candidate.key),
     ["z"],
   );
 });
 
 test("ranking: ties are deterministic regardless of input order", () => {
-  const points = [point("reddit", "reddit_score", 10), point("reddit", "reddit_comments", 2)];
-  const a = candidate("a", "Alpha", ["reddit"], points);
-  const b = candidate("b", "Beta", ["reddit"], points);
+  const points = [point("reddit", "reddit_score", 50), point("reddit", "reddit_comments", 2)];
+  const a = candidate("a", "Alpha", ["reddit"], points, { url: "https://alpha.app" });
+  const b = candidate("b", "Beta", ["reddit"], points, { url: "https://beta.app" });
   assert.deepEqual(
-    rankCandidates([a, b]).map((entry) => entry.candidate.key),
-    rankCandidates([b, a]).map((entry) => entry.candidate.key),
+    selectTop([a, b]).map((entry) => entry.candidate.key),
+    selectTop([b, a]).map((entry) => entry.candidate.key),
   );
 });
 
@@ -179,55 +219,30 @@ test("report: revenue fallback, description, TR gap labels and markdown links", 
   assert.equal(gapLabel(verdict("uncertain")), "belirsiz");
   assert.equal(gapLabel(verdict("found", 2)), "zayıf");
   assert.equal(gapLabel(verdict("found", 500)), "dolu");
+
+  const entry = scoreCandidate(
+    candidate(
+      "h",
+      "A",
+      ["showhn"],
+      [point("showhn", "hn_points", 5, "https://news.ycombinator.com/item?id=1")],
+      {
+        url: "https://a.app",
+        description: "A small tool",
+      },
+    ),
+  );
+  const idea = toIdea(entry, 1, verdict("not_found"));
   const md = renderMarkdown({
     generatedAt: "2026-11-23",
     sourceFile: "data/latest.json",
     snapshotFile: null,
-    ideas: [
-      {
-        rank: 1,
-        key: "a",
-        name: "A",
-        originalName: "A",
-        url: "https://x",
-        whatItIs: "AI tool",
-        category: null,
-        sources: ["showhn"],
-        score: {
-          sources: 0,
-          revenue: 0,
-          product: 0,
-          quality: 0,
-          signals: 1,
-          momentum: 0,
-          total: 1,
-        },
-        weakSignal: false,
-        momentum: null,
-        dataPoints: [point("showhn", "hn_points", 5, "https://news.ycombinator.com/item?id=1")],
-        revenueEvidence: "aranmadı",
-        tr: { ...gapVerdict(verdict("not_found")), queries: ["sorgu"], evidence: [] },
-      },
-    ],
+    ideas: [idea],
   });
   assert.match(md, /TR boşluğu: boş/);
   assert.match(md, /hn_points: \*\*5\*\*.*news\.ycombinator\.com/);
+  assert.match(md, /Neden bu sırada:\*\* trend /);
 });
-
-function gapVerdict(v: TrVerdict) {
-  return {
-    verdict: v.verdict,
-    reason: v.reason,
-    queries: v.queries,
-    evidence: v.evidence.map((e) => ({
-      name: e.name,
-      channel: e.channel,
-      url: e.url,
-      ...(e.ratingCount === undefined ? {} : { ratingCount: e.ratingCount }),
-    })),
-    gapLabel: gapLabel(v),
-  };
-}
 
 test("names: long Show HN headlines become short product names and short TR queries", () => {
   assert.equal(
@@ -248,63 +263,6 @@ test("names: long Show HN headlines become short product names and short TR quer
   assert.equal(shortTrQueries("Screeny", undefined).length, 1);
 });
 
-test("ranking: revenue and product-likeness lift real products above HN-only noise", () => {
-  const joke = candidate(
-    "joke",
-    "Steal My Bitcoin",
-    ["showhn"],
-    [point("showhn", "hn_points", 500), point("showhn", "hn_comments", 200)],
-    { url: "https://news.ycombinator.com/item?id=1" },
-  );
-  const product = candidate(
-    "p",
-    "AppZoku",
-    ["trustmrr"],
-    [point("trustmrr", "mrr_usd", 1500), point("trustmrr", "growth_mrr_30d_pct", 100)],
-    { url: "https://appzoku.com", description: "marketing tool for solo iOS developers" },
-  );
-  const loudHn = candidate(
-    "hn",
-    "Show HN: A very long headline about a thing I built last week",
-    ["showhn"],
-    [point("showhn", "hn_points", 900)],
-  );
-  assert.ok(isNoise(joke));
-  const ranked = rankCandidates([joke, loudHn, product]);
-  assert.equal(ranked[0]!.candidate.key, "p");
-  assert.ok(ranked[0]!.score.revenue > 0);
-  assert.ok(ranked[0]!.score.product > 0);
-});
-
-test("ranking: at least 5 revenue-backed cards even when HN posts score higher", () => {
-  const revenue = Array.from({ length: 6 }, (_, index) =>
-    candidate(
-      `r${index}`,
-      `Revenue ${index}`,
-      ["trustmrr"],
-      [point("trustmrr", "mrr_usd", 100), point("trustmrr", "growth_mrr_30d_pct", 10)],
-      {
-        url: `https://product${index}.com`,
-        description: "a real product",
-      },
-    ),
-  );
-  const hn = Array.from({ length: 12 }, (_, index) =>
-    candidate(
-      `h${index}`,
-      `Hacker News thing ${index}`,
-      ["showhn"],
-      [point("showhn", "hn_points", 1000)],
-      { url: `https://news.ycombinator.com/item?id=${index}` },
-    ),
-  );
-  const ranked = rankCandidates([...hn, ...revenue]);
-  const withRevenue = ranked.filter((entry) =>
-    entry.candidate.dataPoints.some((point) => point.metric === "mrr_usd"),
-  );
-  assert.ok(withRevenue.length >= 5);
-});
-
 test("Play rating parser: accepts explicit counts, ignores average scores and missing data", () => {
   assert.equal(parsePlayRating('<div itemprop="ratingCount" content="1,234"></div>'), 1234);
   assert.equal(parsePlayRating('<span>"ratingCount":987</span>'), 987);
@@ -312,7 +270,7 @@ test("Play rating parser: accepts explicit counts, ignores average scores and mi
   assert.equal(parsePlayRating("<div>no rating here</div>"), undefined);
 });
 
-test("ranking: low-quality HN one-offs are excluded when enough good candidates exist", () => {
+test("ranking: low-signal HN posts (under the trend threshold, no revenue) are excluded", () => {
   const good = Array.from({ length: 12 }, (_, index) =>
     candidate(
       `g${index}`,
@@ -327,11 +285,12 @@ test("ranking: low-quality HN one-offs are excluded when enough good candidates 
       `w${index}`,
       `Wikihack ${index}`,
       ["showhn"],
-      [point("showhn", "hn_points", 500), point("showhn", "hn_comments", 50)],
+      [point("showhn", "hn_points", 20), point("showhn", "hn_comments", 5)],
+      { url: `https://wiki${index}.example` },
     ),
   );
-  const ranked = rankCandidates([...weak, ...good]);
+  const ranked = selectTop([...weak, ...good]);
   assert.equal(ranked.length, 12);
   assert.ok(ranked.every((entry) => entry.candidate.key.startsWith("g")));
-  assert.ok(ranked.every((entry) => entry.score.quality >= 3 && !entry.weakSignal));
+  assert.ok(ranked.every((entry) => entry.labels.includes("gelir")));
 });

@@ -47,6 +47,9 @@ function card(idea) {
 
   const title = el("h2");
   title.append(`${idea.rank}. `, link(idea.url, idea.name));
+  for (const label of idea.labels ?? []) {
+    title.append(" ", el("span", label, `badge label-${label}`));
+  }
   article.append(title);
 
   article.append(el("p", idea.whatItIs ?? ""));
@@ -57,6 +60,24 @@ function card(idea) {
       "muted",
     ),
   );
+  if (idea.reason) article.append(el("p", `Neden bu sırada: ${idea.reason}`, "muted"));
+
+  article.append(el("div", "Trend", "section-title"));
+  article.append(el("p", `İvme: ${idea.trend?.momentum ?? "ilk gözlem"}`, "muted"));
+  if (idea.trend?.signals?.length) {
+    const signals = el("ul");
+    for (const point of idea.trend.signals) {
+      const li = el(
+        "li",
+        `${point.source} · ${point.metric}: ${formatValue(point.value)} (${point.date}) `,
+      );
+      li.append(link(point.url, "kaynak"));
+      signals.append(li);
+    }
+    article.append(signals);
+  } else {
+    article.append(el("p", "Trend sinyali yok.", "muted"));
+  }
 
   article.append(el("div", "Veri noktaları", "section-title"));
   const points = el("ul");

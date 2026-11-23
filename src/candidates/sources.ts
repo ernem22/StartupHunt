@@ -325,6 +325,24 @@ function isAppleEntry(value: unknown): value is AppleEntry {
   );
 }
 
+/**
+ * Days from each app's first store release to `at`, from one batched iTunes lookup. A new app in
+ * the top-free chart is a launch; an old one is an established brand. Each point links to its lookup.
+ */
+export function appleReleaseAges(body: unknown, at: Date): Map<string, number> {
+  const results = (body as { results?: unknown })?.results;
+  if (!Array.isArray(results)) throw new Error("Invalid Apple lookup response");
+  const ages = new Map<string, number>();
+  for (const item of results) {
+    const record = item as { trackId?: unknown; releaseDate?: unknown };
+    if (typeof record.trackId !== "number" || typeof record.releaseDate !== "string") continue;
+    const released = Date.parse(record.releaseDate);
+    if (Number.isNaN(released)) continue;
+    ages.set(String(record.trackId), Math.max(0, Math.floor((at.getTime() - released) / DAY)));
+  }
+  return ages;
+}
+
 export class AppleTopFreeProducer implements CandidateProducer {
   readonly source = "apple";
 
@@ -332,6 +350,7 @@ export class AppleTopFreeProducer implements CandidateProducer {
     const date = isoDay(at.getTime());
     const candidates: RawCandidate[] = [];
     const skipped: string[] = [];
+    let usChart = false;
     for (const [index, country] of ["us", "tr"].entries()) {
       if (index > 0) await sleep(DELAY_MS);
       try {
@@ -345,6 +364,7 @@ export class AppleTopFreeProducer implements CandidateProducer {
           if (!isAppleEntry(entry)) throw new Error("Invalid Apple chart entry");
           return entry;
         });
+        if (country === "us") usChart = true;
         entries.forEach((entry, rankIndex) => {
           candidates.push({
             name: entry.name,
@@ -363,6 +383,38 @@ export class AppleTopFreeProducer implements CandidateProducer {
       } catch (error) {
         skipped.push(
           `Apple ${country.toUpperCase()}: ${error instanceof Error ? error.message : "unknown error"}`,
+        );
+      }
+    }
+    if (usChart) {
+      // Only US-chart apps need an age; one request covers the whole chart.
+      const usCandidates = candidates.filter((c) =>
+        c.dataPoints.some((p) => p.metric === "apple_us_top_free_rank"),
+      );
+      const ids = usCandidates.map((c) => c.key.slice("apple:".length));
+      try {
+        await sleep(DELAY_MS);
+        const lookup = await fetchJson(
+          `https://itunes.apple.com/lookup?id=${ids.join(",")}&country=us`,
+        );
+        const ages = appleReleaseAges(lookup, at);
+        for (const candidate of usCandidates) {
+          const id = candidate.key.slice("apple:".length);
+          const days = ages.get(id);
+          if (days === undefined) continue;
+          candidate.dataPoints.push(
+            ...point(
+              "apple",
+              "apple_us_days_since_release",
+              days,
+              date,
+              `https://itunes.apple.com/lookup?id=${id}&country=us`,
+            ),
+          );
+        }
+      } catch (error) {
+        skipped.push(
+          `Apple yayın yaşı: ${error instanceof Error ? error.message : "unknown error"}`,
         );
       }
     }
