@@ -15,6 +15,11 @@ export interface StoredSource {
 /** Keeps runs in memory; `write` publishes them as JSON files (no database). */
 export class JsonRadarStore implements RadarStore {
   readonly sources: StoredSource[] = [];
+  readonly errors: { source: string; message: string }[] = [];
+
+  addError(source: string, message: string): void {
+    this.errors.push({ source, message });
+  }
 
   async start(manifest: Manifest): Promise<string> {
     this.sources.push({ manifest, status: "running", candidates: [] });
@@ -39,10 +44,10 @@ export class JsonRadarStore implements RadarStore {
 
   /** Writes `<dir>/latest.json` and `<dir>/YYYY-MM-DD.json` (UTC); returns the paths. */
   async write(dir: string, at: Date, commit: string): Promise<string[]> {
-    if (this.sources.some((s) => s.status !== "completed")) {
-      throw new Error("Refusing to publish JSON: a source did not complete");
-    }
-    const body = `${JSON.stringify({ generatedAt: at.toISOString(), commit, sources: this.sources }, null, 2)}\n`;
+    const sources = this.sources.filter((s) => s.status === "completed");
+    if (sources.length === 0) throw new Error("Refusing to publish JSON: no source completed");
+    const body = `${JSON.stringify({ generatedAt: at.toISOString(), commit, errors: this.errors, sources }, null, 2)}
+`;
     await mkdir(dir, { recursive: true });
     const paths = [
       path.join(dir, "latest.json"),

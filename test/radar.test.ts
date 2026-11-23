@@ -180,6 +180,21 @@ test("JSON store writes latest.json and a dated file with ranked candidates; fai
     assert.equal(saved.sources[0].candidates[0].url, "https://github.com/owner/tool");
     assert.equal(saved.sources[0].candidates[0].momentum, 1);
 
+    const mixed = new JsonRadarStore();
+    await runRadar({ collect: async () => [fixture(20)] }, mixed, at, "h");
+    await mixed.start({
+      source: "x",
+      parameters: { pool: [], discoveryLimit: 1, weeks: 4, at: "" },
+      seed: 0,
+      commitHash: "h",
+    });
+    await mixed.fail("1");
+    mixed.addError("x", "boom");
+    const [latest] = await mixed.write(dir, at, "h");
+    const partial = JSON.parse(await readFile(latest!, "utf8"));
+    assert.equal(partial.sources.length, 1);
+    assert.deepEqual(partial.errors, [{ source: "x", message: "boom" }]);
+
     const failing = new JsonRadarStore();
     await failing.start({
       source: "x",
@@ -188,7 +203,7 @@ test("JSON store writes latest.json and a dated file with ranked candidates; fai
       commitHash: "h",
     });
     await failing.fail("0");
-    await assert.rejects(failing.write(dir, at, "h"), /did not complete/);
+    await assert.rejects(failing.write(dir, at, "h"), /no source completed/);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
@@ -454,4 +469,21 @@ test("HN Algolia zero baseline is unranked and HTTP/truncated/malformed response
     assert.equal(failing.series, undefined);
     assert.ok(failing.manifest);
   }
+});
+
+test("GitHub rate limit skips the repo with limit info instead of failing the source", async () => {
+  const request: typeof fetch = async (input) =>
+    String(input).includes("/search/")
+      ? Response.json({
+          incomplete_results: false,
+          items: [{ full_name: "owner/tool", description: "d" }],
+        })
+      : new Response("{}", {
+          status: 403,
+          headers: { "x-ratelimit-remaining": "0", "x-ratelimit-reset": "1795000000" },
+        });
+  const collector = new GitHubMomentumCollector("q", request);
+  assert.deepEqual(await collector.collect(at), []);
+  assert.equal(collector.skipped.length, 1);
+  assert.match(collector.skipped[0]!, /owner.tool.*kalan limit: 0.*sıfırlanma: 2026/);
 });
